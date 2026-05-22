@@ -1,5 +1,5 @@
 /** 
-☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2026-05-22 16:18⟧
+☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2026-05-22 18:05⟧
 ----------------------------------------------------------
 🛠 发现 𝐁𝐔𝐆 请反馈: https://t.me/ShawnKOP_Parser_Bot
 ⛳️ 关注 🆃🅶 相关频道: https://t.me/QuanX_API
@@ -474,6 +474,9 @@ $parser.hashToUI = function (hash) {
   if (values.replace) {
     values.replace = String(values.replace).replace(/\\s\{2,\}@%20/g, "%5Cs%7B2%2C%7D@%20");
   }
+  if (values.sort) {
+    try { values.sort = decodeURIComponent(values.sort); } catch (e) {}
+  }
 
   Object.keys(values).forEach(function (k) {
     if (allItems[k]) return;
@@ -544,7 +547,7 @@ $parser.uiToHash = function (values) {
     replace: "%5Cs%7B2%2C%7D@%20",
     emoji: "1",
     rename: "%5Bnode_tag_prefix%5D%20@",
-    sort: "🇭🇰>🇯🇵>🇸🇬>🇨🇳>🇺🇸"
+    sort: "%F0%9F%87%AD%F0%9F%87%B0%3E%F0%9F%87%AF%F0%9F%87%B5%3E%F0%9F%87%B8%F0%9F%87%AC%3E%F0%9F%87%A8%F0%9F%87%B3%3E%F0%9F%87%BA%F0%9F%87%B8"
   };
   var qxPresetKeys = {
     qxf: true,
@@ -584,6 +587,9 @@ $parser.uiToHash = function (values) {
         serialized = v ? meta.onValue : meta.offValue;
       } else if (meta.type === "tags") {
         serialized = (v || []).join("+");
+      } else if (k === "sort") {
+        try { serialized = encodeURIComponent(decodeURIComponent(String(v))); }
+        catch (e) { serialized = encodeURIComponent(String(v)); }
       } else {
         serialized = String(v);
       }
@@ -723,7 +729,7 @@ var Psuffix = mark0 && para1.indexOf("suffix=") != -1 ? para1.split("suffix=")[1
 var Ppolicy = mark0 && para1.indexOf("policy=") != -1 ? decodeURIComponent(para1.split("policy=")[1].split("&")[0]) : "Shawn";
 var Ppolicyset = mark0 && para1.indexOf("pset=") != -1 ? decodeURIComponent(para1.split("pset=")[1].split("&")[0]) : "";
 var Pcert0 = mark0 && para1.indexOf("cert=") != -1 ? para1.split("cert=")[1].split("&")[0] : 0;
-var Psort0 = mark0 && para1.indexOf("sort=") != -1 ? para1.split("sort=")[1].split("&")[0] : 0;
+var Psort0 = mark0 && para1.indexOf("sort=") != -1 ? decodeURIComponent(para1.split("sort=")[1].split("&")[0]) : 0;
 var PsortX = mark0 && para1.indexOf("sortx=") != -1 ? para1.split("sortx=")[1].split("&")[0] : 0;
 var PTls13 = mark0 && para1.indexOf("tls13=") != -1 ? para1.split("tls13=")[1].split("&")[0] : 0;
 var Pntf0 = mark0 && para1.indexOf("ntf=") != -1 ? para1.split("ntf=")[1].split("&")[0] : 2;
@@ -3218,9 +3224,14 @@ function Rename(str) {
                 var rn = escapeRegExp(oname)
                 name = name.replace(new RegExp(rn, "gm"), nname)
             } else if (oname && nname == "") {//前缀
-                var nemoji = emoji_del(name)
-                if ((Pemoji == 1 || Pemoji == 2) && Prname ) { //判断是否有重复 emoji，有则删除旧有
-                    name = oname + nemoji //name.replace(name.split(" ")[0] + " ", name.split(" ")[0] + " " + oname)
+                if ((Pemoji == 1 || Pemoji == 2) && Prname) { //开启 emoji 时，保留原节点已有地区旗帜，避免“下载专用”等节点被改成 🏴‍☠️
+                    var oldemoji = emoji_existing(name)
+                    var nbody = emoji_del(name)
+                    if (oldemoji) {
+                        name = (oldemoji + " " + oname + nbody).replace(/\s{2,}/g, " ").trim()
+                    } else {
+                        name = oname + name.trim()
+                    }
                 } else { name = oname + name.trim() }
             } else if (nname && oname == "") {//后缀
                 name = name.trim() + nname
@@ -3424,6 +3435,13 @@ function get_emoji(emojip, sname) {
     "🇬🇫": ["法屬圭亞那","法属圭亚那"],
     "🇹🇹": ["特立尼达和多巴哥","特立尼達和多巴哥"]
   }
+    // 优先沿用节点名中已有的地区旗帜；只有原节点没有旗帜时，才按关键词自动识别或兜底加 🏴‍☠️
+    var oldemoji = emoji_existing(sname);
+    if (oldemoji) {
+        var body = sname.replace(/[\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF]/g, "").trim();
+        return [(oldemoji + " " + body).replace(/\s{2,}/g, " ").trim(), oldemoji];
+    }
+
     str1 = JSON.stringify(Lmoji)
     aa = JSON.parse(str1)
     bb = aa
@@ -3440,9 +3458,7 @@ function get_emoji(emojip, sname) {
         }
     }
     if (flag == 0) {
-        var oldemoji = emoji_existing(sname);
         var body = sname.replace(/[\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF]/g, "").trim();
-        if (oldemoji) return [(oldemoji + " " + body).trim(), oldemoji];
         return ["🏴‍☠️ " + body, "🏴‍☠️"];
     }
 }
