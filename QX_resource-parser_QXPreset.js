@@ -239,12 +239,12 @@ $parser.hashSchema = function () {
       },
       {
         type: "group",
-        title: "🧩 QX 自定义增强",
-        description: "\n默认关闭；开启 qxf=1 可一次启用清理、自动地区 Emoji、机场前缀和地区排序。",
+        title: "🧩 QX 原生预设增强",
+        description: "\n默认关闭；在 UI 中开启后会直接写入 regout、delreg、replace、emoji、rename、sort 等原生参数。",
         items: [
-          { type: "switch", key: "qxf", label: "🧩 一键启用 QX 自定义清洗",
+          { type: "switch", key: "qxf", label: "🧩 一键写入原生清洗预设",
             onValue: "1", offValue: "",
-            description: "\n等价于 clean=1&cleantag=1&autoe=1&airport=1&rsort=1。" },
+            description: "\n保存 UI 时直接写入原生参数，不再保留 qxf=1 中转参数。" },
           { type: "switch", key: "clean", label: "🧹 删除伪节点",
             onValue: "1", offValue: "",
             description: "\n删除订阅说明、流量、官网、群组、更新、过期提示等伪节点。" },
@@ -528,9 +528,43 @@ $parser.uiToHash = function (values) {
     g.items.forEach(function (it) { allItems[it.key] = it; });
   });
 
+  var qxPreset = {
+    regout: "^(?!.*(?:防失联|防失聯|备用|備用|\\bUDP\\b|\\bTCP\\b)).*(?:Data\\s*Left|Remain(?:ing)?|Traffic|Bandwidth|流量|剩[余餘]|套餐|用量|容量|残り使用容量|残りデータ通信量|📝\\s*Gói|Expir[ey]|Expire\\s*Date|到期|过期|過期|有效期|有効期限|[时時][间間]|Reset|重置|リセット|最新[网網][站址]|官[方网網]|获取|地址|群|更新|官网|官網|通知|公告|\\d[\\d.]*\\s*[MGTP]B[^\\dA-Za-z]+\\d[\\d.]*\\s*[MGTP]B|分割线|分割線|---+|===+|🔰\\s*(?:ID|HSD|SNI)\\s*:).*$",
+    delreg: "[^\\u4e00-\\u9fa5a-zA-Z0-9\\s\\-\\.\\_\\(\\)\\[\\]\\|\\uD83C\\uDDE6-\\uDDFF\\uD83D\\uDC00-\\uDEFF\\u2600-\\u27BF]",
+    replace: "\\s{2,}@%20",
+    emoji: "1",
+    rename: "%5Bnode_tag_prefix%5D%20@",
+    sort: "🇭🇰>🇯🇵>🇸🇬>🇨🇳>🇺🇸"
+  };
+  var qxPresetKeys = {
+    qxf: true,
+    clean: true,
+    cleantag: true,
+    autoe: true,
+    airport: true,
+    rsort: true
+  };
+  var merged = {};
+
+  function isOn(k) {
+    return String(values[k]) === "1" || String(values[k]).toLowerCase() === "true";
+  }
+
+  function put(k, v) {
+    if (v === undefined || v === null || v === "") return;
+    merged[k] = String(v);
+  }
+
+  function append(k, v, sep) {
+    if (v === undefined || v === null || v === "") return;
+    merged[k] = merged[k] ? merged[k] + sep + String(v) : String(v);
+  }
+
   var parts = [];
 
   Object.keys(values).forEach(function (k) {
+    if (qxPresetKeys[k]) return;
+
     var v = values[k];
     var meta = allItems[k];
     var serialized;
@@ -548,7 +582,28 @@ $parser.uiToHash = function (values) {
       serialized = String(v);
     }
 
-    parts.push(k + "=" + serialized);
+    put(k, serialized);
+  });
+
+  if (isOn("qxf") || isOn("clean")) {
+    append("regout", qxPreset.regout, "|");
+  }
+  if (isOn("qxf") || isOn("cleantag")) {
+    append("delreg", qxPreset.delreg, "|");
+    append("replace", qxPreset.replace, "+");
+  }
+  if ((isOn("qxf") || isOn("autoe")) && !merged.emoji) {
+    put("emoji", qxPreset.emoji);
+  }
+  if (isOn("qxf") || isOn("airport")) {
+    append("rename", qxPreset.rename, "+");
+  }
+  if ((isOn("qxf") || isOn("rsort")) && !merged.sort) {
+    put("sort", qxPreset.sort);
+  }
+
+  Object.keys(merged).forEach(function (k) {
+    parts.push(k + "=" + merged[k]);
   });
 
   return parts.join("&");
@@ -694,38 +749,6 @@ var PProfile = mark0 && para1.indexOf("profile=") != -1 ? para1.split("profile="
 var Palpn = mark0 && para1.indexOf("alpn=") != -1 && version >= 712? para1.split("alpn=")[1].split("&")[0] : ""; // over-tls 类型，alpn参数
 var Pobfs = mark0 && para1.indexOf("obfs=") != -1 && version >= 770? para1.split("obfs=")[1].split("&")[0] : ""; // 指定特殊情况下的 obfs=xx-http 类型
 var Psession =  mark0 && para1.indexOf("tsession=") != -1 && version >= 771? para1.split("tsession=")[1].split("&")[0] : "";//tls-no-session-ticket and tls-no-session-reuse
-var PQXFull = mark0 && para1.indexOf("qxf=") != -1 ? para1.split("qxf=")[1].split("&")[0] : ""; // QX 自定义一键清洗
-var PQXClean = mark0 && para1.indexOf("clean=") != -1 ? para1.split("clean=")[1].split("&")[0] : ""; // 删除流量/官网/更新等伪节点
-var PQXCleanTag = mark0 && para1.indexOf("cleantag=") != -1 ? para1.split("cleantag=")[1].split("&")[0] : ""; // 清理节点名特殊符号
-var PQXAutoEmoji = mark0 && para1.indexOf("autoe=") != -1 ? para1.split("autoe=")[1].split("&")[0] : ""; // 自动地区 emoji
-var PQXAirport = mark0 && para1.indexOf("airport=") != -1 ? para1.split("airport=")[1].split("&")[0] : ""; // 添加机场名前缀
-var PQXRegionSort = mark0 && para1.indexOf("rsort=") != -1 ? para1.split("rsort=")[1].split("&")[0] : ""; // 地区排序
-var PQXNativePreset = _customFlag(PQXFull); // qxf=1 只展开为原作者已有参数，不再接管节点处理
-var PQXNativeClean = PQXNativePreset || _customFlag(PQXClean);
-var PQXNativeCleanTag = PQXNativePreset || _customFlag(PQXCleanTag);
-var PQXNativeAutoEmoji = PQXNativePreset || _customFlag(PQXAutoEmoji);
-var PQXNativeAirport = PQXNativePreset || _customFlag(PQXAirport);
-var PQXNativeRegionSort = PQXNativePreset || _customFlag(PQXRegionSort);
-if (PQXNativeClean) {
-  var QXCleanRegout = "^(?!.*(?:防失联|防失聯|备用|備用|\\bUDP\\b|\\bTCP\\b)).*(?:Data\\s*Left|Remain(?:ing)?|Traffic|Bandwidth|流量|剩[余餘]|套餐|用量|容量|残り使用容量|残りデータ通信量|📝\\s*Gói|Expir[ey]|Expire\\s*Date|到期|过期|過期|有效期|有効期限|[时時][间間]|Reset|重置|リセット|最新[网網][站址]|官[方网網]|获取|地址|群|更新|官网|官網|通知|公告|\\d[\\d.]*\\s*[MGTP]B[^\\dA-Za-z]+\\d[\\d.]*\\s*[MGTP]B|分割线|分割線|---+|===+|🔰\\s*(?:ID|HSD|SNI)\\s*:).*$";
-  Pregout = Pregout ? "(?:" + Pregout + ")|(?:" + QXCleanRegout + ")" : QXCleanRegout;
-}
-if (PQXNativeCleanTag) {
-  var QXCleanDelreg = "[^\\u4e00-\\u9fa5a-zA-Z0-9\\s\\-\\.\\_\\(\\)\\[\\]\\|\\uD83C\\uDDE6-\\uDDFF\\uD83D\\uDC00-\\uDEFF\\u2600-\\u27BF]";
-  var QXCleanReplace = "\\s{2,}@%20";
-  Pregdel = Pregdel ? Pregdel + "|" + QXCleanDelreg : QXCleanDelreg;
-  Preplace = Preplace ? Preplace + "+" + QXCleanReplace : QXCleanReplace;
-}
-if (PQXNativeAutoEmoji && !Pemoji) {
-  Pemoji = "1";
-}
-if (PQXNativeAirport) {
-  var QXAirportRename = "[node_tag_prefix] @";
-  Prname = Prname ? [QXAirportRename].concat(Prname) : [QXAirportRename];
-}
-if (PQXNativeRegionSort && !Psort0) {
-  Psort0 = "🇭🇰>🇯🇵>🇸🇬>🇨🇳>🇺🇸";
-}
 // 0/1 代表关闭 session-ticket/reuse，2 表示全部关闭。
 var Pmix = version>=844? 1 : 0 // allow rewrite and filter mix from version 844
 var Pjsonjq = version>=845? 0 : 1 // allow jsonjq from version 845
@@ -4894,10 +4917,6 @@ function YAML() {
 
 
 /***********************************************************************************************/
-
-function _customFlag(value) {
-    return String(value) === "1" || String(value).toLowerCase() === "true";
-}
 
 function Tools() {
     const filter = (src, ...regex) => {
