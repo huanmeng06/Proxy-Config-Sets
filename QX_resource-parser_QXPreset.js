@@ -1,5 +1,5 @@
 /** 
-☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2026-05-18 14:15⟧
+☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧 @Huan_meeng @Codex ⟦2026-05-22 15:15⟧
 ----------------------------------------------------------
 🛠 发现 𝐁𝐔𝐆 请反馈: https://t.me/ShawnKOP_Parser_Bot
 ⛳️ 关注 🆃🅶 相关频道: https://t.me/QuanX_API
@@ -443,52 +443,31 @@ $parser.hashSchema = function () {
 }
 };
 
-function _qxNativePresetConfig() {
-  return {
-    values: {
-      regout: "^(?!.*(?:防失联|防失聯|备用|備用|\\bUDP\\b|\\bTCP\\b)).*(?:Data\\s*Left|Remain(?:ing)?|Traffic|Bandwidth|流量|剩[余餘]|套餐|用量|容量|残り使用容量|残りデータ通信量|📝\\s*Gói|Expir[ey]|Expire\\s*Date|到期|过期|過期|有效期|有効期限|[时時][间間]|Reset|重置|リセット|最新[网網][站址]|官[方网網]|获取|地址|群|更新|官网|官網|通知|公告|\\d[\\d.]*\\s*[MGTP]B[^\\dA-Za-z]+\\d[\\d.]*\\s*[MGTP]B|分割线|分割線|---+|===+|🔰\\s*(?:ID|HSD|SNI)\\s*:).*$",
-      delreg: "[^\\u4e00-\\u9fa5a-zA-Z0-9\\s\\-\\.\\_\\(\\)\\[\\]\\|\\uD83C\\uDDE6-\\uDDFF\\uD83D\\uDC00-\\uDEFF\\u2600-\\u27BF]",
-      replace: "\\s{2,}@%20",
-      emoji: "1",
-      rename: "%5Bnode_tag_prefix%5D%20@",
-      sort: "🇭🇰>🇯🇵>🇸🇬>🇨🇳>🇺🇸"
-    },
-    uiKeys: {
-      qxf: true,
-      clean: true,
-      cleantag: true,
-      autoe: true,
-      airport: true,
-      rsort: true
-    }
-  };
-}
-
-function _removeNativePresetFragment(raw, fragment, sep) {
-  if (raw === undefined || raw === null || fragment === undefined || fragment === null) {
-    return { found: false, value: raw };
-  }
-
-  raw = String(raw);
-  fragment = String(fragment);
-
-  if (raw === fragment) return { found: true, value: "" };
-  if (raw.indexOf(sep + fragment + sep) !== -1) {
-    return { found: true, value: raw.replace(sep + fragment + sep, sep) };
-  }
-  if (raw.indexOf(fragment + sep) === 0) {
-    return { found: true, value: raw.slice(fragment.length + sep.length) };
-  }
-  if (raw.lastIndexOf(sep + fragment) === raw.length - sep.length - fragment.length) {
-    return { found: true, value: raw.slice(0, raw.length - sep.length - fragment.length) };
-  }
-
-  return { found: false, value: raw };
-}
-
 // hashToUI：支持动态参数
 $parser.hashToUI = function (hash) {
   if (!hash) return { version: 1, sections: [] };
+
+  function removeNativePresetFragment(raw, fragment, sep) {
+    if (raw === undefined || raw === null || fragment === undefined || fragment === null) {
+      return { found: false, value: raw };
+    }
+
+    raw = String(raw);
+    fragment = String(fragment);
+
+    if (raw === fragment) return { found: true, value: "" };
+    if (raw.indexOf(sep + fragment + sep) !== -1) {
+      return { found: true, value: raw.replace(sep + fragment + sep, sep) };
+    }
+    if (raw.indexOf(fragment + sep) === 0) {
+      return { found: true, value: raw.slice(fragment.length + sep.length) };
+    }
+    if (raw.lastIndexOf(sep + fragment) === raw.length - sep.length - fragment.length) {
+      return { found: true, value: raw.slice(0, raw.length - sep.length - fragment.length) };
+    }
+
+    return { found: false, value: raw };
+  }
 
   var schema = $parser.hashSchema();
   var allItems = {};
@@ -513,12 +492,19 @@ $parser.hashToUI = function (hash) {
     }
   });
 
-  var preset = _qxNativePresetConfig().values;
+  var preset = {
+    regout: "^(?!.*(?:防失联|防失聯|备用|備用|\\bUDP\\b|\\bTCP\\b)).*(?:Data\\s*Left|Remain(?:ing)?|Traffic|Bandwidth|流量|剩[余餘]|套餐|用量|容量|残り使用容量|残りデータ通信量|📝\\s*Gói|Expir[ey]|Expire\\s*Date|到期|过期|過期|有效期|有効期限|[时時][间間]|Reset|重置|リセット|最新[网網][站址]|官[方网網]|获取|地址|群|更新|官网|官網|通知|公告|\\d[\\d.]*\\s*[MGTP]B[^\\dA-Za-z]+\\d[\\d.]*\\s*[MGTP]B|分割线|分割線|---+|===+|🔰\\s*(?:ID|HSD|SNI)\\s*:).*$",
+    delreg: "[^\\u4e00-\\u9fa5a-zA-Z0-9\\s\\-\\.\\_\\(\\)\\[\\]\\|\\uD83C\\uDDE6-\\uDDFF\\uD83D\\uDC00-\\uDEFF\\u2600-\\u27BF]",
+    replace: "\\s{2,}@%20",
+    emoji: "1",
+    rename: "%5Bnode_tag_prefix%5D%20@",
+    sort: "🇭🇰>🇯🇵>🇸🇬>🇨🇳>🇺🇸"
+  };
   var presetState = {};
 
   function takePreset(k, uiKey, sep) {
     if (!(k in values)) return false;
-    var removed = _removeNativePresetFragment(values[k], preset[k], sep);
+    var removed = removeNativePresetFragment(values[k], preset[k], sep);
     if (!removed.found) return false;
 
     presetState[uiKey] = true;
@@ -622,9 +608,22 @@ $parser.uiToHash = function (values) {
     g.items.forEach(function (it) { allItems[it.key] = it; });
   });
 
-  var nativePreset = _qxNativePresetConfig();
-  var qxPreset = nativePreset.values;
-  var qxPresetKeys = nativePreset.uiKeys;
+  var qxPreset = {
+    regout: "^(?!.*(?:防失联|防失聯|备用|備用|\\bUDP\\b|\\bTCP\\b)).*(?:Data\\s*Left|Remain(?:ing)?|Traffic|Bandwidth|流量|剩[余餘]|套餐|用量|容量|残り使用容量|残りデータ通信量|📝\\s*Gói|Expir[ey]|Expire\\s*Date|到期|过期|過期|有效期|有効期限|[时時][间間]|Reset|重置|リセット|最新[网網][站址]|官[方网網]|获取|地址|群|更新|官网|官網|通知|公告|\\d[\\d.]*\\s*[MGTP]B[^\\dA-Za-z]+\\d[\\d.]*\\s*[MGTP]B|分割线|分割線|---+|===+|🔰\\s*(?:ID|HSD|SNI)\\s*:).*$",
+    delreg: "[^\\u4e00-\\u9fa5a-zA-Z0-9\\s\\-\\.\\_\\(\\)\\[\\]\\|\\uD83C\\uDDE6-\\uDDFF\\uD83D\\uDC00-\\uDEFF\\u2600-\\u27BF]",
+    replace: "\\s{2,}@%20",
+    emoji: "1",
+    rename: "%5Bnode_tag_prefix%5D%20@",
+    sort: "🇭🇰>🇯🇵>🇸🇬>🇨🇳>🇺🇸"
+  };
+  var qxPresetKeys = {
+    qxf: true,
+    clean: true,
+    cleantag: true,
+    autoe: true,
+    airport: true,
+    rsort: true
+  };
   var merged = {};
 
   function isOn(k) {
