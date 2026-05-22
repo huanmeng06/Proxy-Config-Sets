@@ -1,10 +1,11 @@
 /** 
-☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧 @Huan_meeng @Codex ⟦2026-05-22 15:15⟧
+☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2026-05-22 15:26⟧
 ----------------------------------------------------------
 🛠 发现 𝐁𝐔𝐆 请反馈: https://t.me/ShawnKOP_Parser_Bot
 ⛳️ 关注 🆃🅶 相关频道: https://t.me/QuanX_API
 📖 使用 教程: https://tinyurl.com/2jyygfom
 🗣 🆃🄷🄰🄽🄺🅂 🆃🄾  @Jamie CHIEN, @M**F**, @c0lada, @Peng-YM, @vinewx, @love4taylor, @shadowdogy 
+🗣 🅼🄾🄳🄸🄵🄸🄴🄳 🅱🅈  @𝑯𝒖𝒂𝒏_𝒎𝒆𝒆𝒏𝒈 @𝑪𝒐𝒅𝒆𝒙
 
 🤖 主要功能: 
 ❶ 将其它格式的⟦服务器订阅⟧解析成 𝐐𝐮𝐚𝐧𝐭𝐮𝐦𝐮𝐥𝐭 𝐗 格式
@@ -493,18 +494,22 @@ $parser.hashToUI = function (hash) {
   });
 
   var preset = {
-    regout: "^(?!.*(?:防失联|防失聯|备用|備用|\\bUDP\\b|\\bTCP\\b)).*(?:Data\\s*Left|Remain(?:ing)?|Traffic|Bandwidth|流量|剩[余餘]|套餐|用量|容量|残り使用容量|残りデータ通信量|📝\\s*Gói|Expir[ey]|Expire\\s*Date|到期|过期|過期|有效期|有効期限|[时時][间間]|Reset|重置|リセット|最新[网網][站址]|官[方网網]|获取|地址|群|更新|官网|官網|通知|公告|\\d[\\d.]*\\s*[MGTP]B[^\\dA-Za-z]+\\d[\\d.]*\\s*[MGTP]B|分割线|分割線|---+|===+|🔰\\s*(?:ID|HSD|SNI)\\s*:).*$",
+    regout: "^(?!.*(?:防失[联聯]|[备備]用|\\b(?:UDP|TCP)\\b)).*(?:流量|剩[余餘]|套餐|用量|容量|到期|[过過]期|有效期|[时時][间間]|重置|官网|官網|更新|通知|公告|群|地址|获取|分割[线線]|Data|Remain|Traffic|Bandwidth|Expir|Reset).*$",
     delreg: "[^\\u4e00-\\u9fa5a-zA-Z0-9\\s\\-\\.\\_\\(\\)\\[\\]\\|\\uD83C\\uDDE6-\\uDDFF\\uD83D\\uDC00-\\uDEFF\\u2600-\\u27BF]",
     replace: "\\s{2,}@%20",
     emoji: "1",
     rename: "%5Bnode_tag_prefix%5D%20@",
     sort: "🇭🇰>🇯🇵>🇸🇬>🇨🇳>🇺🇸"
   };
+  var legacyRegout = "^(?!.*(?:防失联|防失聯|备用|備用|\\bUDP\\b|\\bTCP\\b)).*(?:Data\\s*Left|Remain(?:ing)?|Traffic|Bandwidth|流量|剩[余餘]|套餐|用量|容量|残り使用容量|残りデータ通信量|📝\\s*Gói|Expir[ey]|Expire\\s*Date|到期|过期|過期|有效期|有効期限|[时時][间間]|Reset|重置|リセット|最新[网網][站址]|官[方网網]|获取|地址|群|更新|官网|官網|通知|公告|\\d[\\d.]*\\s*[MGTP]B[^\\dA-Za-z]+\\d[\\d.]*\\s*[MGTP]B|分割线|分割線|---+|===+|🔰\\s*(?:ID|HSD|SNI)\\s*:).*$";
   var presetState = {};
 
   function takePreset(k, uiKey, sep) {
     if (!(k in values)) return false;
     var removed = removeNativePresetFragment(values[k], preset[k], sep);
+    if (!removed.found && k === "regout") {
+      removed = removeNativePresetFragment(values[k], legacyRegout, sep);
+    }
     if (!removed.found) return false;
 
     presetState[uiKey] = true;
@@ -609,7 +614,7 @@ $parser.uiToHash = function (values) {
   });
 
   var qxPreset = {
-    regout: "^(?!.*(?:防失联|防失聯|备用|備用|\\bUDP\\b|\\bTCP\\b)).*(?:Data\\s*Left|Remain(?:ing)?|Traffic|Bandwidth|流量|剩[余餘]|套餐|用量|容量|残り使用容量|残りデータ通信量|📝\\s*Gói|Expir[ey]|Expire\\s*Date|到期|过期|過期|有效期|有効期限|[时時][间間]|Reset|重置|リセット|最新[网網][站址]|官[方网網]|获取|地址|群|更新|官网|官網|通知|公告|\\d[\\d.]*\\s*[MGTP]B[^\\dA-Za-z]+\\d[\\d.]*\\s*[MGTP]B|分割线|分割線|---+|===+|🔰\\s*(?:ID|HSD|SNI)\\s*:).*$",
+    regout: "^(?!.*(?:防失[联聯]|[备備]用|\\b(?:UDP|TCP)\\b)).*(?:流量|剩[余餘]|套餐|用量|容量|到期|[过過]期|有效期|[时時][间間]|重置|官网|官網|更新|通知|公告|群|地址|获取|分割[线線]|Data|Remain|Traffic|Bandwidth|Expir|Reset).*$",
     delreg: "[^\\u4e00-\\u9fa5a-zA-Z0-9\\s\\-\\.\\_\\(\\)\\[\\]\\|\\uD83C\\uDDE6-\\uDDFF\\uD83D\\uDC00-\\uDEFF\\u2600-\\u27BF]",
     replace: "\\s{2,}@%20",
     emoji: "1",
