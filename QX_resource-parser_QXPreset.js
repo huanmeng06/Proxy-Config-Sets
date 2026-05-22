@@ -1,5 +1,5 @@
 /** 
-☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2026-05-22 15:46⟧
+☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2026-05-22 16:18⟧
 ----------------------------------------------------------
 🛠 发现 𝐁𝐔𝐆 请反馈: https://t.me/ShawnKOP_Parser_Bot
 ⛳️ 关注 🆃🅶 相关频道: https://t.me/QuanX_API
@@ -3266,6 +3266,11 @@ function emoji_del(str) {
     return str.replace(/[\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF]/g, "").trim();//unescape(escape(str).replace(/\%uD.{3}/g, ''));
 }
 
+function emoji_existing(str) {
+    var emoji = str.match(/[\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF]/);
+    return emoji ? emoji[0] : "";
+}
+
 //为节点名添加 emoji
 function get_emoji(emojip, sname) {
    var Lmoji = { 
@@ -3434,7 +3439,12 @@ function get_emoji(emojip, sname) {
             }
         }
     }
-    if (flag == 0) { return ["🏴‍☠️ " + sname.replace(/[\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF]/g, "").trim(), "🏴‍☠️"] }
+    if (flag == 0) {
+        var oldemoji = emoji_existing(sname);
+        var body = sname.replace(/[\uD83C][\uDDE6-\uDDFF][\uD83C][\uDDE6-\uDDFF]/g, "").trim();
+        if (oldemoji) return [(oldemoji + " " + body).trim(), oldemoji];
+        return ["🏴‍☠️ " + body, "🏴‍☠️"];
+    }
 }
 
 //emoji 处理
