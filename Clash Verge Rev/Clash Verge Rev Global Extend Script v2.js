@@ -431,7 +431,7 @@
     "Microsoft": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Microsoft.list",
     "Apple": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Apple.list",
     "Telegram": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Telegram.list",
-    "GitHub": `https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/main/Rules/github.list`,
+    "GitHub": `https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/main/rules/github.list`,
     "AI": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/AI.list",
     "OpenAi": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/OpenAi.list",
     "NetEaseMusic": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/NetEaseMusic.list",
@@ -624,4 +624,5 @@
 
   return config;
 }
+
 

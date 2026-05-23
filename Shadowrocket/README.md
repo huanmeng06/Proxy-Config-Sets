@@ -1,6 +1,6 @@
 ﻿# Shadowrocket
 
-Shadowrocket 自用配置，共用远程分流规则位于仓库根目录 `Rules/`。
+Shadowrocket 自用配置，共用远程分流规则位于仓库根目录 `rules/`。
 
 ## 文件
 
@@ -8,10 +8,10 @@ Shadowrocket 自用配置，共用远程分流规则位于仓库根目录 `Rules
 
 ## 规则引用
 
-主配置通过 `RULE-SET` 引用根目录 `Rules` 下的规则文件，例如：
+主配置通过 `RULE-SET` 引用根目录 `rules` 下的规则文件，例如：
 
 ```ini
-RULE-SET,https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/main/Rules/github.list,🐙 GITHUB
+RULE-SET,https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/main/rules/github.list,🐙 GITHUB
 ```
 
 规则文件只保留规则本体，不带最终策略组；策略由 `RULE-SET` 行最后一列指定。
@@ -35,3 +35,4 @@ RULE-SET,https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/main/Rul
 - MITM ca-p12
 - MITM ca-passphrase
 - 私有 hostname
+
