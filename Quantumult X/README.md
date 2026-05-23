@@ -34,6 +34,5 @@ https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/main/Quantumult%2
 
 - 机场订阅 URL
 - 本地节点
-- MITM hostname
 - MITM passphrase
 - MITM p12 证书
