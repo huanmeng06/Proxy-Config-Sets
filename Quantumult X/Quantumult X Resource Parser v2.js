@@ -1,5 +1,5 @@
 /** 
-☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2026-05-23 13:41⟧
+☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2026-05-23 13:31⟧
 ----------------------------------------------------------
 🛠 发现 𝐁𝐔𝐆 请反馈: https://t.me/ShawnKOP_Parser_Bot
 ⛳️ 关注 🆃🅶 相关频道: https://t.me/QuanX_API
@@ -601,9 +601,6 @@ $parser.uiToHash = function (values) {
     put(k, serialized);
   });
 
-  if (isOn("qxf") || isOn("airport")) {
-    append("rename", qxPreset.rename, "+");
-  }
   if (isOn("qxf") || isOn("clean")) {
     append("regout", qxPreset.regout, "|");
   }
@@ -613,6 +610,9 @@ $parser.uiToHash = function (values) {
   }
   if ((isOn("qxf") || isOn("autoe")) && !merged.emoji) {
     put("emoji", qxPreset.emoji);
+  }
+  if (isOn("qxf") || isOn("airport")) {
+    append("rename", qxPreset.rename, "+");
   }
   if ((isOn("qxf") || isOn("rsort")) && !merged.sort) {
     put("sort", qxPreset.sort);
