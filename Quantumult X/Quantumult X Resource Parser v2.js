@@ -1,5 +1,5 @@
 /** 
-☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2026-05-22 18:05⟧
+☑️ 资源解析器 ©𝐒𝐡𝐚𝐰𝐧  ⟦2026-05-23 13:31⟧
 ----------------------------------------------------------
 🛠 发现 𝐁𝐔𝐆 请反馈: https://t.me/ShawnKOP_Parser_Bot
 ⛳️ 关注 🆃🅶 相关频道: https://t.me/QuanX_API
@@ -546,8 +546,8 @@ $parser.uiToHash = function (values) {
     delreg: "[^\\u4e00-\\u9fa5a-zA-Z0-9\\s\\-\\.\\_\\(\\)\\[\\]\\|\\uD83C\\uDDE6-\\uDDFF\\uD83D\\uDC00-\\uDEFF\\u2600-\\u27BF]",
     replace: "%5Cs%7B2%2C%7D@%20",
     emoji: "1",
-    rename: "%5Bnode_tag_prefix%5D%20@",
-    sort: "%F0%9F%87%AD%F0%9F%87%B0%3E%F0%9F%87%AF%F0%9F%87%B5%3E%F0%9F%87%B8%F0%9F%87%AC%3E%F0%9F%87%A8%F0%9F%87%B3%3E%F0%9F%87%BA%F0%9F%87%B8"
+    rename: "$tag%20@",
+    sort: "HK%3EJP%3ESG%3ECN%3EUS"
   };
   var qxPresetKeys = {
     qxf: true,
@@ -3121,6 +3121,7 @@ function isQuanXRewrite(content) {
 //根据节点名排序(不含emoji 部分)
 function QXSort(content, para) {
     var nlist = content;//.split("\n");
+    para = QXSortAlias(para);
     if (para == 1) {
         return nlist.sort(ToTag)
     } else if (para == -1) {
@@ -3132,6 +3133,16 @@ function QXSort(content, para) {
     } else {
       return Sort_KWD (nlist,para) //关键词排序
     }
+}
+
+function QXSortAlias(para) {
+    if (!para) return para;
+    return String(para)
+        .replace(/\bHK\b/ig, "🇭🇰")
+        .replace(/\bJP\b/ig, "🇯🇵")
+        .replace(/\bSG\b/ig, "🇸🇬")
+        .replace(/\bCN\b/ig, "🇨🇳")
+        .replace(/\bUS\b/ig, "🇺🇸");
 }
 //正序
 function ToTag(elem1, elem2) {
