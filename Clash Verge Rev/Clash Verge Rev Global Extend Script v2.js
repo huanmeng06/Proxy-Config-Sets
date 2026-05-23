@@ -1,9 +1,11 @@
-﻿function main(config) {
+function main(config) {
   if (!config.proxies || config.proxies.length === 0) return config;
 
+  // 全局常量：策略组显示名、测速参数和自维护规则地址集中放这里。
   const TEST_URL = "http://www.gstatic.com/generate_204";
   const INTERVAL = 300;
   const TOLERANCE = 50;
+  const RULES_BASE = "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/main/rules";
   const GROUP = {
     node: "🚀 节点选择",
     manual: "🚀 手动切换",
@@ -33,24 +35,18 @@
     fallback: "🐟 漏网之鱼"
   };
 
-  // =========================================================
-  // 1. 节点过滤：清理无效的测速/到期/网站广告节点
-  // =========================================================
+  // 过滤订阅说明、流量统计、到期提醒等非代理节点。
   const excludeRegex = /(Data Left|Remain:|Traffic:|Expir[ey]|Reset|(\d[\d.]*\s*[MG]B[^\dA-Za-z]+|[:：]\s*)\d[\d.]*\s*GB(?![\dA-Za-z])|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新)/i;
   config.proxies = config.proxies.filter(p => !excludeRegex.test(p.name));
 
-  // =========================================================
-  // 2. 家宽识别规则
-  // =========================================================
+  // 家宽节点单独分组，避免和普通节点混在同一个测速组里。
   const homeBroadbandRegex = /(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|broadband|Residential|residential|\bHome\b|\bhome\b|\bHKBN\b)/i;
 
   function isHomeBroadbandNode(name) {
     return homeBroadbandRegex.test(name);
   }
 
-  // =========================================================
-  // 3. 节点重命名：先清理旧 Emoji，再精准注入新 Emoji
-  // =========================================================
+  // 节点名归一化：按地区识别并补上统一 Emoji。
   const emojiRules = [
     // 亚洲地区
     { emoji: "🇭🇰", regex: /(香港|\bHK\b|Hong Kong|深港|沪港|京港)(?!中[轉转])/i },
@@ -112,15 +108,11 @@
   ];
 
   config.proxies.forEach(proxy => {
-    // 1. 清理旧 Emoji 和特殊字符，只保留常见字符
-    let cleanName = proxy.name
+    const cleanName = proxy.name
       .replace(/[^\u4e00-\u9fa5a-zA-Z0-9\s\-\.\_\(\)\[\]\|]/g, "")
       .trim();
 
-    // 2. 先判断是否为家宽节点
     const isHome = isHomeBroadbandNode(cleanName);
-
-    // 3. 按规则注入国家/地区 Emoji
     let countryEmoji = "";
 
     for (const rule of emojiRules) {
@@ -130,7 +122,6 @@
       }
     }
 
-    // 4. 重新组装节点名
     if (countryEmoji && isHome) {
       proxy.name = `🏠${countryEmoji} ${cleanName}`;
     } else if (countryEmoji) {
@@ -158,10 +149,22 @@
     return proxies.filter(p => regex.test(p) && isHomeBroadbandNode(p));
   }
 
-  // =========================================================
-  // 4. 动态构建地区测速组：普通地区组 / 家宽地区组分离
-  //    有家宽才生成对应“地区家宽”组，没有就不生成
-  // =========================================================
+  function createUrlTestGroup(name, groupProxies, options = {}) {
+    return {
+      name,
+      type: "url-test",
+      url: TEST_URL,
+      interval: options.interval ?? INTERVAL,
+      tolerance: options.tolerance ?? TOLERANCE,
+      proxies: groupProxies
+    };
+  }
+
+  function createSelectGroup(name, groupProxies) {
+    return { name, type: "select", proxies: groupProxies };
+  }
+
+  // 地区组按实际节点动态生成；普通节点和家宽节点分开测速。
   const regionDefs = [
     // 亚洲
     { name: "🇭🇰 香港节点", homeName: "🏠🇭🇰 香港家宽", regex: "(香港|HK|Hong Kong|HongKong|hongkong|深港|沪港|京港)" },
@@ -224,81 +227,44 @@
     const normalProxies = getRegionNormalProxies(def.regex);
     if (normalProxies.length > 0) {
       availableRegionGroupNames.push(def.name);
-      regionGroups.push({
-        name: def.name,
-        type: "url-test",
-        url: TEST_URL,
-        interval: INTERVAL,
-        tolerance: TOLERANCE,
-        proxies: normalProxies
-      });
+      regionGroups.push(createUrlTestGroup(def.name, normalProxies));
     }
 
     const homeProxies = getRegionHomeProxies(def.regex);
     if (homeProxies.length > 0) {
       availableRegionGroupNames.push(def.homeName);
-      regionGroups.push({
-        name: def.homeName,
-        type: "url-test",
-        url: TEST_URL,
-        interval: INTERVAL,
-        tolerance: TOLERANCE,
-        proxies: homeProxies
-      });
+      regionGroups.push(createUrlTestGroup(def.homeName, homeProxies));
     }
   }
 
-  // 防失联节点特殊处理
+  // 防失联节点只做手动选择，不参与测速。
   const fallbackProxies = getProxiesByRegex("(防失联|备用)");
   if (fallbackProxies.length > 0) {
-    regionGroups.push({
-      name: "🆘 防失联组",
-      type: "select",
-      proxies: fallbackProxies
-    });
+    regionGroups.push(createSelectGroup("🆘 防失联组", fallbackProxies));
     availableRegionGroupNames.push("🆘 防失联组");
   }
 
-  // 奈飞专线特殊处理
+  // 奈飞专线如果存在，就额外提供一个快捷选择组。
   const netflixProxies = getProxiesByRegex("(NF|奈飞|解锁|Netflix|NETFLIX|Media)");
   if (netflixProxies.length > 0) {
-    regionGroups.push({
-      name: GROUP.netflixNode,
-      type: "select",
-      proxies: netflixProxies
-    });
+    regionGroups.push(createSelectGroup(GROUP.netflixNode, netflixProxies));
   }
 
+  // 低倍率下载节点单独测速，方便 GitHub release 等大文件下载场景。
   const downloadProxies = getProxiesByRegex("(⏬|下载|download|dl|大流量|低倍率|0\\.[0-9]+x|0\\.[0-9]+倍)");
   if (downloadProxies.length > 0) {
-    regionGroups.push({
-      name: GROUP.download,
-      type: "url-test",
-      url: TEST_URL,
-      interval: 600,
-      tolerance: 100,
-      proxies: downloadProxies
-    });
+    regionGroups.push(createUrlTestGroup(GROUP.download, downloadProxies, { interval: 600, tolerance: 100 }));
     availableRegionGroupNames.push(GROUP.download);
   }
 
-  // =========================================================
-  // 5. 智能拼装 Proxy Groups (策略组)
-  // =========================================================
+  // 策略组：先放常用服务组，再追加动态地区组。
   const allProxies = proxies.length > 0 ? proxies : ["DIRECT"];
   const proxyGroups = [];
   const pushSelectGroup = (name, choices) => {
-    proxyGroups.push({ name, type: "select", proxies: choices });
+    proxyGroups.push(createSelectGroup(name, choices));
   };
   const pushUrlTestGroup = (name, choices) => {
-    proxyGroups.push({
-      name,
-      type: "url-test",
-      url: TEST_URL,
-      interval: INTERVAL,
-      tolerance: TOLERANCE,
-      proxies: choices
-    });
+    proxyGroups.push(createUrlTestGroup(name, choices));
   };
 
   pushSelectGroup(GROUP.node, [GROUP.auto, ...availableRegionGroupNames, GROUP.manual, "DIRECT"]);
@@ -310,21 +276,15 @@
   pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node, GROUP.auto]);
 
   const commonChoices = [GROUP.node, GROUP.auto, ...availableRegionGroupNames, GROUP.manual, "DIRECT"];
+  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.auto, GROUP.manual, GROUP.direct]);
+  const isAvailableChoice = (name) => builtInChoices.has(name) || availableRegionGroupNames.includes(name);
 
   const getSafeChoices = (preferred) => {
-    const safe = preferred.filter(
-      p =>
-        p === "DIRECT" ||
-        p === GROUP.node ||
-        p === GROUP.auto ||
-        p === GROUP.manual ||
-        p === GROUP.direct ||
-        availableRegionGroupNames.includes(p)
-    );
+    const safe = preferred.filter(isAvailableChoice);
     return safe.length > 0 ? safe : ["DIRECT"];
   };
 
-  // 核心功能组
+  // 常用服务组保持在 UI 前半段，方便日常切换。
   pushSelectGroup(GROUP.telegram, commonChoices);
 
   const githubChoices = getSafeChoices([
@@ -400,25 +360,23 @@
     pushSelectGroup(name, defaultServiceChoices);
   });
 
-  let neteaseProxies = getProxiesByRegex("(网易|音乐|解锁|Music|NetEase)");
-  let neteaseChoices = ["DIRECT", GROUP.node, GROUP.auto];
+  const neteaseProxies = getProxiesByRegex("(网易|音乐|解锁|Music|NetEase)");
+  const neteaseChoices = ["DIRECT", GROUP.node, GROUP.auto];
   if (neteaseProxies.length > 0) neteaseChoices.push(...neteaseProxies);
   pushSelectGroup(GROUP.netease, neteaseChoices);
 
-  // 底部拦截组
+  // 收尾策略组：广告/净化/漏网之鱼。
   pushSelectGroup(GROUP.ads, ["REJECT", "DIRECT"]);
   pushSelectGroup(GROUP.appClean, ["REJECT", "DIRECT"]);
   pushSelectGroup(GROUP.fallback, [GROUP.node, GROUP.auto, "DIRECT", ...availableRegionGroupNames, GROUP.manual]);
 
-  // 放入动态生成的地区组
+  // 动态地区组放在后面，主服务入口更集中。
   proxyGroups.push(...regionGroups);
 
   config["proxy-groups"] = proxyGroups;
 
-  // =========================================================
-  // 6. Rule Providers (规则集下载配置)
-  // =========================================================
-  const ruleProvidersLinks = {
+  // 规则集：第三方上游 URL 保持不动，自维护规则统一走仓库根目录 rules。
+  const ruleProviderUrls = {
     "LocalAreaNetwork": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/LocalAreaNetwork.list",
     "UnBan": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/UnBan.list",
     "BanAD": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list",
@@ -431,7 +389,7 @@
     "Microsoft": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Microsoft.list",
     "Apple": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Apple.list",
     "Telegram": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Telegram.list",
-    "GitHub": `https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/main/rules/github.list`,
+    "GitHub": `${RULES_BASE}/github.list`,
     "AI": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/AI.list",
     "OpenAi": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/OpenAi.list",
     "NetEaseMusic": "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/NetEaseMusic.list",
@@ -454,20 +412,21 @@
   };
 
   config["rule-providers"] = {};
-  for (const [name, url] of Object.entries(ruleProvidersLinks)) {
+  const getRuleProviderPath = (name) =>
+    name === "GitHub" ? "./rulesets/Proxy-Config-Sets/GitHub.list" : `./rulesets/ACL4SSR/${name}.list`;
+
+  for (const [name, url] of Object.entries(ruleProviderUrls)) {
     config["rule-providers"][name] = {
       type: "http",
       behavior: "classical",
       format: "text",
-      path: name === "GitHub" ? "./rulesets/Proxy-Config-Sets/GitHub.list" : `./rulesets/ACL4SSR/${name}.list`,
+      path: getRuleProviderPath(name),
       url: url,
       interval: 86400
     };
   }
 
-  // =========================================================
-  // 7. Rules (规则映射)
-  // =========================================================
+  // 规则顺序很重要：私有/直连和特殊覆盖在前，泛匹配放后。
   config["rules"] = [
     `DOMAIN-SUFFIX,ipleak.net,${GROUP.node}`,
     `DOMAIN-SUFFIX,dnsleaktest.com,${GROUP.node}`,
@@ -482,8 +441,7 @@
     `RULE-SET,GoogleCN,${GROUP.direct}`,
     `RULE-SET,SteamCN,${GROUP.direct}`,
 
-    // Microsoft Store / App Installer / Windows Update 下载源
-    // 放在 Bing / OneDrive / Microsoft 规则集之前，避免被通用微软规则提前匹配。
+    // 商店和更新域名要先于通用 Microsoft 规则匹配。
     `DOMAIN-SUFFIX,mp.microsoft.com,${GROUP.microsoftStore}`,
     `DOMAIN-SUFFIX,store.microsoft.com,${GROUP.microsoftStore}`,
     `DOMAIN-SUFFIX,storeedgefd.dsx.mp.microsoft.com,${GROUP.microsoftStore}`,
@@ -529,9 +487,7 @@
     `MATCH,${GROUP.fallback}`
   ];
 
-  // =========================================================
-  // 8. 严防 DNS 泄露配置 (Fake-IP 模式 + 加密 DNS)
-  // =========================================================
+  // DNS：fake-ip + 加密 DNS，降低 DNS 泄露概率。
   config.dns = {
     "enable": true,
     "listen": "0.0.0.0:1053",
@@ -595,9 +551,7 @@
     ]
   };
 
-  // =========================================================
-  // 9. 配合 Fake-IP，开启域名嗅探
-  // =========================================================
+  // 域名嗅探：配合 fake-ip 还原真实域名，提升规则命中率。
   config.sniffer = {
     "enable": true,
     "force-dns-mapping": true,
