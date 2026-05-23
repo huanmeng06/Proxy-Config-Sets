@@ -2,18 +2,16 @@
 
 自用代理配置与远程分流规则集，维护 Quantumult X、Shadowrocket 与 Clash Verge Rev 三端配置。
 
-核心思路：**三端共用 `Rules/*.list`，远程规则引用由 `manifest/rules.json` 统一生成，策略组仍然手写维护。**
+本仓库的核心目标是：**三端共用同一批远程分流规则，策略组仍按各客户端特性手动维护**。这样日常维护时，大多数改动只需要更新 `Rules/*.list` 或 `manifest/rules.json`，不用在三端配置里重复改同一件事。
 
-## 目录
+## 目录说明
 
-```text
-Rules/                         三端共用分流规则
-Quantumult X/                  Quantumult X 配置与资源解析器
-Shadowrocket/                  Shadowrocket 配置
-Clash Verge Rev/               Clash Verge Rev 全局扩展脚本
-manifest/rules.json            三端远程规则引用清单
-scripts/generate-rule-refs.js  根据 manifest 生成三端引用区
-```
+- `Rules/`：三端共用的远程分流规则。规则文件只写规则本体，不写最终策略组。
+- `Quantumult X/`：Quantumult X 主配置和资源解析器。
+- `Shadowrocket/`：Shadowrocket 主配置。
+- `Clash Verge Rev/`：Clash Verge Rev 全局扩展脚本。
+- `manifest/rules.json`：三端远程规则引用的统一清单。
+- `scripts/generate-rule-refs.js`：根据 `manifest/rules.json` 自动生成三端远程规则引用区。
 
 ## Raw 路径
 
