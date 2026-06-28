@@ -4,15 +4,15 @@
  "icons":[
   {
    "name":"ChatGPT.png",
-   "url":"https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Quantumult%20X/icon/ChatGPT.png"
+   "url":"https://cdn.jsdelivr.net/gh/huanmeng06/Proxy-Config-Sets@main/Quantumult%20X/icon/ChatGPT.png"
   },
   {
    "name":"Claude.png",
-   "url":"https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Quantumult%20X/icon/Claude.png"
+   "url":"https://cdn.jsdelivr.net/gh/huanmeng06/Proxy-Config-Sets@main/Quantumult%20X/icon/Claude.png"
   },
   {
    "name":"Gemini.png",
-   "url":"https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Quantumult%20X/icon/Gemini.png"
+   "url":"https://cdn.jsdelivr.net/gh/huanmeng06/Proxy-Config-Sets@main/Quantumult%20X/icon/Gemini.png"
   }
  ]
 }
