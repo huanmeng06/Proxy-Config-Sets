@@ -1,0 +1,18 @@
+{
+ "name":"Huan_meeng Icon",
+ "description":"Made by Huan_meeng",
+ "icons":[
+  {
+   "name":"ChatGPT.png",
+   "url":"https://raw.githubusercontent.com/Yuanxsxs/QtumultX/master/Icon/JiuMei-icon/JiuMei-icon/Advertising.png"
+  },
+  {
+   "name":"Claude.png",
+   "url":"https://raw.githubusercontent.com/Yuanxsxs/QtumultX/master/Icon/JiuMei-icon/JiuMei-icon/Apple.png"
+  },
+  {
+   "name":"Gemini.png",
+   "url":"https://raw.githubusercontent.com/Yuanxsxs/QtumultX/master/Icon/JiuMei-icon/JiuMei-icon/BiliBili.png"
+  },
+ ]
+}
