@@ -41,6 +41,42 @@
       "name": "Dev / AI",
       "rules": [
         {
+          "id": "chatgpt",
+          "tag": "ChatGPT",
+          "file": "chatgpt.list",
+          "policy": {
+            "quantumultX": "🤖 ChatGPT",
+            "shadowrocket": "🤖 ChatGPT"
+          },
+          "clashProviders": [
+            "ChatGPT"
+          ]
+        },
+        {
+          "id": "claude",
+          "tag": "Claude",
+          "file": "claude.list",
+          "policy": {
+            "quantumultX": "🧠 Claude",
+            "shadowrocket": "🧠 Claude"
+          },
+          "clashProviders": [
+            "Claude"
+          ]
+        },
+        {
+          "id": "gemini",
+          "tag": "Gemini",
+          "file": "gemini.list",
+          "policy": {
+            "quantumultX": "✨ Gemini",
+            "shadowrocket": "✨ Gemini"
+          },
+          "clashProviders": [
+            "Gemini"
+          ]
+        },
+        {
           "id": "ai",
           "file": "ai.list",
           "policy": {

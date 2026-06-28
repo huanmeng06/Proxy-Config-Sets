@@ -15,6 +15,9 @@ function main(config) {
     telegram: "📲 电报消息",
     github: "🐙 GITHUB",
     ai: "💬 Ai平台",
+    chatgpt: "🤖 ChatGPT",
+    claude: "🧠 Claude",
+    gemini: "✨ Gemini",
     youtube: "📹 油管视频",
     netflix: "🎥 奈飞视频",
     netflixNode: "🎥 奈飞节点",
@@ -313,6 +316,20 @@ function main(config) {
   ]);
   pushSelectGroup(GROUP.ai, aiChoices);
 
+  // ChatGPT / Claude / Gemini 各自独立选择，方便按需切换不同地区。
+  const usFirstAiChoices = getSafeChoices([
+    "🇺🇸 美国节点",
+    "🏠🇺🇸 美国家宽",
+    "🇯🇵 日本节点",
+    "🏠🇯🇵 日本家宽",
+    "🇸🇬 狮城节点",
+    "🇨🇳 台湾节点",
+    GROUP.manual
+  ]);
+  pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
+  pushSelectGroup(GROUP.claude, usFirstAiChoices);
+  pushSelectGroup(GROUP.gemini, usFirstAiChoices);
+
   pushSelectGroup(GROUP.youtube, commonChoices);
 
   const netflixChoices = netflixProxies.length > 0 ? [GROUP.netflixNode, ...commonChoices] : commonChoices;
@@ -380,6 +397,9 @@ function main(config) {
     // BEGIN GENERATED RULE PROVIDERS
     "BanAD": `${RULES_BASE}/ads.list`,
     "BanProgramAD": `${RULES_BASE}/app-clean.list`,
+    "ChatGPT": `${RULES_BASE}/chatgpt.list`,
+    "Claude": `${RULES_BASE}/claude.list`,
+    "Gemini": `${RULES_BASE}/gemini.list`,
     "AI": `${RULES_BASE}/ai.list`,
     "GitHub": `${RULES_BASE}/github.list`,
     "GoogleFCM": `${RULES_BASE}/google-fcm.list`,
@@ -450,6 +470,9 @@ function main(config) {
     `RULE-SET,Apple,${GROUP.apple}`,
     `RULE-SET,Telegram,${GROUP.telegram}`,
     `RULE-SET,GitHub,${GROUP.github}`,
+    `RULE-SET,ChatGPT,${GROUP.chatgpt}`,
+    `RULE-SET,Claude,${GROUP.claude}`,
+    `RULE-SET,Gemini,${GROUP.gemini}`,
     `RULE-SET,AI,${GROUP.ai}`,
     `RULE-SET,NetEaseMusic,${GROUP.netease}`,
     `RULE-SET,Games,${GROUP.games}`,
