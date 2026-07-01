@@ -1,3 +1,7 @@
+// function main(config, profileName) {
+//   return config;
+// }
+
 function main(config) {
   if (!config.proxies || config.proxies.length === 0) return config;
 
@@ -9,7 +13,6 @@ function main(config) {
   const GROUP = {
     node: "🚀 节点选择",
     manual: "🚀 手动切换",
-    auto: "♻️ 自动选择",
     direct: "🎯 全球直连",
     download: "⏬ 下载专用",
     telegram: "📲 电报消息",
@@ -43,10 +46,19 @@ function main(config) {
   config.proxies = config.proxies.filter(p => !excludeRegex.test(p.name));
 
   // 家宽节点单独分组，避免和普通节点混在同一个测速组里。
-  const homeBroadbandRegex = /(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|broadband|Residential|residential|\bHome\b|\bhome\b|\bHKBN\b)/i;
+  // ISP 缩写仅用起始 \b + 结尾禁跟字母，避免 "HKBN01" 这类紧跟数字/符号的命名匹配不到。
+  const homeBroadbandRegex = /(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband(?![A-Za-z])|\bResidential(?![A-Za-z])|\bHome(?![A-Za-z])|\bHKBN(?![A-Za-z])|\bHGC(?![A-Za-z])|\bWTT(?![A-Za-z])|\bNTT(?![A-Za-z])|\bOCN(?![A-Za-z])|\bNURO(?![A-Za-z])|\bHiNet(?![A-Za-z])|\bComcast(?![A-Za-z])|\bXfinity(?![A-Za-z])|\bSpectrum(?![A-Za-z])|\bVerizon(?![A-Za-z])|\bFrontier(?![A-Za-z])|\bCenturyLink(?![A-Za-z])|\bTelstra(?![A-Za-z])|\bOptus(?![A-Za-z]))/i;
 
   function isHomeBroadbandNode(name) {
     return homeBroadbandRegex.test(name);
+  }
+
+  // 低倍率/下载节点判定：和下面 "⏬ 下载专用" 分组用同一套正则，
+  // 避免前缀 Emoji 判断和实际分组结果对不上。
+  const downloadNodeRegex = /(下[载載]|download|省流|低倍率?|大流量|0\.[0-9]+\s*[xX×]|\.[0-9]+\s*[xX×]|0\.[0-9]+\s*倍)/i;
+
+  function isDownloadNode(name) {
+    return downloadNodeRegex.test(name);
   }
 
   // 节点名归一化：按地区识别并补上统一 Emoji。
@@ -106,16 +118,16 @@ function main(config) {
 
     // 特殊节点
     { emoji: "🆘", regex: /(防失联)(?!中[轉转])/i },
-    { emoji: "⏬", regex: /(下[载載])(?!中[轉转])/i },
     { emoji: "🌍", regex: /(Anycast|\bBGP\b|Global)/i }
   ];
 
   config.proxies.forEach(proxy => {
     const cleanName = proxy.name
-      .replace(/[^\u4e00-\u9fa5a-zA-Z0-9\s\-\.\_\(\)\[\]\|]/g, "")
+      .replace(/[^\u4e00-\u9fa5a-zA-Z0-9\s\-\.\_\(\)\[\]\|\u00d7]/g, "")
       .trim();
 
     const isHome = isHomeBroadbandNode(cleanName);
+    const isDownload = isDownloadNode(cleanName);
     let countryEmoji = "";
 
     for (const rule of emojiRules) {
@@ -125,15 +137,9 @@ function main(config) {
       }
     }
 
-    if (countryEmoji && isHome) {
-      proxy.name = `🏠${countryEmoji} ${cleanName}`;
-    } else if (countryEmoji) {
-      proxy.name = `${countryEmoji} ${cleanName}`;
-    } else if (isHome) {
-      proxy.name = `🏠 ${cleanName}`;
-    } else {
-      proxy.name = cleanName;
-    }
+    // 家宽 🏠、地区旗帜、下载 ⏬ 三个前缀互不冲突，按需叠加。
+    const badges = `${isHome ? "🏠" : ""}${countryEmoji}${isDownload ? "⏬" : ""}`;
+    proxy.name = badges ? `${badges} ${cleanName}` : cleanName;
   });
 
   const proxies = config.proxies.map(p => p.name);
@@ -170,57 +176,57 @@ function main(config) {
   // 地区组按实际节点动态生成；普通节点和家宽节点分开测速。
   const regionDefs = [
     // 亚洲
-    { name: "🇭🇰 香港节点", homeName: "🏠🇭🇰 香港家宽", regex: "(香港|HK|Hong Kong|HongKong|hongkong|深港|沪港|京港)" },
-    { name: "🇨🇳 台湾节点", homeName: "🏠🇨🇳 台湾家宽", regex: "(台|新北|彰化|高雄|TW|Taiwan)" },
-    { name: "🇯🇵 日本节点", homeName: "🏠🇯🇵 日本家宽", regex: "(日本|川日|东京|大阪|名古屋|泉日|埼玉|福冈|沪日|深日|JP|Japan)" },
-    { name: "🇸🇬 狮城节点", homeName: "🏠🇸🇬 狮城家宽", regex: "(新加坡|坡|狮城|SG|Singapore)" },
-    { name: "🇰🇷 韩国节点", homeName: "🏠🇰🇷 韩国家宽", regex: "(KR|Korea|KOR|首尔|春川|韩|韓)" },
-    { name: "🇲🇾 马来西亚节点", homeName: "🏠🇲🇾 马来西亚家宽", regex: "(马来西亚|大马|吉隆坡|Malaysia|MY)" },
-    { name: "🇮🇩 印尼节点", homeName: "🏠🇮🇩 印尼家宽", regex: "(印尼|印度尼西亚|雅加达|ID|Indonesia)" },
-    { name: "🇮🇳 印度节点", homeName: "🏠🇮🇳 印度家宽", regex: "(印度(?!尼西亚)|孟买|新德里|IN|India)" },
-    { name: "🇵🇭 菲律宾节点", homeName: "🏠🇵🇭 菲律宾家宽", regex: "(菲律宾|马尼拉|PH|Philippines)" },
-    { name: "🇹🇭 泰国节点", homeName: "🏠🇹🇭 泰国家宽", regex: "(泰国|曼谷|TH|Thailand)" },
-    { name: "🇻🇳 越南节点", homeName: "🏠🇻🇳 越南家宽", regex: "(越南|胡志明|河内|VN|Vietnam)" },
-    { name: "🇰🇿 哈萨克斯坦节点", homeName: "🏠🇰🇿 哈萨克斯坦家宽", regex: "(哈萨克斯坦|阿拉木图|阿斯塔纳|KZ|Kazakhstan)" },
-    { name: "🇵🇰 巴基斯坦节点", homeName: "🏠🇵🇰 巴基斯坦家宽", regex: "(巴基斯坦|伊斯兰堡|PK|Pakistan)" },
+    { name: "🇭🇰 香港节点", homeName: "🏠🇭🇰 香港家宽", regex: "(香港|\\bHK\\b|Hong Kong|HongKong|hongkong|深港|沪港|京港)" },
+    { name: "🇨🇳 台湾节点", homeName: "🏠🇨🇳 台湾家宽", regex: "(台|新北|彰化|高雄|\\bTW\\b|Taiwan)" },
+    { name: "🇯🇵 日本节点", homeName: "🏠🇯🇵 日本家宽", regex: "(日本|川日|东京|大阪|名古屋|泉日|埼玉|福冈|沪日|深日|\\bJP\\b|Japan)" },
+    { name: "🇸🇬 狮城节点", homeName: "🏠🇸🇬 狮城家宽", regex: "(新加坡|坡|狮城|\\bSG\\b|Singapore)" },
+    { name: "🇰🇷 韩国节点", homeName: "🏠🇰🇷 韩国家宽", regex: "(\\bKR\\b|Korea|\\bKOR\\b|首尔|春川|韩|韓)" },
+    { name: "🇲🇾 马来西亚节点", homeName: "🏠🇲🇾 马来西亚家宽", regex: "(马来西亚|大马|吉隆坡|Malaysia|\\bMY\\b)" },
+    { name: "🇮🇩 印尼节点", homeName: "🏠🇮🇩 印尼家宽", regex: "(印尼|印度尼西亚|雅加达|\\bID\\b|Indonesia)" },
+    { name: "🇮🇳 印度节点", homeName: "🏠🇮🇳 印度家宽", regex: "(印度(?!尼西亚)|孟买|新德里|\\bIN\\b|India)" },
+    { name: "🇵🇭 菲律宾节点", homeName: "🏠🇵🇭 菲律宾家宽", regex: "(菲律宾|马尼拉|\\bPH\\b|Philippines)" },
+    { name: "🇹🇭 泰国节点", homeName: "🏠🇹🇭 泰国家宽", regex: "(泰国|曼谷|\\bTH\\b|Thailand)" },
+    { name: "🇻🇳 越南节点", homeName: "🏠🇻🇳 越南家宽", regex: "(越南|胡志明|河内|\\bVN\\b|Vietnam)" },
+    { name: "🇰🇿 哈萨克斯坦节点", homeName: "🏠🇰🇿 哈萨克斯坦家宽", regex: "(哈萨克斯坦|阿拉木图|阿斯塔纳|\\bKZ\\b|Kazakhstan)" },
+    { name: "🇵🇰 巴基斯坦节点", homeName: "🏠🇵🇰 巴基斯坦家宽", regex: "(巴基斯坦|伊斯兰堡|\\bPK\\b|Pakistan)" },
 
     // 欧洲
-    { name: "🇬🇧 英国节点", homeName: "🏠🇬🇧 英国家宽", regex: "(英[国國]|英格兰|伦敦|加的夫|曼彻斯特|伯克郡|UK|United Kingdom|Great Britain)" },
-    { name: "🇫🇷 法国节点", homeName: "🏠🇫🇷 法国家宽", regex: "(法[国國]|巴黎|马赛|斯特拉斯堡|FR|France)" },
-    { name: "🇩🇪 德国节点", homeName: "🏠🇩🇪 德国家宽", regex: "(德[国國]|法兰克福|柏林|杜塞尔多夫|DE|Germany)" },
-    { name: "🇧🇪 比利时节点", homeName: "🏠🇧🇪 比利时家宽", regex: "(比利时|布鲁塞尔|BE|Belgium)" },
-    { name: "🇳🇱 荷兰节点", homeName: "🏠🇳🇱 荷兰家宽", regex: "(荷兰|尼德兰|阿姆斯特丹|NL|Netherlands)" },
-    { name: "🇷🇺 俄罗斯节点", homeName: "🏠🇷🇺 俄罗斯家宽", regex: "(俄[国國]|俄[罗羅]斯|莫斯科|圣彼得堡|西伯利亚|伯力|哈巴罗夫斯克|RU|Russia)" },
-    { name: "🇨🇭 瑞士节点", homeName: "🏠🇨🇭 瑞士家宽", regex: "(瑞士|苏黎世|日内瓦|CH|Switzerland)" },
-    { name: "🇸🇪 瑞典节点", homeName: "🏠🇸🇪 瑞典家宽", regex: "(瑞典|斯德哥尔摩|SE|Sweden)" },
-    { name: "🇮🇹 意大利节点", homeName: "🏠🇮🇹 意大利家宽", regex: "(意大[利里]|米兰|罗马|IT|Italy)" },
-    { name: "🇪🇸 西班牙节点", homeName: "🏠🇪🇸 西班牙家宽", regex: "(西班牙|马德里|ES|Spain)" },
-    { name: "🇵🇱 波兰节点", homeName: "🏠🇵🇱 波兰家宽", regex: "(波兰|华沙|PL|Poland)" },
-    { name: "🇺🇦 乌克兰节点", homeName: "🏠🇺🇦 乌克兰家宽", regex: "(乌克兰|基辅|UA|Ukraine)" },
-    { name: "🇦🇹 奥地利节点", homeName: "🏠🇦🇹 奥地利家宽", regex: "(奥地利|维也纳|AT|Austria)" },
-    { name: "🇮🇪 爱尔兰节点", homeName: "🏠🇮🇪 爱尔兰家宽", regex: "(爱尔兰|都柏林|IE|Ireland)" },
-    { name: "🇲🇩 摩尔多瓦节点", homeName: "🏠🇲🇩 摩尔多瓦家宽", regex: "(摩尔多瓦|基希讷乌|MD|Moldova)" },
+    { name: "🇬🇧 英国节点", homeName: "🏠🇬🇧 英国家宽", regex: "(英[国國]|英格兰|伦敦|加的夫|曼彻斯特|伯克郡|\\bUK\\b|United Kingdom|Great Britain)" },
+    { name: "🇫🇷 法国节点", homeName: "🏠🇫🇷 法国家宽", regex: "(法[国國]|巴黎|马赛|斯特拉斯堡|\\bFR\\b|France)" },
+    { name: "🇩🇪 德国节点", homeName: "🏠🇩🇪 德国家宽", regex: "(德[国國]|法兰克福|柏林|杜塞尔多夫|\\bDE\\b|Germany)" },
+    { name: "🇧🇪 比利时节点", homeName: "🏠🇧🇪 比利时家宽", regex: "(比利时|布鲁塞尔|\\bBE\\b|Belgium)" },
+    { name: "🇳🇱 荷兰节点", homeName: "🏠🇳🇱 荷兰家宽", regex: "(荷兰|尼德兰|阿姆斯特丹|\\bNL\\b|Netherlands)" },
+    { name: "🇷🇺 俄罗斯节点", homeName: "🏠🇷🇺 俄罗斯家宽", regex: "(俄[国國]|俄[罗羅]斯|莫斯科|圣彼得堡|西伯利亚|伯力|哈巴罗夫斯克|\\bRU\\b|Russia)" },
+    { name: "🇨🇭 瑞士节点", homeName: "🏠🇨🇭 瑞士家宽", regex: "(瑞士|苏黎世|日内瓦|\\bCH\\b|Switzerland)" },
+    { name: "🇸🇪 瑞典节点", homeName: "🏠🇸🇪 瑞典家宽", regex: "(瑞典|斯德哥尔摩|\\bSE\\b|Sweden)" },
+    { name: "🇮🇹 意大利节点", homeName: "🏠🇮🇹 意大利家宽", regex: "(意大[利里]|米兰|罗马|\\bIT\\b|Italy)" },
+    { name: "🇪🇸 西班牙节点", homeName: "🏠🇪🇸 西班牙家宽", regex: "(西班牙|马德里|\\bES\\b|Spain)" },
+    { name: "🇵🇱 波兰节点", homeName: "🏠🇵🇱 波兰家宽", regex: "(波兰|华沙|\\bPL\\b|Poland)" },
+    { name: "🇺🇦 乌克兰节点", homeName: "🏠🇺🇦 乌克兰家宽", regex: "(乌克兰|基辅|\\bUA\\b|Ukraine)" },
+    { name: "🇦🇹 奥地利节点", homeName: "🏠🇦🇹 奥地利家宽", regex: "(奥地利|维也纳|\\bAT\\b|Austria)" },
+    { name: "🇮🇪 爱尔兰节点", homeName: "🏠🇮🇪 爱尔兰家宽", regex: "(爱尔兰|都柏林|\\bIE\\b|Ireland)" },
+    { name: "🇲🇩 摩尔多瓦节点", homeName: "🏠🇲🇩 摩尔多瓦家宽", regex: "(摩尔多瓦|基希讷乌|\\bMD\\b|Moldova)" },
 
     // 美洲
-    { name: "🇺🇸 美国节点", homeName: "🏠🇺🇸 美国家宽", regex: "(美|华盛顿|波特兰|达拉斯|俄勒冈|凤凰城|菲尼克斯|费利蒙|弗里蒙特|硅谷|旧金山|拉斯维加斯|洛杉|圣何塞|圣荷西|圣塔?克拉拉|西雅图|芝加哥|哥伦布|纽约|阿什本|纽瓦克|丹佛|加利福尼亚|弗吉尼亚|马纳萨斯|俄亥俄|得克萨斯|[佐乔]治亚|亚特兰大|佛罗里达|迈阿密|USA|United States)" },
-    { name: "🇨🇦 加拿大节点", homeName: "🏠🇨🇦 加拿大家宽", regex: "(加拿大|[枫楓][叶葉]|多伦多|蒙特利尔|温哥华|卡尔加里|CA|Canada)" },
-    { name: "🇦🇷 阿根廷节点", homeName: "🏠🇦🇷 阿根廷家宽", regex: "(阿根廷|布宜诺斯艾利斯|Argentina|AR)" },
-    { name: "🇧🇷 巴西节点", homeName: "🏠🇧🇷 巴西家宽", regex: "(巴西|圣保罗|里约|BR|Brazil)" },
-    { name: "🇲🇽 墨西哥节点", homeName: "🏠🇲🇽 墨西哥家宽", regex: "(墨西哥|MX|Mexico)" },
-    { name: "🇨🇱 智利节点", homeName: "🏠🇨🇱 智利家宽", regex: "(智利|圣地亚哥|CL|Chile)" },
+    { name: "🇺🇸 美国节点", homeName: "🏠🇺🇸 美国家宽", regex: "(美|华盛顿|波特兰|达拉斯|俄勒冈|凤凰城|菲尼克斯|费利蒙|弗里蒙特|硅谷|旧金山|拉斯维加斯|洛杉|圣何塞|圣荷西|圣塔?克拉拉|西雅图|芝加哥|哥伦布|纽约|阿什本|纽瓦克|丹佛|加利福尼亚|弗吉尼亚|马纳萨斯|俄亥俄|得克萨斯|[佐乔]治亚|亚特兰大|佛罗里达|迈阿密|\\bUSA\\b|United States)" },
+    { name: "🇨🇦 加拿大节点", homeName: "🏠🇨🇦 加拿大家宽", regex: "(加拿大|[枫楓][叶葉]|多伦多|蒙特利尔|温哥华|卡尔加里|\\bCA\\b|Canada)" },
+    { name: "🇦🇷 阿根廷节点", homeName: "🏠🇦🇷 阿根廷家宽", regex: "(阿根廷|布宜诺斯艾利斯|Argentina|\\bAR\\b)" },
+    { name: "🇧🇷 巴西节点", homeName: "🏠🇧🇷 巴西家宽", regex: "(巴西|圣保罗|里约|\\bBR\\b|Brazil)" },
+    { name: "🇲🇽 墨西哥节点", homeName: "🏠🇲🇽 墨西哥家宽", regex: "(墨西哥|\\bMX\\b|Mexico)" },
+    { name: "🇨🇱 智利节点", homeName: "🏠🇨🇱 智利家宽", regex: "(智利|圣地亚哥|\\bCL\\b|Chile)" },
 
     // 中东及非洲
-    { name: "🇹🇷 土耳其节点", homeName: "🏠🇹🇷 土耳其家宽", regex: "(土耳其|伊斯坦布尔|Turkey|TR)" },
-    { name: "🇦🇪 阿联酋节点", homeName: "🏠🇦🇪 阿联酋家宽", regex: "(阿联酋|迪拜|AE|United Arab Emirates|Dubai)" },
-    { name: "🇮🇱 以色列节点", homeName: "🏠🇮🇱 以色列家宽", regex: "(以色列|特拉维夫|耶路撒冷|IL|Israel)" },
-    { name: "🇸🇦 沙特节点", homeName: "🏠🇸🇦 沙特家宽", regex: "(沙特|利雅得|SA|Saudi Arabia)" },
-    { name: "🇿🇦 南非节点", homeName: "🏠🇿🇦 南非家宽", regex: "(南非|约翰内斯堡|ZA|South Africa)" },
-    { name: "🇪🇬 埃及节点", homeName: "🏠🇪🇬 埃及家宽", regex: "(埃及|开罗|EG|Egypt)" },
-    { name: "🇳🇬 尼日利亚节点", homeName: "🏠🇳🇬 尼日利亚家宽", regex: "(尼日利亚|拉各斯|阿布贾|NG|Nigeria)" },
+    { name: "🇹🇷 土耳其节点", homeName: "🏠🇹🇷 土耳其家宽", regex: "(土耳其|伊斯坦布尔|Turkey|\\bTR\\b)" },
+    { name: "🇦🇪 阿联酋节点", homeName: "🏠🇦🇪 阿联酋家宽", regex: "(阿联酋|迪拜|\\bAE\\b|United Arab Emirates|Dubai)" },
+    { name: "🇮🇱 以色列节点", homeName: "🏠🇮🇱 以色列家宽", regex: "(以色列|特拉维夫|耶路撒冷|\\bIL\\b|Israel)" },
+    { name: "🇸🇦 沙特节点", homeName: "🏠🇸🇦 沙特家宽", regex: "(沙特|利雅得|\\bSA\\b|Saudi Arabia)" },
+    { name: "🇿🇦 南非节点", homeName: "🏠🇿🇦 南非家宽", regex: "(南非|约翰内斯堡|\\bZA\\b|South Africa)" },
+    { name: "🇪🇬 埃及节点", homeName: "🏠🇪🇬 埃及家宽", regex: "(埃及|开罗|\\bEG\\b|Egypt)" },
+    { name: "🇳🇬 尼日利亚节点", homeName: "🏠🇳🇬 尼日利亚家宽", regex: "(尼日利亚|拉各斯|阿布贾|\\bNG\\b|Nigeria)" },
 
     // 大洋洲
-    { name: "🇦🇺 澳洲节点", homeName: "🏠🇦🇺 澳洲家宽", regex: "(澳大利亚|澳洲|悉尼|墨尔本|AU|Australia)" },
-    { name: "🇳🇿 新西兰节点", homeName: "🏠🇳🇿 新西兰家宽", regex: "(新西兰|奥克兰|NZ|New Zealand)" }
+    { name: "🇦🇺 澳洲节点", homeName: "🏠🇦🇺 澳洲家宽", regex: "(澳大利亚|澳洲|悉尼|墨尔本|\\bAU\\b|Australia)" },
+    { name: "🇳🇿 新西兰节点", homeName: "🏠🇳🇿 新西兰家宽", regex: "(新西兰|奥克兰|\\bNZ\\b|New Zealand)" }
   ];
 
   const availableRegionGroupNames = [];
@@ -254,7 +260,8 @@ function main(config) {
   }
 
   // 低倍率下载节点单独测速，方便 GitHub release 等大文件下载场景。
-  const downloadProxies = getProxiesByRegex("(⏬|下载|download|dl|大流量|低倍率|0\\.[0-9]+x|0\\.[0-9]+倍)");
+  // 复用上面的 isDownloadNode，保证分组结果和 ⏬ 前缀判断永远一致。
+  const downloadProxies = proxies.filter(isDownloadNode);
   if (downloadProxies.length > 0) {
     regionGroups.push(createUrlTestGroup(GROUP.download, downloadProxies, { interval: 600, tolerance: 100 }));
     availableRegionGroupNames.push(GROUP.download);
@@ -266,20 +273,14 @@ function main(config) {
   const pushSelectGroup = (name, choices) => {
     proxyGroups.push(createSelectGroup(name, choices));
   };
-  const pushUrlTestGroup = (name, choices) => {
-    proxyGroups.push(createUrlTestGroup(name, choices));
-  };
-
-  pushSelectGroup(GROUP.node, [GROUP.auto, ...availableRegionGroupNames, GROUP.manual, "DIRECT"]);
+  pushSelectGroup(GROUP.node, [...availableRegionGroupNames, GROUP.manual, "DIRECT"]);
 
   pushSelectGroup(GROUP.manual, allProxies);
 
-  pushUrlTestGroup(GROUP.auto, allProxies);
+  pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node]);
 
-  pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node, GROUP.auto]);
-
-  const commonChoices = [GROUP.node, GROUP.auto, ...availableRegionGroupNames, GROUP.manual, "DIRECT"];
-  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.auto, GROUP.manual, GROUP.direct]);
+  const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, "DIRECT"];
+  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, GROUP.direct]);
   const isAvailableChoice = (name) => builtInChoices.has(name) || availableRegionGroupNames.includes(name);
 
   const getSafeChoices = (preferred) => {
@@ -362,7 +363,6 @@ function main(config) {
 
   const microsoftStoreChoices = getSafeChoices([
     "🚀 节点选择",
-    "♻️ 自动选择",
     "🇭🇰 香港节点",
     "🇯🇵 日本节点",
     "🇸🇬 狮城节点",
@@ -378,14 +378,14 @@ function main(config) {
   });
 
   const neteaseProxies = getProxiesByRegex("(网易|音乐|解锁|Music|NetEase)");
-  const neteaseChoices = ["DIRECT", GROUP.node, GROUP.auto];
+  const neteaseChoices = ["DIRECT", GROUP.node];
   if (neteaseProxies.length > 0) neteaseChoices.push(...neteaseProxies);
   pushSelectGroup(GROUP.netease, neteaseChoices);
 
   // 收尾策略组：广告/净化/漏网之鱼。
   pushSelectGroup(GROUP.ads, ["REJECT", "DIRECT"]);
   pushSelectGroup(GROUP.appClean, ["REJECT", "DIRECT"]);
-  pushSelectGroup(GROUP.fallback, [GROUP.node, GROUP.auto, "DIRECT", ...availableRegionGroupNames, GROUP.manual]);
+  pushSelectGroup(GROUP.fallback, [GROUP.node, "DIRECT", ...availableRegionGroupNames, GROUP.manual]);
 
   // 动态地区组放在后面，主服务入口更集中。
   proxyGroups.push(...regionGroups);
@@ -490,20 +490,32 @@ function main(config) {
   // DNS：fake-ip + 加密 DNS，降低 DNS 泄露概率。
   config.dns = {
     "enable": true,
-    "listen": "0.0.0.0:1053",
+    // 只监听本机回环地址：原来的 0.0.0.0:1053 会对外暴露 DNS 服务，
+    // 在部分电脑/网络环境下可能触发防火墙拦截或端口绑定失败，导致整体超时。
+    // 如需把这台设备当局域网 DNS 服务器用，把这里改回 "0.0.0.0:1053"。
+    "listen": "127.0.0.1:1053",
     "ipv6": false,
     "enhanced-mode": "fake-ip",
     "fake-ip-range": "198.18.0.1/16",
+    // "system" 是 mihomo 内置的特殊值：追加系统本身已经在用的 DNS 服务器。
+    // 不管在哪台电脑、哪个网络下，系统自带 DNS 一定是通的（否则这台电脑本身就没法上网），
+    // 用它兜底可以避免写死的公共 DNS IP 在某些网络下连不通导致全局超时。
     "default-nameserver": [
+      "system",
       "223.5.5.5",
       "119.29.29.29",
+      "1.1.1.1",
       "8.8.8.8"
     ],
+    // 用 IP 直连 DoH（阿里 223.5.5.5、DNSPod 1.12.12.12 官方都支持按 IP 访问），
+    // 网络允许时有更好的解析质量/防污染效果；system 作为兜底，两边都不通时才会出问题。
     "nameserver": [
-      "https://dns.alidns.com/dns-query",
-      "https://doh.pub/dns-query"
+      "system",
+      "https://223.5.5.5/dns-query",
+      "https://1.12.12.12/dns-query"
     ],
     "fallback": [
+      "system",
       "https://1.1.1.1/dns-query",
       "https://8.8.8.8/dns-query"
     ],

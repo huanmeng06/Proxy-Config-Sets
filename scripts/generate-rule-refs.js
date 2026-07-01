@@ -5,7 +5,7 @@ const root = path.resolve(__dirname, "..");
 const manifestPath = path.join(root, "manifest", "rules.json");
 const qxConfigPath = path.join(root, "Quantumult X", "Quantumult X Config v2.conf");
 const shadowrocketConfigPath = path.join(root, "Shadowrocket", "Shadowrocket Config v2.conf");
-const clashScriptPath = path.join(root, "Clash Verge Rev", "Clash Verge Rev Global Extend Script v2.js");
+const clashScriptPath = path.join(root, "Clash Verge Rev", "Clash Verge Rev Global Extend Script v3.js");
 
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 

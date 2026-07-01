@@ -160,7 +160,7 @@ Shadowrocket/Shadowrocket Config v2.conf
 # BEGIN GENERATED RULES
 # END GENERATED RULES
 
-Clash Verge Rev/Clash Verge Rev Global Extend Script v2.js
+Clash Verge Rev/Clash Verge Rev Global Extend Script v3.js
 // BEGIN GENERATED RULE PROVIDERS
 // END GENERATED RULE PROVIDERS
 ```
@@ -193,7 +193,7 @@ rg "^(IP-CIDR6|IP6-CIDR|PROCESS-NAME|URL-REGEX|RULE-SET|FINAL|MATCH|SCRIPT)," Ru
 
 ```bash
 node --check scripts/generate-rule-refs.js
-node --check "Clash Verge Rev/Clash Verge Rev Global Extend Script v2.js"
+node --check "Clash Verge Rev/Clash Verge Rev Global Extend Script v3.js"
 ```
 
 查看改动：
