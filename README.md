@@ -169,6 +169,16 @@ Clash Verge Rev/Clash Verge Rev Global Extend Script v3.js
 
 策略组、手动规则、`GEOIP`、`FINAL`、`MATCH` 仍然手写维护。
 
+## DNS 防泄露
+
+三端使用各自原生能力实现同一目标，不直接复制彼此的字段：
+
+- Clash Verge Rev：`fake-ip`、TUN DNS 劫持、国内直连 DoH、境外代理 DoH，并关闭 IPv6。
+- Quantumult X：`no-system`、`no-ipv6` 与 IP 形式的 DoH 端点。
+- Shadowrocket：禁止系统 DNS fallback 和直连系统 DNS，直连解析失败时回退代理，并关闭 IPv6。
+
+Clash Verge Rev 需要开启 TUN 模式；同时不要把 `🚀 节点选择` 设为 `DIRECT`，否则境外 DoH 不会经过代理。
+
 ## 常用检查
 
 检查旧路径：

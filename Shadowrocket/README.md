@@ -6,6 +6,20 @@ Shadowrocket 自用配置，共用远程分流规则位于仓库根目录 `Rules
 
 - `Shadowrocket Config v2.conf`：公开版 Shadowrocket 主配置。
 
+## DNS 防泄露
+
+主配置关闭 IPv6、系统 fallback 和直连系统 DNS；当直连 DNS 不可用时，查询回退到代理：
+
+```ini
+bypass-system = true
+dns-server = system
+ipv6 = false
+prefer-ipv6 = false
+dns-fallback-system = false
+dns-direct-system = false
+dns-direct-fallback-proxy = true
+```
+
 ## 规则引用
 
 主配置通过 `RULE-SET` 引用根目录 `Rules` 下的规则文件，例如：
@@ -35,4 +49,3 @@ RULE-SET,https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/hea
 - MITM ca-p12
 - MITM ca-passphrase
 - 私有 hostname
-
