@@ -487,43 +487,49 @@ function main(config) {
     `MATCH,${GROUP.fallback}`
   ];
 
-  // DNS：fake-ip + 加密 DNS，降低 DNS 泄露概率。
+  // DNS 防泄露：
+  // 1. 禁止使用 system DNS，也不并发查询本地 DNS fallback；
+  // 2. 国内/私有域名走国内 DoH，其他域名强制经代理查询境外 DoH；
+  // 3. TUN 启用时接管 TCP/UDP 53 端口，避免普通 DNS 绕过 mihomo。
+  config.ipv6 = false;
+  config.tun = {
+    ...(config.tun || {}),
+    "dns-hijack": ["any:53", "tcp://any:53"]
+  };
+
   config.dns = {
     "enable": true,
-    // 只监听本机回环地址：原来的 0.0.0.0:1053 会对外暴露 DNS 服务，
-    // 在部分电脑/网络环境下可能触发防火墙拦截或端口绑定失败，导致整体超时。
-    // 如需把这台设备当局域网 DNS 服务器用，把这里改回 "0.0.0.0:1053"。
     "listen": "127.0.0.1:1053",
     "ipv6": false,
+    "cache-algorithm": "arc",
+    "prefer-h3": false,
+    "use-hosts": true,
+    "use-system-hosts": true,
+    "respect-rules": false,
     "enhanced-mode": "fake-ip",
     "fake-ip-range": "198.18.0.1/16",
-    // "system" 是 mihomo 内置的特殊值：追加系统本身已经在用的 DNS 服务器。
-    // 不管在哪台电脑、哪个网络下，系统自带 DNS 一定是通的（否则这台电脑本身就没法上网），
-    // 用它兜底可以避免写死的公共 DNS IP 在某些网络下连不通导致全局超时。
+    "fake-ip-filter-mode": "blacklist",
+    // 只用于引导解析 DNS 服务器域名；当前 DoH 均使用 IP，因此不会承载普通域名查询。
     "default-nameserver": [
-      "system",
       "223.5.5.5",
-      "119.29.29.29",
-      "1.1.1.1",
-      "8.8.8.8"
+      "119.29.29.29"
     ],
-    // 用 IP 直连 DoH（阿里 223.5.5.5、DNSPod 1.12.12.12 官方都支持按 IP 访问），
-    // 网络允许时有更好的解析质量/防污染效果；system 作为兜底，两边都不通时才会出问题。
-    "nameserver": [
-      "system",
-      "https://223.5.5.5/dns-query",
-      "https://1.12.12.12/dns-query"
+    // 代理节点域名必须先通过直连 DoH 解析，避免“先有代理还是先有 DNS”的循环依赖。
+    "proxy-server-nameserver": [
+      "https://223.5.5.5/dns-query#DIRECT",
+      "https://1.12.12.12/dns-query#DIRECT"
     ],
-    "fallback": [
-      "system",
-      "https://1.1.1.1/dns-query",
-      "https://8.8.8.8/dns-query"
-    ],
-    "fallback-filter": {
-      "geoip": true,
-      "geoip-code": "CN",
-      "ipcidr": ["240.0.0.0/4"]
+    // 国内及局域网域名使用直连 DoH；其余域名落入 nameserver，经当前代理节点解析。
+    "nameserver-policy": {
+      "geosite:private,cn": [
+        "https://223.5.5.5/dns-query#DIRECT",
+        "https://1.12.12.12/dns-query#DIRECT"
+      ]
     },
+    "nameserver": [
+      `https://1.1.1.1/dns-query#${GROUP.node}`,
+      `https://8.8.8.8/dns-query#${GROUP.node}`
+    ],
     "fake-ip-filter": [
       "*.lan",
       "*.localdomain",
@@ -590,5 +596,4 @@ function main(config) {
 
   return config;
 }
-
 
