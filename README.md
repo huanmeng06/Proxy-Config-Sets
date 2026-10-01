@@ -9,7 +9,9 @@
 - `Rules/`：三端共用的远程分流规则。规则文件只写规则本体，不写最终策略组。
 - `Quantumult X/`：Quantumult X 主配置和资源解析器。
 - `Shadowrocket/`：Shadowrocket 主配置。
-- `Clash Verge Rev/`：Clash Verge Rev 全局扩展脚本。
+- `Clash Verge Rev/`：Clash Verge Rev 日常全局扩展脚本。
+- `Clash（Claude 特供版）/`：Claude 特供版脚本（Sift/Datadog 同出口）。不覆盖日常脚本。
+- `Shadowrocket（Claude 特供版）/`：Claude 特供版 Shadowrocket 配置。不覆盖 `Shadowrocket/` 与 `Shadowrocket（Claude）/`。
 - `manifest/rules.json`：三端远程规则引用的统一清单。
 - `scripts/generate-rule-refs.js`：根据 `manifest/rules.json` 自动生成三端远程规则引用区。
 
