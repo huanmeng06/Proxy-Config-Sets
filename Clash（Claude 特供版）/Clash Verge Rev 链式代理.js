@@ -8,6 +8,9 @@
 // Clash Verge Rev global extend script.
 // Keep YepFast proxy-server-nameserver intact so node delay stays close to the official app.
 // Campus DNS is only used for captive portal / school / private domains.
+// Claude HTTP, default DoH, and leak-test domains exit via 🔗 链式落地 (airport front → US ISP).
+// 🧠 Claude is locked to that landing hop. Domain/UDP/fingerprint follow coffee + 特供 routing.
+// Do not send proxy-server-nameserver through the chain.
 
 function main(config, profileName) {
   if (!config.proxies || config.proxies.length === 0) return config;
@@ -29,6 +32,28 @@ function main(config, profileName) {
   // `ipconfig getpacket en0` 输出中的 domain_name_server IP 填到这里。
   // 例如：const CAMPUS_DNS_IPS = ["10.x.x.x", "10.y.y.y"];
   const CAMPUS_DNS_IPS = [];
+
+  // Clash Verge 开 TUN 时会把系统 DNS 写成 114.114.114.114 作为 fake-ip 劫持占位，这是客户端行为，不是路由器下发。
+  // 114 / 1.1.1.1 这类手动 DNS 会让 captive.apple.com 从代理“成功”，校园网/星巴克认证页就不弹了。
+  // 系统 Wi-Fi DNS 必须保持空/DHCP。连未认证 Wi-Fi 前先关 TUN，认证完成后再开。
+  const CAPTIVE_PORTAL_EXACT = [
+    "captive.apple.com",
+    "netctscan.apple.com",
+    "detectportal.firefox.com",
+    "connectivitycheck.gstatic.com",
+    "www.msftconnecttest.com",
+    "ipv6.msftconnecttest.com",
+    "dns.msftncsi.com",
+    "neverssl.com",
+    "securelogin.arubanetworks.com"
+  ];
+  const CAPTIVE_PORTAL_SUFFIXES = [
+    "arubanetworks.com",
+    "arubanetworks.cc",
+    "bnbu.edu.cn",
+    "uic.edu.cn",
+    "msftconnecttest.com"
+  ];
 
   const LAN_ROUTE_EXCLUDES = [
     "10.0.0.0/8",
@@ -405,7 +430,9 @@ function main(config, profileName) {
     GROUP.landing
   ]);
   pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
-  pushSelectGroup(GROUP.claude, usFirstAiChoices);
+  // coffee 固定出口：🧠 Claude 只走 🔗 链式落地。
+  const claudeChoices = getSafeChoices([GROUP.landing]);
+  pushSelectGroup(GROUP.claude, claudeChoices);
   pushSelectGroup(GROUP.gemini, usFirstAiChoices);
 
   pushSelectGroup(GROUP.youtube, commonChoices);
@@ -471,6 +498,17 @@ function main(config, profileName) {
 
   config["proxy-groups"] = proxyGroups;
   config["unified-delay"] = true;
+  config["tcp-concurrent"] = true;
+  config["keep-alive-idle"] = 30;
+  config["keep-alive-interval"] = 30;
+  config["disable-keep-alive"] = false;
+  config["find-process-mode"] = "always";
+  config["global-client-fingerprint"] = "chrome";
+  config.profile = {
+    ...(config.profile || {}),
+    "store-selected": true,
+    "store-fake-ip": true
+  };
 
   // 规则集统一走仓库根目录 Rules，确保 Clash 与 QX/Shadowrocket 使用同一批分流。
   const ruleProviderUrls = {
@@ -515,7 +553,58 @@ function main(config, profileName) {
     };
   }
 
-  // 规则顺序很重要：私有/直连和特殊覆盖在前，泛匹配放后。
+  const claudeSuffixes = [
+    "anthropic.com",
+    "claude.ai",
+    "claude.com",
+    "clau.de",
+    "claudemcpclient.com",
+    "claudemcpcontent.com",
+    "claudeusercontent.com",
+    "sentry.io",
+    "statsigapi.net",
+    "intercom.io",
+    "intercomcdn.com",
+    // Stripe checkout geolocates currency from this IP. Keep it on Claude's US exit.
+    "stripe.com",
+    "stripecdn.com",
+    "stripe.network",
+    "link.com",
+    "hcaptcha.com",
+    // Sift fraud SDK suffix; coffee wide keywords are added as DOMAIN-KEYWORD below.
+    "sift.com",
+    "siftcience.com"
+  ];
+  const claudeExactDomains = [
+    "servd-anthropic-website.b-cdn.net",
+    "anthropic.com.cdn.cloudflare.net",
+    "anthropic.auth0.com",
+    "anthropic-com.ghost.io",
+    "browser-intake-us5-datadoghq.com",
+    "cdn.usefathom.com"
+  ];
+  const claudeProcessNames = [
+    "Claude",
+    "Claude Helper",
+    "Claude Helper (GPU)",
+    "Claude Helper (Plugin)",
+    "Claude Helper (Renderer)",
+    "claude",
+    "Claude Code"
+  ];
+  // ChatGPT.app 内置 Codex CLI，进程名是 Codex/codex。
+  // 进程规则优先于域名，不能把 Codex 塞进 Claude，否则 chatgpt.com 会被整进程劫持。
+  const chatgptProcessNames = [
+    "ChatGPT",
+    "ChatGPT Helper",
+    "ChatGPT Helper (GPU)",
+    "ChatGPT Helper (Plugin)",
+    "ChatGPT Helper (Renderer)",
+    "Codex",
+    "codex"
+  ];
+
+  // 规则顺序很重要：Claude 必须在广告/直连/GFW 通配之前；Leak/DoH IP 仍走链式落地。
   config["rules"] = [
     `IP-CIDR,10.0.0.0/8,DIRECT,no-resolve`,
     `IP-CIDR,100.64.0.0/10,DIRECT,no-resolve`,
@@ -525,15 +614,68 @@ function main(config, profileName) {
     `IP-CIDR,192.168.0.0/16,DIRECT,no-resolve`,
     `PROCESS-NAME,captiveagent,DIRECT`,
     `PROCESS-NAME,Captive Network Assistant,DIRECT`,
+    `PROCESS-NAME,WebSheet,DIRECT`,
 
-    // 校园网认证/校内资源必须绕过代理策略组，避免 TUN 启动后认证链路被送进代理。
-    `DOMAIN,captive.apple.com,DIRECT`,
-    `DOMAIN-SUFFIX,bnbu.edu.cn,DIRECT`,
-    `DOMAIN-SUFFIX,uic.edu.cn,DIRECT`,
+    // 校园网/星巴克认证必须走当前 Wi-Fi 的 DHCP DNS + DIRECT，不能进代理。
+    ...CAPTIVE_PORTAL_EXACT.map(domain => `DOMAIN,${domain},DIRECT`),
+    ...CAPTIVE_PORTAL_SUFFIXES.map(domain => `DOMAIN-SUFFIX,${domain},DIRECT`),
 
+    // Claude/Anthropic: UDP/QUIC 强制失败回落到 TCP；进程规则只覆盖 Claude，不覆盖 ChatGPT/Codex。
+    ...claudeSuffixes.map(domain => `AND,((DOMAIN-SUFFIX,${domain}),(NETWORK,udp)),REJECT`),
+    ...claudeExactDomains.map(domain => `AND,((DOMAIN,${domain}),(NETWORK,udp)),REJECT`),
+    `AND,((GEOSITE,anthropic),(NETWORK,udp)),REJECT`,
+    `AND,((DOMAIN-KEYWORD,sift),(NETWORK,udp)),REJECT`,
+    `AND,((DOMAIN-KEYWORD,datadog),(NETWORK,udp)),REJECT`,
+    `PROCESS-PATH-REGEX,(?i)/Claude\\.app/,${GROUP.claude}`,
+    `PROCESS-PATH-REGEX,(?i)/ChatGPT\\.app/,${GROUP.chatgpt}`,
+    ...claudeProcessNames.map(name => `PROCESS-NAME,${name},${GROUP.claude}`),
+    ...chatgptProcessNames.map(name => `PROCESS-NAME,${name},${GROUP.chatgpt}`),
+    // ChatGPT 域名必须在 Claude 关键字/规则集之前，避免旧连接或规则集误伤。
+    `DOMAIN-SUFFIX,chatgpt.com,${GROUP.chatgpt}`,
+    `DOMAIN-SUFFIX,openai.com,${GROUP.chatgpt}`,
+    `DOMAIN-SUFFIX,oaistatic.com,${GROUP.chatgpt}`,
+    `DOMAIN-SUFFIX,oaiusercontent.com,${GROUP.chatgpt}`,
+    `DOMAIN-KEYWORD,openai,${GROUP.chatgpt}`,
     `DOMAIN-SUFFIX,codexradar.com,${GROUP.chatgpt}`,
+    `RULE-SET,ChatGPT,${GROUP.chatgpt}`,
+    ...claudeSuffixes.map(domain => `DOMAIN-SUFFIX,${domain},${GROUP.claude}`),
+    ...claudeExactDomains.map(domain => `DOMAIN,${domain},${GROUP.claude}`),
+    `DOMAIN-KEYWORD,anthropic,${GROUP.claude}`,
+    `DOMAIN-KEYWORD,claude,${GROUP.claude}`,
+    `DOMAIN-KEYWORD,datadoghq,${GROUP.claude}`,
+    `DOMAIN-KEYWORD,sift,${GROUP.claude}`,
+    `DOMAIN-KEYWORD,datadog,${GROUP.claude}`,
+    `GEOSITE,anthropic,${GROUP.claude}`,
+    `IP-CIDR,160.79.104.0/21,${GROUP.claude},no-resolve`,
+    `IP-CIDR6,2607:6bc0::/32,${GROUP.claude},no-resolve`,
+    `IP-ASN,399358,${GROUP.claude},no-resolve`,
+    `RULE-SET,Claude,${GROUP.claude}`,
+    `DOMAIN-SUFFIX,ip.net.coffee,${GROUP.claude}`,
+    `DOMAIN-SUFFIX,net.coffee,${GROUP.claude}`,
+
+    // Persona 官方证件核验必须和 Claude 同一出口，避免身份页走了别的 IP。
+    `DOMAIN-SUFFIX,withpersona.com,${GROUP.claude}`,
+    `DOMAIN-SUFFIX,persona.com,${GROUP.claude}`,
+
+    // 国内中转会把 Claude Code 标成中国用户，直接拦掉。
+    `DOMAIN-SUFFIX,huanling.icu,REJECT`,
+
+    // 浏览器 WebRTC STUN 走 REJECT，避免 UDP 泄露真实 IP；游戏主机 STUN 仍留在 fake-ip-filter。
+    `DOMAIN-SUFFIX,stun.l.google.com,REJECT`,
+    `DOMAIN-SUFFIX,stun.cloudflare.com,REJECT`,
+    `DOMAIN,stun.services.mozilla.com,REJECT`,
+
+    `IP-CIDR,1.1.1.1/32,${GROUP.landing},no-resolve`,
+    `IP-CIDR,1.0.0.1/32,${GROUP.landing},no-resolve`,
+    `IP-CIDR,8.8.8.8/32,${GROUP.landing},no-resolve`,
+    `IP-CIDR,8.8.4.4/32,${GROUP.landing},no-resolve`,
+    `DOMAIN-SUFFIX,dnsleaktest.com,${GROUP.landing}`,
+    `DOMAIN-SUFFIX,browserleaks.com,${GROUP.landing}`,
+    `DOMAIN-SUFFIX,browserleaks.org,${GROUP.landing}`,
+    `DOMAIN-SUFFIX,ipleak.net,${GROUP.landing}`,
+    `DOMAIN-SUFFIX,ipleak.com,${GROUP.landing}`,
+    `DOMAIN-SUFFIX,ippure.com,${GROUP.landing}`,
     `DOMAIN-SUFFIX,podcasts.apple.com,${GROUP.apple}`,
-    `DOMAIN-SUFFIX,dnsleaktest.com,${GROUP.node}`,
     `DOMAIN-SUFFIX,deepl.com,${GROUP.direct}`,
     `DOMAIN-SUFFIX,ping0.cc,${GROUP.direct}`,
     `DOMAIN-SUFFIX,tjcn.org,${GROUP.direct}`,
@@ -565,8 +707,6 @@ function main(config, profileName) {
     `RULE-SET,Apple,${GROUP.apple}`,
     `RULE-SET,Telegram,${GROUP.telegram}`,
     `RULE-SET,GitHub,${GROUP.github}`,
-    `RULE-SET,ChatGPT,${GROUP.chatgpt}`,
-    `RULE-SET,Claude,${GROUP.claude}`,
     `RULE-SET,Gemini,${GROUP.gemini}`,
     `RULE-SET,AI,${GROUP.ai}`,
     `RULE-SET,NetEaseMusic,${GROUP.netease}`,
@@ -590,7 +730,8 @@ function main(config, profileName) {
   // 3. 不强制 mixed/strict-route，避免额外绕路。
   config.ipv6 = false;
 
-  const inheritedTun = config.tun || {};
+  const inheritedTun = { ...(config.tun || {}) };
+  delete inheritedTun.stack;
   const inheritedRouteExcludes = Array.isArray(inheritedTun["route-exclude-address"])
     ? inheritedTun["route-exclude-address"]
     : [];
@@ -599,6 +740,8 @@ function main(config, profileName) {
     ...inheritedTun,
     "auto-route": inheritedTun["auto-route"] !== false,
     "auto-detect-interface": inheritedTun["auto-detect-interface"] !== false,
+    "strict-route": false,
+    "ipv6": false,
     "dns-hijack": Array.isArray(inheritedTun["dns-hijack"]) && inheritedTun["dns-hijack"].length > 0
       ? inheritedTun["dns-hijack"]
       : ["any:53", "tcp://any:53"],
@@ -606,12 +749,14 @@ function main(config, profileName) {
   };
 
   const inheritedDns = config.dns || {};
-  const campusDnsServers = getCampusDnsServers();
-  // 普通域名解析强制经代理组访问加密 DNS，避免系统/校园 DNS 暴露查询记录。
+  const campusDnsServers = getCampusDnsServers().map((server) =>
+    /#/.test(server) ? server : `${server}#DIRECT`
+  );
+  // 普通域名和 Claude 查询经 🔗 链式落地访问加密 DNS，与美国 ISP 出口对齐。
   // 节点自身的域名解析仍使用独立 bootstrap DNS，避免代理建立前出现循环依赖。
   const secureProxyDns = [
-    `https://1.1.1.1/dns-query#${GROUP.node}`,
-    `https://8.8.8.8/dns-query#${GROUP.node}`
+    `https://1.1.1.1/dns-query#${GROUP.landing}`,
+    `https://8.8.8.8/dns-query#${GROUP.landing}`
   ];
   const directChinaDns = [
     "https://223.5.5.5/dns-query#DIRECT",
@@ -627,13 +772,19 @@ function main(config, profileName) {
     ? inheritedDns["nameserver-policy"]
     : {};
 
-  // 校园/内网域名也走同一组加密 DNS，避免 DHCP/system DNS 泄露。
-  // 如确实需要访问校园内网 DNS，可再单独把这些域名改回 dhcp://en0。
+  const claudeNameserverPolicy = Object.fromEntries([
+    ...claudeSuffixes.map(domain => [`+.${domain}`, secureProxyDns]),
+    ...claudeExactDomains.map(domain => [domain, secureProxyDns]),
+    ["+.withpersona.com", secureProxyDns],
+    ["+.persona.com", secureProxyDns],
+    ["+.datadoghq.com", secureProxyDns]
+  ]);
+
+  // 校园认证/内网必须走当前 Wi-Fi 的 DHCP DNS + DIRECT，不能进链式落地。
   const campusPolicy = {
-    "captive.apple.com": secureProxyDns,
-    "+.bnbu.edu.cn": secureProxyDns,
-    "+.uic.edu.cn": secureProxyDns,
-    "geosite:private": secureProxyDns
+    ...Object.fromEntries(CAPTIVE_PORTAL_EXACT.map(domain => [domain, campusDnsServers])),
+    ...Object.fromEntries(CAPTIVE_PORTAL_SUFFIXES.map(domain => [`+.${domain}`, campusDnsServers])),
+    "geosite:private": campusDnsServers
   };
 
   config.dns = {
@@ -655,10 +806,11 @@ function main(config, profileName) {
     "proxy-server-nameserver": inheritedProxyServerNS.length > 0
       ? inheritedProxyServerNS
       : directChinaDns,
-    // 不沿用订阅中未绑定代理的 nameserver；所有普通 DNS 查询经加密代理 DNS。
+    // 不沿用订阅中未绑定代理的 nameserver；普通查询和 Claude 都经链式落地 DoH。
     "nameserver": secureProxyDns,
     "nameserver-policy": {
       ...inheritedPolicy,
+      ...claudeNameserverPolicy,
       ...campusPolicy
     },
     "fake-ip-filter": unique([
@@ -671,11 +823,8 @@ function main(config, profileName) {
       "*.test",
       "*.local",
       "*.home.arpa",
-      "captive.apple.com",
-      "bnbu.edu.cn",
-      "*.bnbu.edu.cn",
-      "uic.edu.cn",
-      "*.uic.edu.cn",
+      ...CAPTIVE_PORTAL_EXACT,
+      ...CAPTIVE_PORTAL_SUFFIXES.flatMap(domain => [domain, `*.${domain}`]),
       "time.*.com",
       "time.*.gov",
       "time.*.edu.cn",
@@ -691,11 +840,6 @@ function main(config, profileName) {
       "ntp.*.com",
       "ntp.*.org",
       "pool.ntp.org",
-      "stun.*.*",
-      "stun.*.*.*",
-      "+.stun.*.*",
-      "+.stun.*.*.*",
-      "+.stun.*.*.*.*",
       "+.srv.nintendo.net",
       "+.igwf.netease.com",
       "stun.qq.com",
@@ -705,29 +849,36 @@ function main(config, profileName) {
       "cloudflare-dns.com",
       "www.gstatic.com",
       "gstatic.com"
-    ])
+    ]).filter(item => {
+      const value = String(item);
+      const isStun = /(^|\.)stun\./i.test(value);
+      const keepGameStun = /nintendo|playstation|xbox|qq\.com|igwf\.netease/i.test(value);
+      if (isStun && !keepGameStun) return false;
+      return true;
+    })
   };
 
   const inheritedSniffer = config.sniffer || {};
   const inheritedSkipDomain = Array.isArray(inheritedSniffer["skip-domain"])
     ? inheritedSniffer["skip-domain"]
     : [];
+  const inheritedSniff = inheritedSniffer.sniff || {};
   config.sniffer = {
     ...inheritedSniffer,
     "enable": true,
     "force-dns-mapping": true,
     "parse-pure-ip": inheritedSniffer["parse-pure-ip"] !== false,
     "override-destination": false,
-    "sniff": inheritedSniffer.sniff || {
-      "HTTP": {
+    "sniff": {
+      "HTTP": inheritedSniff.HTTP || {
         "ports": [80, 8080],
         "override-destination": false
       },
-      "TLS": {
+      "TLS": inheritedSniff.TLS || {
         "ports": [443, 8443]
       },
       "QUIC": {
-        "ports": [443, 8443]
+        "ports": []
       }
     },
     "skip-domain": unique([
