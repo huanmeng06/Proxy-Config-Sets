@@ -49,7 +49,8 @@ function main(config, profileName) {
     direct: "🎯 全球直连",
     download: "⏬ 下载专用",
     telegram: "📲 电报消息",
-    chain: "🔗 链式代理",
+    front: "🔗 前置代理",
+    landing: "🔗 链式落地",
     github: "🐙 GITHUB",
     ai: "💬 Ai平台",
     chatgpt: "🤖 ChatGPT",
@@ -183,9 +184,16 @@ function main(config, profileName) {
     port: 7134,
     username: "xwsawxzo",
     password: "f8p3xnqux6sl",
-    udp: false
+    udp: false,
+    "dialer-proxy": GROUP.front
   };
-  if (!config.proxies.some(proxy => proxy.name === staticIsp.name)) {
+  const isStaticIspProxy = (proxy) =>
+    proxy.server === staticIsp.server && Number(proxy.port) === Number(staticIsp.port);
+  const subscriptionProxies = config.proxies.filter(proxy => !isStaticIspProxy(proxy));
+  const existingStaticIsp = config.proxies.find(proxy => proxy.name === staticIsp.name);
+  if (existingStaticIsp) {
+    Object.assign(existingStaticIsp, staticIsp);
+  } else {
     config.proxies.push(staticIsp);
   }
 
@@ -325,36 +333,28 @@ function main(config, profileName) {
   const pushSelectGroup = (name, choices) => {
     // 已包含链式代理的组统一排序：节点选择之后、地区节点之前。
     let orderedChoices = choices;
-    if (choices.includes(GROUP.chain)) {
-      orderedChoices = choices.filter(choice => choice !== GROUP.chain);
+    if (choices.includes(GROUP.landing)) {
+      orderedChoices = choices.filter(choice => choice !== GROUP.landing);
       const nodeIndex = orderedChoices.indexOf(GROUP.node);
       const regionIndex = orderedChoices.findIndex(choice => availableRegionGroupNames.includes(choice));
       const insertIndex = nodeIndex >= 0 ? nodeIndex + 1 : (regionIndex >= 0 ? regionIndex : 0);
-      orderedChoices.splice(insertIndex, 0, GROUP.chain);
+      orderedChoices.splice(insertIndex, 0, GROUP.landing);
     }
     proxyGroups.push(createSelectGroup(name, orderedChoices));
   };
-  pushSelectGroup(GROUP.node, [...availableRegionGroupNames, GROUP.manual, GROUP.chain, "DIRECT"]);
+  pushSelectGroup(GROUP.node, [...availableRegionGroupNames, GROUP.manual, GROUP.landing, "DIRECT"]);
 
   pushSelectGroup(GROUP.manual, allProxies);
 
-  // 独立的链式代理组紧跟在“手动切换”下面：机场节点保持原生协议，静态 ISP 作为可直接选择的节点。
-  const pickChainNodes = (pattern, count) => config.proxies
-    .filter(p => p.server !== staticIsp.server && !p.name.startsWith("🔗") && new RegExp(pattern, "i").test(p.name))
-    .slice(0, count);
-  const chainMembers = [
-    ...pickChainNodes("香港|Hong Kong", 3),
-    ...pickChainNodes("日本|Japan", 3),
-    ...pickChainNodes("新加坡|Singapore", 3),
-    ...pickChainNodes("美国|United States", 2),
-    staticIsp
-  ].map(proxy => proxy.name);
-  proxyGroups.push({ name: GROUP.chain, type: "select", proxies: chainMembers });
+  // 两层链式结构紧跟在“手动切换”下面：前置层承载所有订阅节点，落地层只暴露 ISP。
+  const frontProxyNames = subscriptionProxies.map(proxy => proxy.name);
+  pushSelectGroup(GROUP.front, ["DIRECT", ...frontProxyNames]);
+  pushSelectGroup(GROUP.landing, [staticIsp.name]);
 
   pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node]);
 
-  const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, GROUP.chain, "DIRECT"];
-  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, GROUP.direct, GROUP.chain]);
+  const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, GROUP.landing, "DIRECT"];
+  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, GROUP.direct, GROUP.landing]);
   const isAvailableChoice = (name) => builtInChoices.has(name) || availableRegionGroupNames.includes(name);
 
   const getSafeChoices = (preferred) => {
@@ -375,7 +375,7 @@ function main(config, profileName) {
     "🇨🇳 台湾节点",
     GROUP.download,
     GROUP.direct,
-    GROUP.chain
+    GROUP.landing
   ]);
   pushSelectGroup(GROUP.github, githubChoices);
 
@@ -389,7 +389,7 @@ function main(config, profileName) {
     "🇨🇳 台湾节点",
     "🏠🇨🇳 台湾家宽",
     GROUP.manual,
-    GROUP.chain
+    GROUP.landing
   ]);
   pushSelectGroup(GROUP.ai, aiChoices);
 
@@ -402,7 +402,7 @@ function main(config, profileName) {
     "🇸🇬 狮城节点",
     "🇨🇳 台湾节点",
     GROUP.manual,
-    GROUP.chain
+    GROUP.landing
   ]);
   pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
   pushSelectGroup(GROUP.claude, usFirstAiChoices);
@@ -421,7 +421,7 @@ function main(config, profileName) {
 
   pushSelectGroup(
     GROUP.domesticMedia,
-    getSafeChoices(["DIRECT", "🇭🇰 香港节点", "🇨🇳 台湾节点", "🇸🇬 狮城节点", "🇯🇵 日本节点", GROUP.manual, GROUP.chain])
+    getSafeChoices(["DIRECT", "🇭🇰 香港节点", "🇨🇳 台湾节点", "🇸🇬 狮城节点", "🇯🇵 日本节点", GROUP.manual, GROUP.landing])
   );
 
   const defaultServiceChoices = getSafeChoices([
@@ -434,7 +434,7 @@ function main(config, profileName) {
     "🇯🇵 日本节点",
     "🇰🇷 韩国节点",
     GROUP.manual,
-    GROUP.chain
+    GROUP.landing
   ]);
 
   pushSelectGroup(GROUP.googleFcm, defaultServiceChoices);
@@ -447,7 +447,7 @@ function main(config, profileName) {
     "🇨🇳 台湾节点",
     "🇺🇸 美国节点",
     GROUP.manual,
-    GROUP.chain,
+    GROUP.landing,
     "DIRECT"
   ]);
   pushSelectGroup(GROUP.microsoftStore, microsoftStoreChoices);
@@ -464,7 +464,7 @@ function main(config, profileName) {
   // 收尾策略组：广告/净化/漏网之鱼。
   pushSelectGroup(GROUP.ads, ["REJECT", "DIRECT"]);
   pushSelectGroup(GROUP.appClean, ["REJECT", "DIRECT"]);
-  pushSelectGroup(GROUP.fallback, [GROUP.node, "DIRECT", ...availableRegionGroupNames, GROUP.manual, GROUP.chain]);
+  pushSelectGroup(GROUP.fallback, [GROUP.node, "DIRECT", ...availableRegionGroupNames, GROUP.manual, GROUP.landing]);
 
   // 动态地区组放在后面，主服务入口更集中。
   proxyGroups.push(...regionGroups);
