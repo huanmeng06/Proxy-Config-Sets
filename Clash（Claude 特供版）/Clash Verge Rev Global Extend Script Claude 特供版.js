@@ -13,7 +13,10 @@
 function isClaudeAlreadyEnhanced(config) {
   const rules = Array.isArray(config.rules) ? config.rules : [];
   return rules.some(rule =>
-    typeof rule === "string" && rule.includes("DOMAIN-SUFFIX,anthropic.com,🧠 Claude")
+    typeof rule === "string" && (
+      rule.includes("DOMAIN-SUFFIX,anthropic.com,🧠 Claude") ||
+      rule.includes("RULE-SET,Claude,🧠 Claude")
+    )
   );
 }
 
@@ -47,12 +50,6 @@ function addSiftDatadog(config) {
     `AND,((DOMAIN-KEYWORD,datadoghq),(NETWORK,udp)),REJECT`,
     ...protonSuffixes.map(domain => `AND,((DOMAIN-SUFFIX,${domain}),(NETWORK,udp)),REJECT`)
   ];
-  const extraRoute = [
-    `DOMAIN-SUFFIX,sift.com,${group}`,
-    `DOMAIN-SUFFIX,siftcience.com,${group}`,
-    `DOMAIN-KEYWORD,datadoghq,${group}`,
-    ...protonSuffixes.map(domain => `DOMAIN-SUFFIX,${domain},${group}`)
-  ];
   const rules = Array.isArray(config.rules) ? config.rules.slice() : [];
   const missing = line => !rules.includes(line);
 
@@ -70,10 +67,6 @@ function addSiftDatadog(config) {
   insertAfter(
     rule => typeof rule === "string" && rule.includes("GEOSITE,anthropic") && rule.includes("NETWORK,udp"),
     extraUdp
-  );
-  insertAfter(
-    rule => typeof rule === "string" && rule === `DOMAIN-KEYWORD,claude,${group}`,
-    extraRoute
   );
   insertAfter(
     rule => typeof rule === "string" && rule === `PROCESS-NAME,Claude Code,${group}`,
@@ -143,14 +136,7 @@ function addGrokDeepSeek(config) {
 
   const rules = Array.isArray(config.rules) ? config.rules.slice() : [];
   const extra = [
-    `DOMAIN-SUFFIX,grok.com,${grok}`,
-    `DOMAIN-SUFFIX,grok.x.com,${grok}`,
-    `DOMAIN-SUFFIX,grokipedia.com,${grok}`,
-    `DOMAIN-SUFFIX,x.ai,${grok}`,
     `RULE-SET,Grok,${grok}`,
-    `DOMAIN-SUFFIX,deepseek.com,${deepseek}`,
-    `DOMAIN-SUFFIX,deepseeksvc.com,${deepseek}`,
-    `DOMAIN-KEYWORD,deepseek,${deepseek}`,
     `RULE-SET,DeepSeek,${deepseek}`
   ];
   const missing = extra.filter(line => !rules.includes(line));
@@ -730,7 +716,12 @@ function main(config, profileName) {
     "dralias.com",
     // Sift fraud SDK (suffix, not coffee's wide keyword "sift")
     "sift.com",
-    "siftcience.com"
+    "siftcience.com",
+    // coffee / Persona share Claude US exit
+    "ip.net.coffee",
+    "net.coffee",
+    "withpersona.com",
+    "persona.com"
   ];
   const claudeExactDomains = [
     "servd-anthropic-website.b-cdn.net",
@@ -793,33 +784,18 @@ function main(config, profileName) {
     ...claudeSuffixes.map(domain => `AND,((DOMAIN-SUFFIX,${domain}),(NETWORK,udp)),REJECT`),
     ...claudeExactDomains.map(domain => `AND,((DOMAIN,${domain}),(NETWORK,udp)),REJECT`),
     `AND,((GEOSITE,anthropic),(NETWORK,udp)),REJECT`,
+    `AND,((DOMAIN-KEYWORD,sift),(NETWORK,udp)),REJECT`,
+    `AND,((DOMAIN-KEYWORD,datadoghq),(NETWORK,udp)),REJECT`,
+    `AND,((DOMAIN-KEYWORD,datadog),(NETWORK,udp)),REJECT`,
     `PROCESS-PATH-REGEX,(?i)/Claude\\.app/,${GROUP.claude}`,
     `PROCESS-PATH-REGEX,(?i)/ChatGPT\\.app/,${GROUP.chatgpt}`,
     ...claudeProcessNames.map(name => `PROCESS-NAME,${name},${GROUP.claude}`),
     ...chatgptProcessNames.map(name => `PROCESS-NAME,${name},${GROUP.chatgpt}`),
-    // ChatGPT 域名必须在 Claude 关键字/规则集之前，避免旧连接或规则集误伤。
-    `DOMAIN-SUFFIX,chatgpt.com,${GROUP.chatgpt}`,
-    `DOMAIN-SUFFIX,openai.com,${GROUP.chatgpt}`,
-    `DOMAIN-SUFFIX,oaistatic.com,${GROUP.chatgpt}`,
-    `DOMAIN-SUFFIX,oaiusercontent.com,${GROUP.chatgpt}`,
-    `DOMAIN-KEYWORD,openai,${GROUP.chatgpt}`,
+    // ChatGPT / Claude 域名走远端 RULE-SET，避免规则页再展开几十条 DomainSuffix。
+    // UDP REJECT、进程名、nameserver-policy 仍由本脚本生成。
     `RULE-SET,ChatGPT,${GROUP.chatgpt}`,
-    ...claudeSuffixes.map(domain => `DOMAIN-SUFFIX,${domain},${GROUP.claude}`),
-    ...claudeExactDomains.map(domain => `DOMAIN,${domain},${GROUP.claude}`),
-    `DOMAIN-KEYWORD,anthropic,${GROUP.claude}`,
-    `DOMAIN-KEYWORD,claude,${GROUP.claude}`,
-    `DOMAIN-KEYWORD,datadoghq,${GROUP.claude}`,
     `GEOSITE,anthropic,${GROUP.claude}`,
-    `IP-CIDR,160.79.104.0/21,${GROUP.claude},no-resolve`,
-    `IP-CIDR6,2607:6bc0::/32,${GROUP.claude},no-resolve`,
-    `IP-ASN,399358,${GROUP.claude},no-resolve`,
     `RULE-SET,Claude,${GROUP.claude}`,
-    `DOMAIN-SUFFIX,ip.net.coffee,${GROUP.claude}`,
-    `DOMAIN-SUFFIX,net.coffee,${GROUP.claude}`,
-
-    // Persona 官方证件核验必须和 Claude 同一出口，避免身份页走了别的 IP。
-    `DOMAIN-SUFFIX,withpersona.com,${GROUP.claude}`,
-    `DOMAIN-SUFFIX,persona.com,${GROUP.claude}`,
 
 
     // 国内中转会把 Claude Code 标成中国用户，直接拦掉。
@@ -833,7 +809,6 @@ function main(config, profileName) {
     `IP-CIDR,1.1.1.1/32,${GROUP.node},no-resolve`,
     `IP-CIDR,8.8.8.8/32,${GROUP.node},no-resolve`,
 
-    `DOMAIN-SUFFIX,codexradar.com,${GROUP.chatgpt}`,
     `DOMAIN-SUFFIX,podcasts.apple.com,${GROUP.apple}`,
     `DOMAIN-SUFFIX,dnsleaktest.com,${GROUP.node}`,
     `DOMAIN-SUFFIX,deepl.com,${GROUP.direct}`,
@@ -868,14 +843,7 @@ function main(config, profileName) {
     `RULE-SET,Telegram,${GROUP.telegram}`,
     `RULE-SET,GitHub,${GROUP.github}`,
     `RULE-SET,Gemini,${GROUP.gemini}`,
-    `DOMAIN-SUFFIX,grok.com,${GROUP.grok}`,
-    `DOMAIN-SUFFIX,grok.x.com,${GROUP.grok}`,
-    `DOMAIN-SUFFIX,grokipedia.com,${GROUP.grok}`,
-    `DOMAIN-SUFFIX,x.ai,${GROUP.grok}`,
     `RULE-SET,Grok,${GROUP.grok}`,
-    `DOMAIN-SUFFIX,deepseek.com,${GROUP.deepseek}`,
-    `DOMAIN-SUFFIX,deepseeksvc.com,${GROUP.deepseek}`,
-    `DOMAIN-KEYWORD,deepseek,${GROUP.deepseek}`,
     `RULE-SET,DeepSeek,${GROUP.deepseek}`,
     `RULE-SET,AI,${GROUP.ai}`,
     `RULE-SET,NetEaseMusic,${GROUP.netease}`,

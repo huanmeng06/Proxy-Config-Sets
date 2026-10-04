@@ -5,33 +5,24 @@
 - Clash Verge 正在用的 `profiles/Script.js`
 - 仓库里的 `Clash Verge Rev/Clash Verge Rev Global Extend Script v3.js`
 
-相对原脚本只多了这三条（不用 coffee 那种过宽 keyword `sift` / `datadog`）：
-
-```text
-DOMAIN-SUFFIX,sift.com
-DOMAIN-SUFFIX,siftcience.com
-DOMAIN-KEYWORD,datadoghq
-```
-
-`datadoghq` 能盖住 `browser-intake-us3-datadoghq.com` 这类变名，又不会把所有带 `datadog` 的域名送去美国 05。
+ChatGPT / Claude / Grok / DeepSeek 的**域名分流**走远端 `Rules/*.list`。
+脚本里只保留规则集做不到的部分：UDP AND REJECT、进程名、nameserver-policy。
+Stripe / Proton Mail / SimpleLogin / Sift / Datadog / coffee / Persona 已写入 `Rules/claude.list`。
 
 ## 这份脚本怎么跑
 
 Clash Verge 会**先跑全局 `Script.js`，再跑配置自己的扩展脚本**。
 
-- 如果全局脚本已经生成了 `🧠 Claude` 规则：本文件只追加 Sift / Datadog（不会把节点名再打一遍旗帜）。
-- 如果全局脚本是空模板：本文件会完整增强，并带上 Sift / Datadog。
+- 如果全局脚本已经生成了 `🧠 Claude`（`RULE-SET,Claude` 或旧的 `DOMAIN-SUFFIX,anthropic.com`）：本文件只补 UDP / Proton 进程 / DNS，不再插域名分流。
+- 如果全局脚本是空模板：本文件会完整增强，域名仍走 RULE-SET。
 
 ## 本机 Clash Verge
 
-已经加好一个独立订阅配置，名字是 **Clash（Claude 特供版）**：
+链式代理正在用的 `profiles/Script.js` 以桌面目录的 `Clash Verge Rev 链式代理.js` 为准。改完后需要**重新生成配置**，规则页才会收成 RuleSet，而不是几十条 DomainSuffix。
 
-1. 打开 Clash Verge Rev → 配置
-2. 点 **Clash（Claude 特供版）** 启用（原来的 YepFast 还在，没有改）
-3. `🧠 Claude` 仍选 **美国 05**
-
-不要把本文件粘进原来的 `Script.js`。
+`🧠 Claude` 仍选 **美国 05** / 链式落地。
 
 ## 文件
 
-`Clash Verge Rev Global Extend Script Claude 特供版.js`
+- `Clash Verge Rev 链式代理.js`
+- `Clash Verge Rev Global Extend Script Claude 特供版.js`

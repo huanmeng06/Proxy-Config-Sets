@@ -43,6 +43,8 @@ proxy.list               telegram.list
 youtube.list
 ```
 
+`claude.list` 现在包含 Anthropic 核心域，以及必须同出口的 Stripe / Proton Mail / SimpleLogin / Sift / Datadog / coffee / Persona。日常 v3 脚本只引用 RULE-SET，更新 list 后会自动吃到这些域（日常 Claude 组不是 US-only）。`chatgpt.list` 含 `codexradar.com`。不要把 `protonvpn.com` 写进 Claude。
+
 公共规则建议只使用三端兼容格式：
 
 ```text

@@ -1,7 +1,10 @@
 # Shared remote rule set
-# Claude / Anthropic
-# coffee site.html copyable list. No Stripe, Persona, net.coffee, or wide sift/datadog keywords.
+# Claude / Anthropic + checkout / mail / telemetry that must share the same exit
+# Stripe, Proton Mail / SimpleLogin, Sift, Datadog, coffee, Persona.
+# Do NOT add protonvpn.com / protonvpn.ch (standalone VPN).
+# PROCESS-NAME, AND UDP REJECT, and GEOSITE stay in client configs.
 
+# Core
 DOMAIN-KEYWORD,anthropic
 DOMAIN-KEYWORD,claude
 DOMAIN-SUFFIX,anthropic.com
@@ -15,12 +18,56 @@ DOMAIN,servd-anthropic-website.b-cdn.net
 DOMAIN,anthropic.com.cdn.cloudflare.net
 DOMAIN,anthropic.auth0.com
 DOMAIN,anthropic-com.ghost.io
+
+# Telemetry / fraud SDK
 DOMAIN-SUFFIX,sentry.io
 DOMAIN-SUFFIX,statsigapi.net
-DOMAIN,browser-intake-us5-datadoghq.com
 DOMAIN-SUFFIX,intercom.io
 DOMAIN-SUFFIX,intercomcdn.com
+DOMAIN,browser-intake-us5-datadoghq.com
 DOMAIN,cdn.usefathom.com
+DOMAIN-KEYWORD,datadoghq
+DOMAIN-KEYWORD,datadog
+DOMAIN-SUFFIX,sift.com
+DOMAIN-SUFFIX,siftcience.com
+DOMAIN-KEYWORD,sift
+
+# Stripe checkout (geolocates currency from this IP)
+DOMAIN-SUFFIX,stripe.com
+DOMAIN-SUFFIX,stripecdn.com
+DOMAIN-SUFFIX,stripe.network
+DOMAIN-SUFFIX,link.com
+DOMAIN-SUFFIX,hcaptcha.com
+
+# Proton Mail / SimpleLogin hide-my-email
+DOMAIN-SUFFIX,proton.me
+DOMAIN-SUFFIX,protonmail.com
+DOMAIN-SUFFIX,protonmail.ch
+DOMAIN-SUFFIX,pm.me
+DOMAIN-SUFFIX,protonweb.com
+DOMAIN-SUFFIX,protonstatus.com
+DOMAIN-SUFFIX,protontech.ch
+DOMAIN-SUFFIX,simplelogin.io
+DOMAIN-SUFFIX,simplelogin.co
+DOMAIN-SUFFIX,simplelogin.com
+DOMAIN-SUFFIX,simplelogin.fr
+DOMAIN-SUFFIX,slmail.me
+DOMAIN-SUFFIX,passmail.com
+DOMAIN-SUFFIX,passmail.net
+DOMAIN-SUFFIX,passinbox.com
+DOMAIN-SUFFIX,passfwd.com
+DOMAIN-SUFFIX,aleeas.com
+DOMAIN-SUFFIX,silomails.com
+DOMAIN-SUFFIX,slmails.com
+DOMAIN-SUFFIX,dralias.com
+
+# coffee fingerprint + Persona ID check
+DOMAIN-SUFFIX,ip.net.coffee
+DOMAIN-SUFFIX,net.coffee
+DOMAIN-SUFFIX,withpersona.com
+DOMAIN-SUFFIX,persona.com
+
+# Anthropic anycast
 IP-CIDR,160.79.104.0/21,no-resolve
 IP-CIDR6,2607:6bc0::/32,no-resolve
 IP-ASN,399358,no-resolve
