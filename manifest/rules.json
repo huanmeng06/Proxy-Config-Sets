@@ -77,6 +77,30 @@
           ]
         },
         {
+          "id": "grok",
+          "tag": "Grok",
+          "file": "grok.list",
+          "policy": {
+            "quantumultX": "✖️ Grok",
+            "shadowrocket": "✖️ Grok"
+          },
+          "clashProviders": [
+            "Grok"
+          ]
+        },
+        {
+          "id": "deepseek",
+          "tag": "DeepSeek",
+          "file": "deepseek.list",
+          "policy": {
+            "quantumultX": "🐋 DeepSeek",
+            "shadowrocket": "🐋 DeepSeek"
+          },
+          "clashProviders": [
+            "DeepSeek"
+          ]
+        },
+        {
           "id": "ai",
           "file": "ai.list",
           "policy": {

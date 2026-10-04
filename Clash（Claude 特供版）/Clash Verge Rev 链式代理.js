@@ -81,6 +81,8 @@ function main(config, profileName) {
     chatgpt: "🤖 ChatGPT",
     claude: "🧠 Claude",
     gemini: "✨ Gemini",
+    grok: "✖️ Grok",
+    deepseek: "🐋 DeepSeek",
     youtube: "📹 油管视频",
     netflix: "🎥 奈飞视频",
     netflixNode: "🎥 奈飞节点",
@@ -418,7 +420,8 @@ function main(config, profileName) {
   ]);
   pushSelectGroup(GROUP.ai, aiChoices);
 
-  // ChatGPT / Claude / Gemini 各自独立选择，方便按需切换不同地区。
+  // ChatGPT / Claude / Gemini / Grok 各自独立选择，方便按需切换不同地区。
+  // DeepSeek 同源候选，额外提供 🎯 全球直连。
   const usFirstAiChoices = getSafeChoices([
     "🇺🇸 美国节点",
     "🏠🇺🇸 美国家宽",
@@ -429,11 +432,14 @@ function main(config, profileName) {
     GROUP.manual,
     GROUP.landing
   ]);
+  const deepseekChoices = getSafeChoices([...usFirstAiChoices, GROUP.direct]);
   pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
   // coffee 固定出口：🧠 Claude 只走 🔗 链式落地。
   const claudeChoices = getSafeChoices([GROUP.landing]);
   pushSelectGroup(GROUP.claude, claudeChoices);
   pushSelectGroup(GROUP.gemini, usFirstAiChoices);
+  pushSelectGroup(GROUP.grok, usFirstAiChoices);
+  pushSelectGroup(GROUP.deepseek, deepseekChoices);
 
   pushSelectGroup(GROUP.youtube, commonChoices);
 
@@ -518,6 +524,8 @@ function main(config, profileName) {
     "ChatGPT": `${RULES_BASE}/chatgpt.list`,
     "Claude": `${RULES_BASE}/claude.list`,
     "Gemini": `${RULES_BASE}/gemini.list`,
+    "Grok": `${RULES_BASE}/grok.list`,
+    "DeepSeek": `${RULES_BASE}/deepseek.list`,
     "AI": `${RULES_BASE}/ai.list`,
     "GitHub": `${RULES_BASE}/github.list`,
     "GoogleFCM": `${RULES_BASE}/google-fcm.list`,
@@ -571,6 +579,27 @@ function main(config, profileName) {
     "stripe.network",
     "link.com",
     "hcaptcha.com",
+    // Proton Mail / SimpleLogin hide-my-email: same US exit as Claude.
+    "proton.me",
+    "protonmail.com",
+    "protonmail.ch",
+    "pm.me",
+    "protonweb.com",
+    "protonstatus.com",
+    "protontech.ch",
+    "simplelogin.io",
+    "simplelogin.co",
+    "simplelogin.com",
+    "simplelogin.fr",
+    "slmail.me",
+    "passmail.com",
+    "passmail.net",
+    "passinbox.com",
+    "passfwd.com",
+    "aleeas.com",
+    "silomails.com",
+    "slmails.com",
+    "dralias.com",
     // Sift fraud SDK suffix; coffee wide keywords are added as DOMAIN-KEYWORD below.
     "sift.com",
     "siftcience.com"
@@ -590,7 +619,9 @@ function main(config, profileName) {
     "Claude Helper (Plugin)",
     "Claude Helper (Renderer)",
     "claude",
-    "Claude Code"
+    "Claude Code",
+    "Proton Mail",
+    "Proton Mail Bridge"
   ];
   // ChatGPT.app 内置 Codex CLI，进程名是 Codex/codex。
   // 进程规则优先于域名，不能把 Codex 塞进 Claude，否则 chatgpt.com 会被整进程劫持。
@@ -708,6 +739,15 @@ function main(config, profileName) {
     `RULE-SET,Telegram,${GROUP.telegram}`,
     `RULE-SET,GitHub,${GROUP.github}`,
     `RULE-SET,Gemini,${GROUP.gemini}`,
+    `DOMAIN-SUFFIX,grok.com,${GROUP.grok}`,
+    `DOMAIN-SUFFIX,grok.x.com,${GROUP.grok}`,
+    `DOMAIN-SUFFIX,grokipedia.com,${GROUP.grok}`,
+    `DOMAIN-SUFFIX,x.ai,${GROUP.grok}`,
+    `RULE-SET,Grok,${GROUP.grok}`,
+    `DOMAIN-SUFFIX,deepseek.com,${GROUP.deepseek}`,
+    `DOMAIN-SUFFIX,deepseeksvc.com,${GROUP.deepseek}`,
+    `DOMAIN-KEYWORD,deepseek,${GROUP.deepseek}`,
+    `RULE-SET,DeepSeek,${GROUP.deepseek}`,
     `RULE-SET,AI,${GROUP.ai}`,
     `RULE-SET,NetEaseMusic,${GROUP.netease}`,
     `RULE-SET,Games,${GROUP.games}`,

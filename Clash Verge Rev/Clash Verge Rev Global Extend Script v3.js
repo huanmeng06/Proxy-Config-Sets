@@ -21,6 +21,8 @@ function main(config) {
     chatgpt: "🤖 ChatGPT",
     claude: "🧠 Claude",
     gemini: "✨ Gemini",
+    grok: "✖️ Grok",
+    deepseek: "🐋 DeepSeek",
     youtube: "📹 油管视频",
     netflix: "🎥 奈飞视频",
     netflixNode: "🎥 奈飞节点",
@@ -317,7 +319,8 @@ function main(config) {
   ]);
   pushSelectGroup(GROUP.ai, aiChoices);
 
-  // ChatGPT / Claude / Gemini 各自独立选择，方便按需切换不同地区。
+  // ChatGPT / Claude / Gemini / Grok 各自独立选择，方便按需切换不同地区。
+  // DeepSeek 同源候选，额外提供 🎯 全球直连。
   const usFirstAiChoices = getSafeChoices([
     "🇺🇸 美国节点",
     "🏠🇺🇸 美国家宽",
@@ -327,9 +330,12 @@ function main(config) {
     "🇨🇳 台湾节点",
     GROUP.manual
   ]);
+  const deepseekChoices = getSafeChoices([...usFirstAiChoices, GROUP.direct]);
   pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
   pushSelectGroup(GROUP.claude, usFirstAiChoices);
   pushSelectGroup(GROUP.gemini, usFirstAiChoices);
+  pushSelectGroup(GROUP.grok, usFirstAiChoices);
+  pushSelectGroup(GROUP.deepseek, deepseekChoices);
 
   pushSelectGroup(GROUP.youtube, commonChoices);
 
@@ -400,6 +406,8 @@ function main(config) {
     "ChatGPT": `${RULES_BASE}/chatgpt.list`,
     "Claude": `${RULES_BASE}/claude.list`,
     "Gemini": `${RULES_BASE}/gemini.list`,
+    "Grok": `${RULES_BASE}/grok.list`,
+    "DeepSeek": `${RULES_BASE}/deepseek.list`,
     "AI": `${RULES_BASE}/ai.list`,
     "GitHub": `${RULES_BASE}/github.list`,
     "GoogleFCM": `${RULES_BASE}/google-fcm.list`,
@@ -473,6 +481,15 @@ function main(config) {
     `RULE-SET,ChatGPT,${GROUP.chatgpt}`,
     `RULE-SET,Claude,${GROUP.claude}`,
     `RULE-SET,Gemini,${GROUP.gemini}`,
+    `DOMAIN-SUFFIX,grok.com,${GROUP.grok}`,
+    `DOMAIN-SUFFIX,grok.x.com,${GROUP.grok}`,
+    `DOMAIN-SUFFIX,grokipedia.com,${GROUP.grok}`,
+    `DOMAIN-SUFFIX,x.ai,${GROUP.grok}`,
+    `RULE-SET,Grok,${GROUP.grok}`,
+    `DOMAIN-SUFFIX,deepseek.com,${GROUP.deepseek}`,
+    `DOMAIN-SUFFIX,deepseeksvc.com,${GROUP.deepseek}`,
+    `DOMAIN-KEYWORD,deepseek,${GROUP.deepseek}`,
+    `RULE-SET,DeepSeek,${GROUP.deepseek}`,
     `RULE-SET,AI,${GROUP.ai}`,
     `RULE-SET,NetEaseMusic,${GROUP.netease}`,
     `RULE-SET,Games,${GROUP.games}`,

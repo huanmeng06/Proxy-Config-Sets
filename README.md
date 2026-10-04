@@ -31,13 +31,16 @@ https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/R
 ads.list                 ai.list
 app-clean.list           apple.list
 bahamut.list             bilibili.list
-direct.list              domestic-media.list
-games.list               github.list
+chatgpt.list             claude.list
+deepseek.list            direct.list
+domestic-media.list      games.list
+gemini.list              github.list
 global-media.list        google-fcm.list
-microsoft.list           microsoft-bing.list
-microsoft-drive.list     netease-music.list
-netflix.list             proxy.list
-telegram.list            youtube.list
+grok.list                microsoft.list
+microsoft-bing.list      microsoft-drive.list
+netease-music.list       netflix.list
+proxy.list               telegram.list
+youtube.list
 ```
 
 公共规则建议只使用三端兼容格式：

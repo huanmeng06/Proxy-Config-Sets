@@ -1,8 +1,9 @@
 # Shared remote rule set
 # Sources: huanmeng06/Proxy-Config-Sets rules + ACL4SSR Clash rules
-# Note: ChatGPT/OpenAI, Claude/Anthropic, Gemini/Google AI have been split into
-#       chatgpt.list / claude.list / gemini.list. This file keeps the remaining
-#       AI services and shared infrastructure.
+# Note: ChatGPT/OpenAI, Claude/Anthropic, Gemini/Google AI, Grok/xAI, DeepSeek
+#       have been split into chatgpt.list / claude.list / gemini.list /
+#       grok.list / deepseek.list. This file keeps the remaining AI services
+#       and shared infrastructure.
 
 DOMAIN,api.githubcopilot.com
 DOMAIN,api.groq.com
@@ -28,7 +29,6 @@ DOMAIN-SUFFIX,jetbrains.ai
 DOMAIN-SUFFIX,meta.ai
 DOMAIN-SUFFIX,mistral.ai
 DOMAIN-SUFFIX,perplexity.ai
-DOMAIN-SUFFIX,x.ai
 DOMAIN-SUFFIX,challenges.cloudflare.com
 DOMAIN-SUFFIX,sentry.io
 DOMAIN-SUFFIX,stripe.com

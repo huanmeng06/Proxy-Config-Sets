@@ -1,0 +1,9 @@
+# Shared remote rule set
+# Grok / xAI
+# Sources: v2fly/domain-list-community data/xai + VPSDance ai-proxy-rules x-ai.yaml
+# Do not add DOMAIN-KEYWORD,grok (hits ngrok). Do not suffix x.com (steals Twitter).
+
+DOMAIN-SUFFIX,grok.com
+DOMAIN-SUFFIX,grok.x.com
+DOMAIN-SUFFIX,grokipedia.com
+DOMAIN-SUFFIX,x.ai

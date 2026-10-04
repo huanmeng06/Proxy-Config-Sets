@@ -19,15 +19,39 @@ function isClaudeAlreadyEnhanced(config) {
 
 function addSiftDatadog(config) {
   const group = "🧠 Claude";
+  const protonSuffixes = [
+    "proton.me",
+    "protonmail.com",
+    "protonmail.ch",
+    "pm.me",
+    "protonweb.com",
+    "protonstatus.com",
+    "protontech.ch",
+    "simplelogin.io",
+    "simplelogin.co",
+    "simplelogin.com",
+    "simplelogin.fr",
+    "slmail.me",
+    "passmail.com",
+    "passmail.net",
+    "passinbox.com",
+    "passfwd.com",
+    "aleeas.com",
+    "silomails.com",
+    "slmails.com",
+    "dralias.com"
+  ];
   const extraUdp = [
     `AND,((DOMAIN-SUFFIX,sift.com),(NETWORK,udp)),REJECT`,
     `AND,((DOMAIN-SUFFIX,siftcience.com),(NETWORK,udp)),REJECT`,
-    `AND,((DOMAIN-KEYWORD,datadoghq),(NETWORK,udp)),REJECT`
+    `AND,((DOMAIN-KEYWORD,datadoghq),(NETWORK,udp)),REJECT`,
+    ...protonSuffixes.map(domain => `AND,((DOMAIN-SUFFIX,${domain}),(NETWORK,udp)),REJECT`)
   ];
   const extraRoute = [
     `DOMAIN-SUFFIX,sift.com,${group}`,
     `DOMAIN-SUFFIX,siftcience.com,${group}`,
-    `DOMAIN-KEYWORD,datadoghq,${group}`
+    `DOMAIN-KEYWORD,datadoghq,${group}`,
+    ...protonSuffixes.map(domain => `DOMAIN-SUFFIX,${domain},${group}`)
   ];
   const rules = Array.isArray(config.rules) ? config.rules.slice() : [];
   const missing = line => !rules.includes(line);
@@ -51,6 +75,10 @@ function addSiftDatadog(config) {
     rule => typeof rule === "string" && rule === `DOMAIN-KEYWORD,claude,${group}`,
     extraRoute
   );
+  insertAfter(
+    rule => typeof rule === "string" && rule === `PROCESS-NAME,Claude Code,${group}`,
+    [`PROCESS-NAME,Proton Mail,${group}`, `PROCESS-NAME,Proton Mail Bridge,${group}`]
+  );
   config.rules = rules;
 
   const dns = config.dns && typeof config.dns === "object" ? { ...config.dns } : {};
@@ -58,7 +86,7 @@ function addSiftDatadog(config) {
     ? { ...dns["nameserver-policy"] }
     : {};
   const claudeDns = ["https://1.1.1.1/dns-query", "https://8.8.8.8/dns-query"];
-  ["+.sift.com", "+.siftcience.com", "+.datadoghq.com"].forEach(key => {
+  ["+.sift.com", "+.siftcience.com", "+.datadoghq.com", ...protonSuffixes.map(domain => `+.${domain}`)].forEach(key => {
     if (!policy[key]) policy[key] = claudeDns;
   });
   dns["nameserver-policy"] = policy;
@@ -66,9 +94,81 @@ function addSiftDatadog(config) {
   return config;
 }
 
+
+function addGrokDeepSeek(config) {
+  const grok = "✖️ Grok";
+  const deepseek = "🐋 DeepSeek";
+  const geminiName = "✨ Gemini";
+  const direct = "🎯 全球直连";
+  const rulesBase = "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules";
+  const groups = Array.isArray(config["proxy-groups"]) ? config["proxy-groups"].slice() : [];
+  const gemini = groups.find(group => group && group.name === geminiName);
+  const geminiProxies = gemini && Array.isArray(gemini.proxies) ? gemini.proxies.slice() : [
+    "🇺🇸 美国节点",
+    "🏠🇺🇸 美国家宽",
+    "🇯🇵 日本节点",
+    "🏠🇯🇵 日本家宽",
+    "🇸🇬 狮城节点",
+    "🇨🇳 台湾节点",
+    "🚀 手动切换"
+  ];
+  const deepseekProxies = geminiProxies.includes(direct) ? geminiProxies.slice() : [...geminiProxies, direct];
+
+  function insertGroupAfter(afterName, name, proxies) {
+    if (groups.some(group => group && group.name === name)) return;
+    const entry = { name, type: "select", proxies };
+    const idx = groups.findIndex(group => group && group.name === afterName);
+    if (idx >= 0) groups.splice(idx + 1, 0, entry);
+    else groups.push(entry);
+  }
+
+  insertGroupAfter(geminiName, grok, geminiProxies);
+  insertGroupAfter(grok, deepseek, deepseekProxies);
+  config["proxy-groups"] = groups;
+
+  const providers = config["rule-providers"] && typeof config["rule-providers"] === "object"
+    ? { ...config["rule-providers"] }
+    : {};
+  const providerTemplate = (name, file) => ({
+    type: "http",
+    behavior: "classical",
+    format: "text",
+    path: `./rulesets/Proxy-Config-Sets/${name}.list`,
+    url: `${rulesBase}/${file}`,
+    interval: 86400
+  });
+  if (!providers.Grok) providers.Grok = providerTemplate("Grok", "grok.list");
+  if (!providers.DeepSeek) providers.DeepSeek = providerTemplate("DeepSeek", "deepseek.list");
+  config["rule-providers"] = providers;
+
+  const rules = Array.isArray(config.rules) ? config.rules.slice() : [];
+  const extra = [
+    `DOMAIN-SUFFIX,grok.com,${grok}`,
+    `DOMAIN-SUFFIX,grok.x.com,${grok}`,
+    `DOMAIN-SUFFIX,grokipedia.com,${grok}`,
+    `DOMAIN-SUFFIX,x.ai,${grok}`,
+    `RULE-SET,Grok,${grok}`,
+    `DOMAIN-SUFFIX,deepseek.com,${deepseek}`,
+    `DOMAIN-SUFFIX,deepseeksvc.com,${deepseek}`,
+    `DOMAIN-KEYWORD,deepseek,${deepseek}`,
+    `RULE-SET,DeepSeek,${deepseek}`
+  ];
+  const missing = extra.filter(line => !rules.includes(line));
+  if (missing.length > 0) {
+    let idx = -1;
+    for (let i = 0; i < rules.length; i += 1) {
+      if (rules[i] === `RULE-SET,Gemini,${geminiName}`) idx = i;
+    }
+    if (idx >= 0) rules.splice(idx + 1, 0, ...missing);
+    else rules.unshift(...missing);
+  }
+  config.rules = rules;
+  return config;
+}
+
 function main(config, profileName) {
   if (!config.proxies || config.proxies.length === 0) return config;
-  if (isClaudeAlreadyEnhanced(config)) return addSiftDatadog(config);
+  if (isClaudeAlreadyEnhanced(config)) return addGrokDeepSeek(addSiftDatadog(config));
 
   // 全局常量：策略组显示名、测速参数和自维护规则地址集中放这里。
   const TEST_URL = "http://cp.cloudflare.com/generate_204";
@@ -135,6 +235,8 @@ function main(config, profileName) {
     chatgpt: "🤖 ChatGPT",
     claude: "🧠 Claude",
     gemini: "✨ Gemini",
+    grok: "✖️ Grok",
+    deepseek: "🐋 DeepSeek",
     youtube: "📹 油管视频",
     netflix: "🎥 奈飞视频",
     netflixNode: "🎥 奈飞节点",
@@ -438,7 +540,8 @@ function main(config, profileName) {
   ]);
   pushSelectGroup(GROUP.ai, aiChoices);
 
-  // ChatGPT / Gemini 偏美国；Claude 只保留美国节点，避免 CN/HK/MO 出口。
+  // ChatGPT / Gemini / Grok 偏美国；Claude 只保留美国节点，避免 CN/HK/MO 出口。
+  // DeepSeek 同源候选，额外提供 🎯 全球直连。
   const usFirstAiChoices = getSafeChoices([
     "🇺🇸 美国节点",
     "🏠🇺🇸 美国家宽",
@@ -448,6 +551,7 @@ function main(config, profileName) {
     "🇨🇳 台湾节点",
     GROUP.manual
   ]);
+  const deepseekChoices = getSafeChoices([...usFirstAiChoices, GROUP.direct]);
   // Anthropic 不向中国大陆 / 香港 / 澳门提供服务，Claude 出口只保留美国节点。
   // 不用 url-test 组当默认，避免五个美国节点来回切 IP。
   const claudePinnedNodes = unique([
@@ -464,6 +568,8 @@ function main(config, profileName) {
   pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
   pushSelectGroup(GROUP.claude, claudeChoices);
   pushSelectGroup(GROUP.gemini, usFirstAiChoices);
+  pushSelectGroup(GROUP.grok, usFirstAiChoices);
+  pushSelectGroup(GROUP.deepseek, deepseekChoices);
 
   pushSelectGroup(GROUP.youtube, commonChoices);
 
@@ -546,6 +652,8 @@ function main(config, profileName) {
     "ChatGPT": `${RULES_BASE}/chatgpt.list`,
     "Claude": `${RULES_BASE}/claude.list`,
     "Gemini": `${RULES_BASE}/gemini.list`,
+    "Grok": `${RULES_BASE}/grok.list`,
+    "DeepSeek": `${RULES_BASE}/deepseek.list`,
     "AI": `${RULES_BASE}/ai.list`,
     "GitHub": `${RULES_BASE}/github.list`,
     "GoogleFCM": `${RULES_BASE}/google-fcm.list`,
@@ -599,6 +707,27 @@ function main(config, profileName) {
     "stripe.network",
     "link.com",
     "hcaptcha.com",
+    // Proton Mail / SimpleLogin hide-my-email: same US exit as Claude.
+    "proton.me",
+    "protonmail.com",
+    "protonmail.ch",
+    "pm.me",
+    "protonweb.com",
+    "protonstatus.com",
+    "protontech.ch",
+    "simplelogin.io",
+    "simplelogin.co",
+    "simplelogin.com",
+    "simplelogin.fr",
+    "slmail.me",
+    "passmail.com",
+    "passmail.net",
+    "passinbox.com",
+    "passfwd.com",
+    "aleeas.com",
+    "silomails.com",
+    "slmails.com",
+    "dralias.com",
     // Sift fraud SDK (suffix, not coffee's wide keyword "sift")
     "sift.com",
     "siftcience.com"
@@ -618,7 +747,9 @@ function main(config, profileName) {
     "Claude Helper (Plugin)",
     "Claude Helper (Renderer)",
     "claude",
-    "Claude Code"
+    "Claude Code",
+    "Proton Mail",
+    "Proton Mail Bridge"
   ];
   // ChatGPT.app 内置 Codex CLI，进程名是 Codex/codex。
   // 进程规则优先于域名，不能把 Codex 塞进 Claude，否则 chatgpt.com 会被整进程劫持。
@@ -737,6 +868,15 @@ function main(config, profileName) {
     `RULE-SET,Telegram,${GROUP.telegram}`,
     `RULE-SET,GitHub,${GROUP.github}`,
     `RULE-SET,Gemini,${GROUP.gemini}`,
+    `DOMAIN-SUFFIX,grok.com,${GROUP.grok}`,
+    `DOMAIN-SUFFIX,grok.x.com,${GROUP.grok}`,
+    `DOMAIN-SUFFIX,grokipedia.com,${GROUP.grok}`,
+    `DOMAIN-SUFFIX,x.ai,${GROUP.grok}`,
+    `RULE-SET,Grok,${GROUP.grok}`,
+    `DOMAIN-SUFFIX,deepseek.com,${GROUP.deepseek}`,
+    `DOMAIN-SUFFIX,deepseeksvc.com,${GROUP.deepseek}`,
+    `DOMAIN-KEYWORD,deepseek,${GROUP.deepseek}`,
+    `RULE-SET,DeepSeek,${GROUP.deepseek}`,
     `RULE-SET,AI,${GROUP.ai}`,
     `RULE-SET,NetEaseMusic,${GROUP.netease}`,
     `RULE-SET,Games,${GROUP.games}`,

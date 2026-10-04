@@ -1,0 +1,8 @@
+# Shared remote rule set
+# DeepSeek
+# Sources: v2fly/domain-list-community data/deepseek + VPSDance ai-proxy-rules deepseek.yaml
+# DOMAIN-KEYWORD,deepseek is extra: unique token, catches CDN hosts outside the two suffixes.
+
+DOMAIN-SUFFIX,deepseek.com
+DOMAIN-SUFFIX,deepseeksvc.com
+DOMAIN-KEYWORD,deepseek
