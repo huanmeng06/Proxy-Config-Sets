@@ -10,7 +10,7 @@ CMFA **不能跑 Verge JS**：不会自动改名，也不会给每个机场节�
 
 1. 用文本编辑器打开 `Clash Meta for Android 链式代理 特供版.yaml`。
 2. 把 `YOUR_CLASH_SUBSCRIBE_URL` 换成机场的 **Clash YAML** 订阅（和电脑端同一份）。
-3. 按下面模板取消注释，填自己的落地 SOCKS。**不要把账号提交进 Git。**
+3. 按下面模板加落地 SOCKS。`proxies:` 必须顶格，行首不能有空格，否则 Clash 会报 `mapping values are not allowed`。**不要把账号提交进 Git。**
 4. CMFA → 配置 → 从文件导入这份 YAML。
 5. 更新 `Airport` provider。Rule 模式。打开 TUN。
 6. `🔗 落地 ISP` 里应出现你的 ISP 节点。没有的话检查节点名是否包含 `ISP`。

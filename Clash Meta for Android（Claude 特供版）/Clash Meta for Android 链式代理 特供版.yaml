@@ -70,16 +70,17 @@ proxy-providers:
       interval: 3600
       lazy: true
 
-# 自己取消注释并填 ISP。名字必须带 ISP，才会进 🔗 落地 ISP。
-# proxies:
-#   - name: 美国 ISP 怀俄明州 夏延市
-#     type: socks5
-#     server: YOUR_ISP_HOST
-#     port: 1080
-#     username: YOUR_ISP_USER
-#     password: YOUR_ISP_PASS
-#     udp: true
-#     dialer-proxy: 🔗 链式节点
+# 落地 ISP：需要时把下面整段的行首 # 一起删掉。
+# proxies: 必须顶格。只删 # 却留下空格，会报 mapping values are not allowed。
+#proxies:
+#  - name: "美国 ISP 怀俄明州 夏延市"
+#    type: socks5
+#    server: YOUR_ISP_HOST
+#    port: 1080
+#    username: YOUR_ISP_USER
+#    password: YOUR_ISP_PASS
+#    udp: true
+#    dialer-proxy: "🔗 链式节点"
 
 dns:
   enable: true
