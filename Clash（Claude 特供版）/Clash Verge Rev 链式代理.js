@@ -246,10 +246,10 @@ function main(config, profileName) {
     return {
       name,
       type: "url-test",
-      url: TEST_URL,
+      url: options.url ?? TEST_URL,
       interval: options.interval ?? INTERVAL,
       tolerance: options.tolerance ?? TOLERANCE,
-      lazy: true,
+      lazy: options.lazy ?? true,
       timeout: options.timeout ?? 3000,
       "max-failed-times": 3,
       proxies: groupProxies
@@ -373,9 +373,18 @@ function main(config, profileName) {
 
   pushSelectGroup(GROUP.manual, allProxies);
 
-  // 两层链式结构紧跟在“手动切换”下面：前置层承载所有订阅节点，落地层只暴露 ISP。
+  // 两层链式结构紧跟在“手动切换”下面：前置自动选路，落地层只暴露 ISP。
+  // Clash url-test 测的是 本机→该前置→HTTP 目标，不是 ISP 机房内的单边 ping。
+  // 目标用落地 ISP 同机 80 端口（当前返回 502，expected-status 默认 * 仍算成功），近似「前置到美国 ISP」延迟。
+  // 不能拿 SOCKS 7134 当测速 URL。面板里点选节点仍可钉死。
   const frontProxyNames = subscriptionProxies.map(proxy => proxy.name);
-  pushSelectGroup(GROUP.front, ["DIRECT", ...frontProxyNames]);
+  proxyGroups.push(createUrlTestGroup(GROUP.front, ["DIRECT", ...frontProxyNames], {
+    url: `http://${staticIsp.server}/`,
+    interval: 300,
+    tolerance: 50,
+    timeout: 4000,
+    lazy: false
+  }));
   pushSelectGroup(GROUP.landing, [staticIsp.name]);
 
   pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node]);

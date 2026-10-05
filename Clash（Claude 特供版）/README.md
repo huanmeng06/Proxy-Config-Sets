@@ -27,6 +27,8 @@ Clash Verge 会**先跑全局 `Script.js`，再跑配置自己的扩展脚本**�
 - 默认 `nameserver` 仍是 `1.1.1.1` / `8.8.8.8` `#🔗 链式落地`，且 `respect-rules: false`。Claude、境外站、泄漏测试不会回落到本地/国内 DNS。
 - 只有 `geosite:cn` 走 `223.5.5.5` / `1.12.12.12` `#DIRECT`，用来修国内站直连卡顿。不要改成全局国内 DNS，也不要把 `DirectGroup` 塞进国内 DoH。
 
+`🔗 前置代理` 已改成 `url-test`：对落地 ISP **同机 HTTP 80** 测速（当前返回 502 也算成功），自动选「经该节点到美国 ISP」延迟最低的前置。测的是本机→前置→ISP，不是 ISP 机房内 ping。面板里点选仍可钉死；重新生成配置后生效。
+
 ## 文件
 
 - `Clash Verge Rev 链式代理.js`
