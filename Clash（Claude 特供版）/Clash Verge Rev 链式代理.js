@@ -9,6 +9,7 @@
 // Keep YepFast proxy-server-nameserver intact so node delay stays close to the official app.
 // Campus DNS is only used for captive portal / school / private domains.
 // Claude HTTP, default DoH, and leak-test domains exit via 🔗 链式节点 (airport → selected US ISP).
+// DoH URLs drop TYPE64/SVCB and TYPE65/HTTPS (disable-qtype-64/65 fragment).
 // 🔗 落地 ISP is the manual ISP selector only; 🧠 Claude is locked to the front hop.
 // Domain/UDP/fingerprint follow coffee + 特供 routing.
 // Do not send proxy-server-nameserver through the chain.
@@ -266,6 +267,15 @@ function main(config, profileName) {
   }
 
   const unique = (items) => [...new Set((items || []).filter(item => item != null && item !== ""))];
+
+  // Drop SVCB/HTTPS (TYPE64/65) on our DoH so Claude cannot learn h3/ECH from DNS.
+  // Official mihomo syntax is a nameserver URL fragment, NOT dns.disable-qtype-65 at root.
+  const QTYPE_DROP = "disable-qtype-64=true&disable-qtype-65=true";
+  const withQtypeDrop = (server) => {
+    if (typeof server !== "string" || /disable-qtype-6[45]=/.test(server)) return server;
+    return server.includes("#") ? `${server}&${QTYPE_DROP}` : `${server}#${QTYPE_DROP}`;
+  };
+
 
   function createUrlTestGroup(name, groupProxies, options = {}) {
     return {
@@ -814,7 +824,7 @@ function main(config, profileName) {
 
   const inheritedDns = config.dns || {};
   const campusDnsServers = getCampusDnsServers().map((server) =>
-    /#/.test(server) ? server : `${server}#DIRECT`
+    withQtypeDrop(/#/.test(server) ? server : `${server}#DIRECT`)
   );
   // 普通域名和 Claude 查询经 🔗 链式节点访问加密 DNS，与当前落地 ISP 出口对齐。
   // 国内 geosite:cn 才直连阿里/腾讯 DoH，避免解析到海外或跨网 CDN 后直连变慢。
@@ -823,11 +833,11 @@ function main(config, profileName) {
   const secureProxyDns = [
     `https://1.1.1.1/dns-query#${GROUP.front}`,
     `https://8.8.8.8/dns-query#${GROUP.front}`
-  ];
+  ].map(withQtypeDrop);
   const directChinaDns = [
     "https://223.5.5.5/dns-query#DIRECT",
     "https://1.12.12.12/dns-query#DIRECT"
-  ];
+  ].map(withQtypeDrop);
   const inheritedProxyServerNS = unique(inheritedDns["proxy-server-nameserver"]);
   const inheritedNameserver = unique(inheritedDns.nameserver);
   const inheritedDefaultNS = unique(inheritedDns["default-nameserver"]);

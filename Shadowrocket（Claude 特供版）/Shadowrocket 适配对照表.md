@@ -99,6 +99,7 @@ ChatGPT / Claude / Grok / DeepSeek **域名分流**已收到远端 `Rules/*.list
 | `default-nameserver` 223.5.5.5 / 223.6.6.6 / 119.29.29.29 / system | `dns-server` 写成这四个 | ✅ | 未认证校园网也能解析 |
 | `respect-rules: true` | 代理远程解析 + DIRECT 用系统 DNS | ⚠️ | 语义接近，不是同一实现 |
 | `ipv6: false` / `prefer-h3: false` | `ipv6=false`；H3 无开关 | ⚠️ | QUIC 只对 Claude 域 REJECT |
+| DoH `disable-qtype-64/65` 丢掉 SVCB/HTTPS | 无 | ❌ | SR 没有 TYPE64/TYPE65 过滤。关 IPv6 + Claude UDP REJECT **不等于**丢掉 HTTPS 记录里的 h3/ECH |
 | `use-hosts` / `use-system-hosts` | `[Host] localhost` | ⚠️ | |
 | fake-ip-filter：lan/local/captive/ntp/stun 游戏例外 | `skip-proxy` + `tun-excluded-routes` + captive DIRECT + DST-PORT 123 | ⚠️ | 没有 fake-ip 黑名单语法。`always-real-ip` 不是用户这份 default.conf 的键，未写 |
 | STUN 浏览器 REJECT，游戏 STUN 保留 | `reject.list` 三条浏览器 STUN | ✅ | 没有写 `stun.*.*` 全拦，避免误伤游戏 |

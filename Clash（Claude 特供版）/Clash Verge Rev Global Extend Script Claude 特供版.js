@@ -8,7 +8,17 @@
 // Campus DNS is only used for captive portal / school / private domains.
 // Claude: US-only exits (Anthropic blocks CN/HK/MO), keep that IP still, force Claude onto TCP, and send Claude DNS through the proxy.
 // Stripe/hCaptcha checkout must share that US exit, otherwise the upgrade page presents SGD.
+// DoH URLs drop TYPE64/SVCB and TYPE65/HTTPS (disable-qtype-64/65 fragment).
 
+
+
+// Drop SVCB/HTTPS (TYPE64/65) on our DoH so Claude cannot learn h3/ECH from DNS.
+// Official mihomo syntax is a nameserver URL fragment, NOT dns.disable-qtype-65 at root.
+const QTYPE_DROP = "disable-qtype-64=true&disable-qtype-65=true";
+const withQtypeDrop = (server) => {
+  if (typeof server !== "string" || /disable-qtype-6[45]=/.test(server)) return server;
+  return server.includes("#") ? `${server}&${QTYPE_DROP}` : `${server}#${QTYPE_DROP}`;
+};
 
 function isClaudeAlreadyEnhanced(config) {
   const rules = Array.isArray(config.rules) ? config.rules : [];
@@ -78,7 +88,7 @@ function addSiftDatadog(config) {
   const policy = dns["nameserver-policy"] && typeof dns["nameserver-policy"] === "object"
     ? { ...dns["nameserver-policy"] }
     : {};
-  const claudeDns = ["https://1.1.1.1/dns-query", "https://8.8.8.8/dns-query"];
+  const claudeDns = ["https://1.1.1.1/dns-query", "https://8.8.8.8/dns-query"].map(withQtypeDrop);
   ["+.sift.com", "+.siftcience.com", "+.datadoghq.com", ...protonSuffixes.map(domain => `+.${domain}`)].forEach(key => {
     if (!policy[key]) policy[key] = claudeDns;
   });
@@ -846,7 +856,7 @@ function main(config, profileName) {
   const claudeDnsServers = [
     "https://1.1.1.1/dns-query",
     "https://8.8.8.8/dns-query"
-  ];
+  ].map(withQtypeDrop);
   const claudeNameserverPolicy = Object.fromEntries([
     ...claudeSuffixes.map(domain => [`+.${domain}`, claudeDnsServers]),
     ...claudeExactDomains.map(domain => [domain, claudeDnsServers]),
@@ -951,11 +961,11 @@ function main(config, profileName) {
   };
 
   const inheritedDns = config.dns || {};
-  const campusDnsServers = getCampusDnsServers();
+  const campusDnsServers = getCampusDnsServers().map(withQtypeDrop);
   const directChinaDns = [
     "https://223.5.5.5/dns-query#DIRECT",
     "https://1.12.12.12/dns-query#DIRECT"
-  ];
+  ].map(withQtypeDrop);
   const inheritedProxyServerNS = unique(inheritedDns["proxy-server-nameserver"]);
   const inheritedNameserver = unique(inheritedDns.nameserver);
   const inheritedDefaultNS = unique(inheritedDns["default-nameserver"]);
