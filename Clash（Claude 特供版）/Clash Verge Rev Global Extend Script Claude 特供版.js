@@ -191,10 +191,7 @@ function foldRemainingInlineRuleSets(config) {
     "ipleak.net",
     "ipleak.com",
     "ippure.com",
-    "podcasts.apple.com",
-    "deepl.com",
-    "ping0.cc",
-    "tjcn.org"
+    "podcasts.apple.com"
   ];
 
   const next = rules.filter(rule => {
@@ -225,6 +222,9 @@ function foldRemainingInlineRuleSets(config) {
     rule => rule === "RULE-SET,Reject,REJECT" || rule.includes("RULE-SET,Claude,"),
     `RULE-SET,Leak,${leakGroup}`
   );
+  insertBefore(rule => rule.includes("RULE-SET,DirectGroup,"), `DOMAIN-SUFFIX,deepl.com,🎯 全球直连`);
+  insertBefore(rule => rule.includes("RULE-SET,DirectGroup,"), `DOMAIN-SUFFIX,ping0.cc,🎯 全球直连`);
+  insertBefore(rule => rule.includes("RULE-SET,DirectGroup,"), `DOMAIN-SUFFIX,tjcn.org,🎯 全球直连`);
   insertBefore(rule => rule.includes("RULE-SET,Bing,"), `RULE-SET,MicrosoftStore,${storeGroup}`);
   config.rules = next;
   return config;
@@ -882,6 +882,9 @@ function main(config, profileName) {
     // 商店 / 泄漏测试 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名、校园认证仍本地。
     `RULE-SET,Reject,REJECT`,
     `RULE-SET,Leak,${GROUP.node}`,
+    `DOMAIN-SUFFIX,deepl.com,${GROUP.direct}`,
+    `DOMAIN-SUFFIX,ping0.cc,${GROUP.direct}`,
+    `DOMAIN-SUFFIX,tjcn.org,${GROUP.direct}`,
     `RULE-SET,DirectGroup,${GROUP.direct}`,
     `RULE-SET,BanAD,${GROUP.ads}`,
     `RULE-SET,BanProgramAD,${GROUP.appClean}`,

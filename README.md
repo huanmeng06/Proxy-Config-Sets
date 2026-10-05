@@ -44,7 +44,7 @@ proxy.list               reject.list
 telegram.list            youtube.list
 ```
 
-`claude.list` 现在包含 Anthropic 核心域，以及必须同出口的 Stripe / Proton Mail / SimpleLogin / Sift / Datadog / coffee / Persona。日常 v3 脚本只引用 RULE-SET，更新 list 后会自动吃到这些域（日常 Claude 组不是 US-only）。`chatgpt.list` 含 `codexradar.com`。不要把 `protonvpn.com` 写进 Claude。 微软商店 / 泄漏测试 / 硬 REJECT 分别在 `microsoft-store.list`、`leak.list`、`reject.list`；`deepl.com` / `ping0.cc` / `tjcn.org` 并入 `direct.list`。UDP AND、进程名、校园认证仍写在客户端。
+`claude.list` 现在包含 Anthropic 核心域，以及必须同出口的 Stripe / Proton Mail / SimpleLogin / Sift / Datadog / coffee / Persona。日常 v3 脚本只引用 RULE-SET，更新 list 后会自动吃到这些域（日常 Claude 组不是 US-only）。`chatgpt.list` 含 `codexradar.com`。不要把 `protonvpn.com` 写进 Claude。 微软商店 / 泄漏测试 / 硬 REJECT 分别在 `microsoft-store.list`、`leak.list`、`reject.list`。`deepl.com` / `ping0.cc` / `tjcn.org` 仍写在客户端内联直连。UDP AND、进程名、校园认证仍写在客户端。
 
 公共规则建议只使用三端兼容格式：
 

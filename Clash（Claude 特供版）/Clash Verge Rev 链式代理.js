@@ -679,6 +679,9 @@ function main(config, profileName) {
     // 商店 / 泄漏测试 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名、校园认证仍本地。
     `RULE-SET,Reject,REJECT`,
     `RULE-SET,Leak,${GROUP.landing}`,
+    `DOMAIN-SUFFIX,deepl.com,${GROUP.direct}`,
+    `DOMAIN-SUFFIX,ping0.cc,${GROUP.direct}`,
+    `DOMAIN-SUFFIX,tjcn.org,${GROUP.direct}`,
     `RULE-SET,DirectGroup,${GROUP.direct}`,
     `RULE-SET,BanAD,${GROUP.ads}`,
     `RULE-SET,BanProgramAD,${GROUP.appClean}`,

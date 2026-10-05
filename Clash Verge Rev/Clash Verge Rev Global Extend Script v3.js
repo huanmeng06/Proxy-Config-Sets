@@ -448,6 +448,9 @@ function main(config) {
   // 规则顺序很重要：私有/直连和特殊覆盖在前，泛匹配放后。
   config["rules"] = [
     `RULE-SET,Leak,${GROUP.node}`,
+    `DOMAIN-SUFFIX,deepl.com,${GROUP.direct}`,
+    `DOMAIN-SUFFIX,ping0.cc,${GROUP.direct}`,
+    `DOMAIN-SUFFIX,tjcn.org,${GROUP.direct}`,
     `RULE-SET,DirectGroup,${GROUP.direct}`,
     `RULE-SET,BanAD,${GROUP.ads}`,
     `RULE-SET,BanProgramAD,${GROUP.appClean}`,
