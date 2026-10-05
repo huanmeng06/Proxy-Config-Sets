@@ -11,6 +11,8 @@
 // Claude HTTP, default DoH, and leak-test domains exit via 🔗 链式节点 (airport → selected US ISP).
 // DoH URLs drop TYPE64/SVCB and TYPE65/HTTPS (disable-qtype-64/65 fragment).
 // 🔗 落地 ISP is the manual ISP selector only; 🧠 Claude is locked to the front hop.
+// Do not hardcode landing SOCKS in this script. Add it in Clash Verge Merge/extra proxies
+// (name must contain ISP, e.g. 🔗 🇺🇸 美国 ISP).
 // Domain/UDP/fingerprint follow coffee + 特供 routing.
 // Do not send proxy-server-nameserver through the chain.
 
@@ -185,33 +187,19 @@ function main(config, profileName) {
     { emoji: "🌍", regex: /(Anycast|\bBGP\b|Global)/i }
   ];
 
-  // 落地 ISP 列表：以后多买就往这里追加。落地组手动选其中一个。
-  // 当前 mihomo 已删除 relay，改成 ISP 克隆 + dialer-proxy=机场节点。
-  const landingIsps = [
-    {
-      name: "🔗 🇺🇸 美国 ISP",
-      type: "socks5",
-      server: "72.1.130.241",
-      port: 7134,
-      username: "xwsawxzo",
-      password: "f8p3xnqux6sl",
-      udp: false
-    }
-  ];
-  const landingIspKeys = new Set(
-    landingIsps.map(isp => `${isp.server}:${Number(isp.port)}`)
-  );
-  const isLandingIspProxy = (proxy) =>
-    Boolean(proxy) && landingIspKeys.has(`${proxy.server}:${Number(proxy.port)}`);
-  const isGeneratedViaClone = (proxy) => {
-    if (!proxy) return false;
-    const name = String(proxy.name || "");
-    return (
-      name.startsWith("via ") ||
-      name.startsWith("↪ ") ||
-      (isLandingIspProxy(proxy) && Boolean(proxy["dialer-proxy"]))
-    );
+  // 落地 ISP 不要写进脚本。在 Clash Verge 的 Merge / 额外节点自己加 SOCKS，
+  // 名字里带 ISP 即可，例如「🔗 🇺🇸 美国 ISP」。脚本只识别现有节点并做链式克隆。
+  const isGeneratedViaName = (name) => {
+    const n = String(name || "");
+    return n.startsWith("via ") || n.startsWith("↪ ");
   };
+  const isLandingIspName = (name) => {
+    const n = String(name || "");
+    if (!n || isGeneratedViaName(n)) return false;
+    return /ISP/i.test(n);
+  };
+  const isLandingIspProxy = (proxy) => Boolean(proxy) && isLandingIspName(proxy.name);
+  const isGeneratedViaClone = (proxy) => Boolean(proxy) && isGeneratedViaName(proxy.name);
 
   // 清掉上一轮脚本注入的 ↪ / via 克隆，避免再次进入地区组。
   config.proxies = config.proxies.filter(proxy => !isGeneratedViaClone(proxy));
@@ -238,15 +226,11 @@ function main(config, profileName) {
     proxy.name = badges ? `${badges} ${cleanName}` : cleanName;
   });
 
+  const landingIsps = (config.proxies || []).filter(isLandingIspProxy);
   landingIsps.forEach((isp) => {
-    const existing = config.proxies.find(proxy => proxy.name === isp.name);
-    if (existing) {
-      Object.assign(existing, isp);
-      delete existing["dialer-proxy"];
-    } else {
-      config.proxies.push({ ...isp });
-    }
+    delete isp["dialer-proxy"];
   });
+
 
   // 地区组 / 手动切换只用机场节点，不要把落地 ISP 算进去。
   const subscriptionProxies = config.proxies.filter(proxy => !isLandingIspProxy(proxy));
@@ -415,43 +399,51 @@ function main(config, profileName) {
   // url-test 的 tolerance=0：50ms 容差会把 240 和 250 当成一样而不切换。
   const CHAIN_VIA_PREFIX = "↪ ";
   const frontDialers = [...subscriptionProxies.map(node => node.name), "DIRECT"];
-  const viaName = (dialerName, isp) =>
-    landingIsps.length === 1
-      ? `${CHAIN_VIA_PREFIX}${dialerName}`
-      : `${CHAIN_VIA_PREFIX}${dialerName} → ${isp.name}`;
-  const cloneIspVia = (isp, dialerName) => ({
-    name: viaName(dialerName, isp),
-    type: isp.type,
-    server: isp.server,
-    port: isp.port,
-    username: isp.username,
-    password: isp.password,
-    udp: isp.udp,
-    "dialer-proxy": dialerName
-  });
-  const chainViaProxies = [];
-  const ispUrlTestGroups = landingIsps.map(isp => {
-    const viaNames = frontDialers.map(dialerName => {
-      const clone = cloneIspVia(isp, dialerName);
-      chainViaProxies.push(clone);
-      return clone.name;
-    });
-    const groupName = landingIsps.length === 1 ? GROUP.front : `${GROUP.front} · ${isp.name}`;
-    return createUrlTestGroup(groupName, viaNames, {
+  if (landingIsps.length === 0) {
+    // 还没加落地 SOCKS：组先留着，避免空 proxies 让 mihomo 校验失败。
+    pushSelectGroup(GROUP.landing, [GROUP.node, "DIRECT"]);
+    proxyGroups.push(createUrlTestGroup(GROUP.front, frontDialers, {
       url: TEST_URL,
       interval: 300,
       tolerance: 0,
       timeout: 8000,
       lazy: false
-    });
-  });
-  config.proxies.push(...chainViaProxies);
-  pushSelectGroup(GROUP.landing, landingIsps.map(isp => isp.name));
-  if (landingIsps.length === 1) {
-    proxyGroups.push(...ispUrlTestGroups);
+    }));
   } else {
-    proxyGroups.push(createSelectGroup(GROUP.front, ispUrlTestGroups.map(group => group.name)));
-    proxyGroups.push(...ispUrlTestGroups);
+    const viaName = (dialerName, isp) =>
+      landingIsps.length === 1
+        ? `${CHAIN_VIA_PREFIX}${dialerName}`
+        : `${CHAIN_VIA_PREFIX}${dialerName} → ${isp.name}`;
+    const cloneIspVia = (isp, dialerName) => {
+      const clone = { ...isp };
+      clone.name = viaName(dialerName, isp);
+      clone["dialer-proxy"] = dialerName;
+      return clone;
+    };
+    const chainViaProxies = [];
+    const ispUrlTestGroups = landingIsps.map(isp => {
+      const viaNames = frontDialers.map(dialerName => {
+        const clone = cloneIspVia(isp, dialerName);
+        chainViaProxies.push(clone);
+        return clone.name;
+      });
+      const groupName = landingIsps.length === 1 ? GROUP.front : `${GROUP.front} · ${isp.name}`;
+      return createUrlTestGroup(groupName, viaNames, {
+        url: TEST_URL,
+        interval: 300,
+        tolerance: 0,
+        timeout: 8000,
+        lazy: false
+      });
+    });
+    config.proxies.push(...chainViaProxies);
+    pushSelectGroup(GROUP.landing, landingIsps.map(isp => isp.name));
+    if (landingIsps.length === 1) {
+      proxyGroups.push(...ispUrlTestGroups);
+    } else {
+      proxyGroups.push(createSelectGroup(GROUP.front, ispUrlTestGroups.map(group => group.name)));
+      proxyGroups.push(...ispUrlTestGroups);
+    }
   }
 
   pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node]);

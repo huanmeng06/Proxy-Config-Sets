@@ -33,7 +33,7 @@ Clash 的 `🔗 链式节点` 是机场→ISP 克隆测速。Shadowrocket 做不
 
 1. Shadowrocket 里备份当前配置
 2. 隔空投送 `Shadowrocket Config Claude 链式代理 特供版.conf`，用 Shadowrocket 打开
-3. 订阅如果丢了，从旧配置把订阅拷回来。仓库里的 ISP 节点是占位符，请用电脑端 `Clash Verge Rev 链式代理.js` 里的 `landingIsps` 填好再导入
+3. 订阅如果丢了，从旧配置把订阅拷回来。仓库里的 ISP 节点是占位符，请按 Clash Verge 里已添加的落地 SOCKS（或本机未跟踪文件）填好 `YOUR_ISP_*` 再导入，不要从脚本抄账号
 4. 打开 `🔗 🇺🇸 美国 ISP` →「代理通过」→ `🔗 链式节点` → 保存
 5. `🧠 Claude` 和 `🚀 节点选择` 应已是 `🔗 落地 ISP`
 6. Wi-Fi DNS 保持自动。时区 Los Angeles。关 Private Relay
