@@ -172,7 +172,7 @@ function foldRemainingInlineRuleSets(config) {
   config["rule-providers"] = providers;
 
   const rules = Array.isArray(config.rules) ? config.rules.slice() : [];
-  const leakGroupNames = ["🔗 链式前置", "🔗 前置代理", "🔗 落地 ISP", "🔗 链式落地"];
+  const leakGroupNames = ["🔗 链式节点", "🔗 链式前置", "🔗 前置代理", "🔗 落地 ISP", "🔗 链式落地"];
   const leakGroup = leakGroupNames.find(name =>
     rules.some(rule => typeof rule === "string" && rule.includes(name))
   ) || "🚀 节点选择";

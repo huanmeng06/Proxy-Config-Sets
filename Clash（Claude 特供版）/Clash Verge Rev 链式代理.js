@@ -8,7 +8,7 @@
 // Clash Verge Rev global extend script.
 // Keep YepFast proxy-server-nameserver intact so node delay stays close to the official app.
 // Campus DNS is only used for captive portal / school / private domains.
-// Claude HTTP, default DoH, and leak-test domains exit via 🔗 链式前置 (airport → selected US ISP).
+// Claude HTTP, default DoH, and leak-test domains exit via 🔗 链式节点 (airport → selected US ISP).
 // 🔗 落地 ISP is the manual ISP selector only; 🧠 Claude is locked to the front hop.
 // Domain/UDP/fingerprint follow coffee + 特供 routing.
 // Do not send proxy-server-nameserver through the chain.
@@ -75,7 +75,7 @@ function main(config, profileName) {
     direct: "🎯 全球直连",
     download: "⏬ 下载专用",
     telegram: "📲 电报消息",
-    front: "🔗 链式前置",
+    front: "🔗 链式节点",
     landing: "🔗 落地 ISP",
     github: "🐙 GITHUB",
     ai: "💬 Ai平台",
@@ -383,7 +383,7 @@ function main(config, profileName) {
   const allProxies = proxies.length > 0 ? proxies : ["DIRECT"];
   const proxyGroups = [];
   const pushSelectGroup = (name, choices) => {
-    // 已包含链式前置的组统一排序：节点选择之后、地区节点之前。
+    // 已包含链式节点的组统一排序：节点选择之后、地区节点之前。
     let orderedChoices = choices;
     if (choices.includes(GROUP.front)) {
       orderedChoices = choices.filter(choice => choice !== GROUP.front);
@@ -401,7 +401,7 @@ function main(config, profileName) {
   // 两层链式：落地手动选 ISP。每个「机场节点 × ISP」克隆一份落地 SOCKS，
   // dialer-proxy=该机场节点，前置对这些克隆做 url-test（generate_204）。
   // 测速走 本机→机场→当前 ISP→网页。不要打 ISP:80，那个 HTTP 口会全超时。
-  // ↪ DIRECT 放最后。多个 ISP 时，链式前置变成这些测速组的选择器。
+  // ↪ DIRECT 放最后。多个 ISP 时，链式节点变成这些测速组的选择器。
   // url-test 的 tolerance=0：50ms 容差会把 240 和 250 当成一样而不切换。
   const CHAIN_VIA_PREFIX = "↪ ";
   const frontDialers = [...subscriptionProxies.map(node => node.name), "DIRECT"];
@@ -500,7 +500,7 @@ function main(config, profileName) {
   ]);
   const deepseekChoices = getSafeChoices([...usFirstAiChoices, GROUP.direct]);
   pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
-  // coffee 固定出口：🧠 Claude 只走 🔗 链式前置（第二跳是落地 ISP 里当前选中的节点）。
+  // coffee 固定出口：🧠 Claude 只走 🔗 链式节点（第二跳是落地 ISP 里当前选中的节点）。
   const claudeChoices = getSafeChoices([GROUP.front]);
   pushSelectGroup(GROUP.claude, claudeChoices);
   pushSelectGroup(GROUP.gemini, usFirstAiChoices);
@@ -717,7 +717,7 @@ function main(config, profileName) {
     "codex"
   ];
 
-  // 规则顺序很重要：Claude 必须在广告/直连/GFW 通配之前；Leak/DoH IP 仍走链式前置。
+  // 规则顺序很重要：Claude 必须在广告/直连/GFW 通配之前；Leak/DoH IP 仍走链式节点。
   config["rules"] = [
     `IP-CIDR,10.0.0.0/8,DIRECT,no-resolve`,
     `IP-CIDR,100.64.0.0/10,DIRECT,no-resolve`,
@@ -816,7 +816,7 @@ function main(config, profileName) {
   const campusDnsServers = getCampusDnsServers().map((server) =>
     /#/.test(server) ? server : `${server}#DIRECT`
   );
-  // 普通域名和 Claude 查询经 🔗 链式前置访问加密 DNS，与当前落地 ISP 出口对齐。
+  // 普通域名和 Claude 查询经 🔗 链式节点访问加密 DNS，与当前落地 ISP 出口对齐。
   // 国内 geosite:cn 才直连阿里/腾讯 DoH，避免解析到海外或跨网 CDN 后直连变慢。
   // 不把 DirectGroup / 泄漏测试 / Claude 放进国内 DoH，防止境外域名 DNS 泄漏到大陆。
   // 节点自身的域名解析仍使用独立 bootstrap DNS，避免代理建立前出现循环依赖。
@@ -846,14 +846,14 @@ function main(config, profileName) {
     ["+.datadoghq.com", secureProxyDns]
   ]);
 
-  // 校园认证/内网必须走当前 Wi-Fi 的 DHCP DNS + DIRECT，不能进链式前置。
+  // 校园认证/内网必须走当前 Wi-Fi 的 DHCP DNS + DIRECT，不能进链式节点。
   const campusPolicy = {
     ...Object.fromEntries(CAPTIVE_PORTAL_EXACT.map(domain => [domain, campusDnsServers])),
     ...Object.fromEntries(CAPTIVE_PORTAL_SUFFIXES.map(domain => [`+.${domain}`, campusDnsServers])),
     "geosite:private": campusDnsServers
   };
 
-  // 泄漏测试站即使被 geosite:cn 误伤，也强制走链式前置 DoH。
+  // 泄漏测试站即使被 geosite:cn 误伤，也强制走链式节点 DoH。
   const leakNameserverPolicy = Object.fromEntries([
     "dnsleaktest.com",
     "browserleaks.com",
@@ -882,7 +882,7 @@ function main(config, profileName) {
     "proxy-server-nameserver": inheritedProxyServerNS.length > 0
       ? inheritedProxyServerNS
       : directChinaDns,
-    // 不沿用订阅中未绑定代理的 nameserver；默认查询和 Claude 都经链式前置 DoH。
+    // 不沿用订阅中未绑定代理的 nameserver；默认查询和 Claude 都经链式节点 DoH。
     // 仅 geosite:cn 用国内 DoH #DIRECT。Claude / 泄漏测试 / 校园 policy 放后面覆盖。
     "nameserver": secureProxyDns,
     "nameserver-policy": {
