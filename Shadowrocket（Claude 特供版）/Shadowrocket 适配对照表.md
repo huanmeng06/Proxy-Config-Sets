@@ -25,7 +25,7 @@ Clash 不能在 Shadowrocket 里复制 `dialer-proxy` 克隆，所以**同名组
 | Claude / 泄漏 / 节点选择走 **链式节点** | Claude / 泄漏 / 节点选择走 **落地 ISP** | SR 必须选落地，ISP 节点再「代理通过」链式节点，才会出美国 ISP |
 | 克隆前缀 `↪ 日本 02` | 无克隆 | 配置文件写不了 per-node 代理通过 |
 
-导入链式特供后：**打开 `🔗 🇺🇸 美国 ISP` →「代理通过」→ `🔗 链式节点` → 保存**。不要把 Home / Claude 直接切到 `🔗 链式节点`，那会跳过 ISP。
+导入链式特供后：自己加落地 SOCKS（名字带 ISP），「代理通过」选 `🔗 链式节点`。配置不自带美国 ISP。不要把 Home / Claude 直接切到 `🔗 链式节点`，那会跳过落地。
 
 地区组测速已改成和 Clash 一样：`http://www.gstatic.com/generate_204`，`interval=3600`，`tolerance=50`。链式节点组 `interval=300`，`tolerance=50`。
 
@@ -199,7 +199,7 @@ ChatGPT / Claude / Grok / DeepSeek **域名分流**已收到远端 `Rules/*.list
 1. Shadowrocket 里备份当前配置。
 2. 隔空投送 `Shadowrocket Config Claude 链式代理 特供版.conf`，用 **Shadowrocket** 打开。
 3. 订阅节点如果丢了，从旧配置把订阅拷回来。
-4. 打开 `🔗 🇺🇸 美国 ISP` →「代理通过」→ `🔗 链式节点` → 保存。
+4. 自己加落地 SOCKS（名字带 ISP）→「代理通过」→ `🔗 链式节点` → 保存。不要用仓库里的占位节点。
 5. 确认 `🧠 Claude` 和 `🚀 节点选择` 是 `🔗 落地 ISP`。不要直接选 `🔗 链式节点`。
 6. Wi-Fi DNS = 自动。Private Relay 关。时区 Los Angeles。English (US) 第一。
 

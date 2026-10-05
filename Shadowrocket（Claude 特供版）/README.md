@@ -25,16 +25,16 @@ Clash 的 `🔗 链式节点` 是机场→ISP 克隆测速。Shadowrocket 做不
 
 1. `🔗 链式节点`：机场 url-test（给 ISP 当前置）
 2. `🔗 落地 ISP`：手动选 ISP，也是 Claude / 泄漏 / 节点选择要选的出口
-3. 打开本地节点 `🔗 🇺🇸 美国 ISP`，「代理通过」选 `🔗 链式节点` 并保存
+3. 自己添加落地 SOCKS（名字带 ISP），「代理通过」选 `🔗 链式节点` 并保存。配置不自带美国 ISP。
 
-不要把 Home 或 Claude 直接切到 `🔗 链式节点`，那会跳过美国 ISP。
+不要把 Home 或 Claude 直接切到 `🔗 链式节点`，那会跳过落地。
 
 ## 导入链式特供
 
 1. Shadowrocket 里备份当前配置
 2. 隔空投送 `Shadowrocket Config Claude 链式代理 特供版.conf`，用 Shadowrocket 打开
-3. 订阅如果丢了，从旧配置把订阅拷回来。仓库里的 ISP 节点是占位符，请按 Clash Verge 里已添加的落地 SOCKS（或本机未跟踪文件）填好 `YOUR_ISP_*` 再导入，不要从脚本抄账号
-4. 打开 `🔗 🇺🇸 美国 ISP` →「代理通过」→ `🔗 链式节点` → 保存
+3. 订阅如果丢了，从旧配置把订阅拷回来。仓库不带 ISP 节点，自己在 Shadowrocket 里加 SOCKS（名字带 ISP）
+4. 打开该落地节点 →「代理通过」→ `🔗 链式节点` → 保存
 5. `🧠 Claude` 和 `🚀 节点选择` 应已是 `🔗 落地 ISP`
 6. Wi-Fi DNS 保持自动。时区 Los Angeles。关 Private Relay
 7. 更新远程规则

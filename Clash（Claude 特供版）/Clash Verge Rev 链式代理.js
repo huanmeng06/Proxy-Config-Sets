@@ -11,8 +11,8 @@
 // Claude HTTP, default DoH, and leak-test domains exit via 🔗 链式节点 (airport → selected US ISP).
 // DoH URLs drop TYPE64/SVCB and TYPE65/HTTPS (disable-qtype-64/65 fragment).
 // 🔗 落地 ISP is the manual ISP selector only; 🧠 Claude is locked to the front hop.
-// Do not hardcode landing SOCKS in this script. Add it in Clash Verge Merge/extra proxies
-// (original name must contain ISP). Script rewrites it to 🔗🇺🇸 美国 … [ISP].
+// Do not ship or inject any landing SOCKS. If Clash extra proxies has a name containing ISP,
+// rewrite it to 🔗🇺🇸 美国 … [ISP] and put only those into 🔗 落地 ISP.
 // Domain/UDP/fingerprint follow coffee + 特供 routing.
 // Do not send proxy-server-nameserver through the chain.
 
@@ -187,8 +187,7 @@ function main(config, profileName) {
     { emoji: "🌍", regex: /(Anycast|\bBGP\b|Global)/i }
   ];
 
-  // 落地 ISP 不要写进脚本。在 Clash Verge 的 Merge / 额外节点自己加 SOCKS，
-  // 原名带 ISP 才会进 🔗 落地 ISP，并改成「🔗🇺🇸 美国 怀俄明州 夏延市 [ISP]」。
+  // 不自带落地 ISP。只有额外节点/Merge 里原名带 ISP 的 SOCKS 才进落地组并改名。
   const LANDING_REGION_BY_FLAG = {
     "🇭🇰": "香港",
     "🇨🇳": "台湾",
