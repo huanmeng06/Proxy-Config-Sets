@@ -8,8 +8,9 @@
 // Clash Verge Rev global extend script.
 // Keep YepFast proxy-server-nameserver intact so node delay stays close to the official app.
 // Campus DNS is only used for captive portal / school / private domains.
-// Claude HTTP, default DoH, and leak-test domains exit via 🔗 链式落地 (airport front → US ISP).
-// 🧠 Claude is locked to that landing hop. Domain/UDP/fingerprint follow coffee + 特供 routing.
+// Claude HTTP, default DoH, and leak-test domains exit via 🔗 前置代理 (airport → selected US ISP).
+// 🔗 链式落地 is the manual ISP selector only; 🧠 Claude is locked to the front hop.
+// Domain/UDP/fingerprint follow coffee + 特供 routing.
 // Do not send proxy-server-nameserver through the chain.
 
 function main(config, profileName) {
@@ -183,7 +184,35 @@ function main(config, profileName) {
     { emoji: "🌍", regex: /(Anycast|\bBGP\b|Global)/i }
   ];
 
+  // 落地 ISP 列表：以后多买就往这里追加。落地组手动选其中一个。
+  // 不要给 ISP 节点加 dialer-proxy；第二跳由 hidden relay 接到 🔗 链式落地。
+  const landingIsps = [
+    {
+      name: "🔗 🇺🇸 美国 ISP",
+      type: "socks5",
+      server: "72.1.130.241",
+      port: 7134,
+      username: "xwsawxzo",
+      password: "f8p3xnqux6sl",
+      udp: false
+    }
+  ];
+  const landingIspKeys = new Set(
+    landingIsps.map(isp => `${isp.server}:${Number(isp.port)}`)
+  );
+  const isLandingIspProxy = (proxy) =>
+    Boolean(proxy) && landingIspKeys.has(`${proxy.server}:${Number(proxy.port)}`);
+  const isGeneratedViaClone = (proxy) =>
+    Boolean(proxy) && (
+      String(proxy.name || "").startsWith("via ") ||
+      (isLandingIspProxy(proxy) && Boolean(proxy["dialer-proxy"]))
+    );
+
+  // 清掉上一轮脚本注入的 via 克隆，避免再次进入地区组。
+  config.proxies = config.proxies.filter(proxy => !isGeneratedViaClone(proxy));
+
   config.proxies.forEach(proxy => {
+    if (isLandingIspProxy(proxy)) return;
     const cleanName = proxy.name
       .replace(/[^\u4e00-\u9fa5a-zA-Z0-9\s\-\.\_\(\)\[\]\|\u00d7]/g, "")
       .trim();
@@ -204,26 +233,18 @@ function main(config, profileName) {
     proxy.name = badges ? `${badges} ${cleanName}` : cleanName;
   });
 
-  const staticIsp = {
-    name: "🔗 🇺🇸 美国 ISP",
-    type: "socks5",
-    server: "72.1.130.241",
-    port: 7134,
-    username: "xwsawxzo",
-    password: "f8p3xnqux6sl",
-    udp: false
-  };
-  const isStaticIspProxy = (proxy) =>
-    proxy.server === staticIsp.server && Number(proxy.port) === Number(staticIsp.port);
-  const subscriptionProxies = config.proxies.filter(proxy => !isStaticIspProxy(proxy));
-  const existingStaticIsp = config.proxies.find(proxy => proxy.name === staticIsp.name);
-  if (existingStaticIsp) {
-    Object.assign(existingStaticIsp, staticIsp);
-  } else {
-    config.proxies.push(staticIsp);
-  }
+  landingIsps.forEach((isp) => {
+    const existing = config.proxies.find(proxy => proxy.name === isp.name);
+    if (existing) {
+      Object.assign(existing, isp);
+      delete existing["dialer-proxy"];
+    } else {
+      config.proxies.push({ ...isp });
+    }
+  });
 
-  // 地区组 / 手动切换只用机场节点，不要把落地 ISP 和链式 via 克隆算进去。
+  // 地区组 / 手动切换只用机场节点，不要把落地 ISP 算进去。
+  const subscriptionProxies = config.proxies.filter(proxy => !isLandingIspProxy(proxy));
   const proxies = subscriptionProxies.map(p => p.name);
 
   function getProxiesByRegex(regexStr) {
@@ -258,6 +279,15 @@ function main(config, profileName) {
 
   function createSelectGroup(name, groupProxies) {
     return { name, type: "select", proxies: groupProxies };
+  }
+
+  function createRelayGroup(name, groupProxies, options = {}) {
+    return {
+      name,
+      type: "relay",
+      hidden: options.hidden !== false,
+      proxies: groupProxies
+    };
   }
 
   // 地区组按实际节点动态生成；普通节点和家宽节点分开测速。
@@ -358,61 +388,49 @@ function main(config, profileName) {
   const allProxies = proxies.length > 0 ? proxies : ["DIRECT"];
   const proxyGroups = [];
   const pushSelectGroup = (name, choices) => {
-    // 已包含链式代理的组统一排序：节点选择之后、地区节点之前。
+    // 已包含链式前置的组统一排序：节点选择之后、地区节点之前。
     let orderedChoices = choices;
-    if (choices.includes(GROUP.landing)) {
-      orderedChoices = choices.filter(choice => choice !== GROUP.landing);
+    if (choices.includes(GROUP.front)) {
+      orderedChoices = choices.filter(choice => choice !== GROUP.front);
       const nodeIndex = orderedChoices.indexOf(GROUP.node);
       const regionIndex = orderedChoices.findIndex(choice => availableRegionGroupNames.includes(choice));
       const insertIndex = nodeIndex >= 0 ? nodeIndex + 1 : (regionIndex >= 0 ? regionIndex : 0);
-      orderedChoices.splice(insertIndex, 0, GROUP.landing);
+      orderedChoices.splice(insertIndex, 0, GROUP.front);
     }
     proxyGroups.push(createSelectGroup(name, orderedChoices));
   };
-  pushSelectGroup(GROUP.node, [...availableRegionGroupNames, GROUP.manual, GROUP.landing, "DIRECT"]);
+  pushSelectGroup(GROUP.node, [...availableRegionGroupNames, GROUP.manual, GROUP.front, "DIRECT"]);
 
   pushSelectGroup(GROUP.manual, allProxies);
 
-  // 两层链式：为每个机场节点克隆一份落地 ISP（dialer-proxy=该节点），前置对这些克隆做 url-test。
-  // 测速走完整链路 本机→前置→ISP SOCKS→generate_204，不再打 ISP:80（机场到那个 HTTP 口会全超时）。
-  // 落地只指向前置，Claude 仍锁落地。via DIRECT 放最后，避免测速完成前误选直连。
+  // 两层链式：落地手动选 ISP；每个机场节点做 hidden relay `via 节点` = [节点, 落地]。
+  // 前置对这些 relay 做 url-test（generate_204）。Clash 不能单独测 hop RTT，
+  // 但同一 ISP 下机场节点的相对延迟就是「到当前落地 ISP」的排序。
+  // 不要打 ISP:80，机场到那个 HTTP 口会全超时。via DIRECT 放最后。
   const CHAIN_VIA_PREFIX = "via ";
-  const chainViaProxies = [
-    ...subscriptionProxies.map(node => ({
-      name: `${CHAIN_VIA_PREFIX}${node.name}`,
-      type: staticIsp.type,
-      server: staticIsp.server,
-      port: staticIsp.port,
-      username: staticIsp.username,
-      password: staticIsp.password,
-      udp: staticIsp.udp,
-      "dialer-proxy": node.name
-    })),
-    {
-      name: `${CHAIN_VIA_PREFIX}DIRECT`,
-      type: staticIsp.type,
-      server: staticIsp.server,
-      port: staticIsp.port,
-      username: staticIsp.username,
-      password: staticIsp.password,
-      udp: staticIsp.udp,
-      "dialer-proxy": "DIRECT"
-    }
+  const chainViaNames = [
+    ...subscriptionProxies.map(node => `${CHAIN_VIA_PREFIX}${node.name}`),
+    `${CHAIN_VIA_PREFIX}DIRECT`
   ];
-  config.proxies.push(...chainViaProxies);
-  proxyGroups.push(createUrlTestGroup(GROUP.front, chainViaProxies.map(proxy => proxy.name), {
+  const chainViaGroups = [
+    ...subscriptionProxies.map(node =>
+      createRelayGroup(`${CHAIN_VIA_PREFIX}${node.name}`, [node.name, GROUP.landing])
+    ),
+    createRelayGroup(`${CHAIN_VIA_PREFIX}DIRECT`, ["DIRECT", GROUP.landing])
+  ];
+  pushSelectGroup(GROUP.landing, landingIsps.map(isp => isp.name));
+  proxyGroups.push(createUrlTestGroup(GROUP.front, chainViaNames, {
     url: TEST_URL,
     interval: 300,
     tolerance: 50,
     timeout: 8000,
     lazy: false
   }));
-  pushSelectGroup(GROUP.landing, [GROUP.front]);
 
   pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node]);
 
-  const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, GROUP.landing, "DIRECT"];
-  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, GROUP.direct, GROUP.landing]);
+  const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, GROUP.front, "DIRECT"];
+  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, GROUP.direct, GROUP.front, GROUP.landing]);
   const isAvailableChoice = (name) => builtInChoices.has(name) || availableRegionGroupNames.includes(name);
 
   const getSafeChoices = (preferred) => {
@@ -433,7 +451,7 @@ function main(config, profileName) {
     "🇨🇳 台湾节点",
     GROUP.download,
     GROUP.direct,
-    GROUP.landing
+    GROUP.front
   ]);
   pushSelectGroup(GROUP.github, githubChoices);
 
@@ -447,7 +465,7 @@ function main(config, profileName) {
     "🇨🇳 台湾节点",
     "🏠🇨🇳 台湾家宽",
     GROUP.manual,
-    GROUP.landing
+    GROUP.front
   ]);
   pushSelectGroup(GROUP.ai, aiChoices);
 
@@ -461,12 +479,12 @@ function main(config, profileName) {
     "🇸🇬 狮城节点",
     "🇨🇳 台湾节点",
     GROUP.manual,
-    GROUP.landing
+    GROUP.front
   ]);
   const deepseekChoices = getSafeChoices([...usFirstAiChoices, GROUP.direct]);
   pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
-  // coffee 固定出口：🧠 Claude 只走 🔗 链式落地。
-  const claudeChoices = getSafeChoices([GROUP.landing]);
+  // coffee 固定出口：🧠 Claude 只走 🔗 前置代理（第二跳是落地里当前选中的 ISP）。
+  const claudeChoices = getSafeChoices([GROUP.front]);
   pushSelectGroup(GROUP.claude, claudeChoices);
   pushSelectGroup(GROUP.gemini, usFirstAiChoices);
   pushSelectGroup(GROUP.grok, usFirstAiChoices);
@@ -485,7 +503,7 @@ function main(config, profileName) {
 
   pushSelectGroup(
     GROUP.domesticMedia,
-    getSafeChoices(["DIRECT", "🇭🇰 香港节点", "🇨🇳 台湾节点", "🇸🇬 狮城节点", "🇯🇵 日本节点", GROUP.manual, GROUP.landing])
+    getSafeChoices(["DIRECT", "🇭🇰 香港节点", "🇨🇳 台湾节点", "🇸🇬 狮城节点", "🇯🇵 日本节点", GROUP.manual, GROUP.front])
   );
 
   const defaultServiceChoices = getSafeChoices([
@@ -498,7 +516,7 @@ function main(config, profileName) {
     "🇯🇵 日本节点",
     "🇰🇷 韩国节点",
     GROUP.manual,
-    GROUP.landing
+    GROUP.front
   ]);
 
   pushSelectGroup(GROUP.googleFcm, defaultServiceChoices);
@@ -511,7 +529,7 @@ function main(config, profileName) {
     "🇨🇳 台湾节点",
     "🇺🇸 美国节点",
     GROUP.manual,
-    GROUP.landing,
+    GROUP.front,
     "DIRECT"
   ]);
   pushSelectGroup(GROUP.microsoftStore, microsoftStoreChoices);
@@ -528,10 +546,12 @@ function main(config, profileName) {
   // 收尾策略组：广告/净化/漏网之鱼。
   pushSelectGroup(GROUP.ads, ["REJECT", "DIRECT"]);
   pushSelectGroup(GROUP.appClean, ["REJECT", "DIRECT"]);
-  pushSelectGroup(GROUP.fallback, [GROUP.node, "DIRECT", ...availableRegionGroupNames, GROUP.manual, GROUP.landing]);
+  pushSelectGroup(GROUP.fallback, [GROUP.node, "DIRECT", ...availableRegionGroupNames, GROUP.manual, GROUP.front]);
 
   // 动态地区组放在后面，主服务入口更集中。
   proxyGroups.push(...regionGroups);
+  // hidden relay 放最后：即使客户端不认 hidden，也不会插在常用组中间。
+  proxyGroups.push(...chainViaGroups);
 
   config["proxy-groups"] = proxyGroups;
   config["unified-delay"] = true;
@@ -674,7 +694,7 @@ function main(config, profileName) {
     "codex"
   ];
 
-  // 规则顺序很重要：Claude 必须在广告/直连/GFW 通配之前；Leak/DoH IP 仍走链式落地。
+  // 规则顺序很重要：Claude 必须在广告/直连/GFW 通配之前；Leak/DoH IP 仍走链式前置。
   config["rules"] = [
     `IP-CIDR,10.0.0.0/8,DIRECT,no-resolve`,
     `IP-CIDR,100.64.0.0/10,DIRECT,no-resolve`,
@@ -709,7 +729,7 @@ function main(config, profileName) {
 
     // 商店 / 泄漏测试 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名、校园认证仍本地。
     `RULE-SET,Reject,REJECT`,
-    `RULE-SET,Leak,${GROUP.landing}`,
+    `RULE-SET,Leak,${GROUP.front}`,
     `DOMAIN-SUFFIX,deepl.com,${GROUP.direct}`,
     `DOMAIN-SUFFIX,ping0.cc,${GROUP.direct}`,
     `DOMAIN-SUFFIX,tjcn.org,${GROUP.direct}`,
@@ -773,13 +793,13 @@ function main(config, profileName) {
   const campusDnsServers = getCampusDnsServers().map((server) =>
     /#/.test(server) ? server : `${server}#DIRECT`
   );
-  // 普通域名和 Claude 查询经 🔗 链式落地访问加密 DNS，与美国 ISP 出口对齐。
+  // 普通域名和 Claude 查询经 🔗 前置代理访问加密 DNS，与当前落地 ISP 出口对齐。
   // 国内 geosite:cn 才直连阿里/腾讯 DoH，避免解析到海外或跨网 CDN 后直连变慢。
   // 不把 DirectGroup / 泄漏测试 / Claude 放进国内 DoH，防止境外域名 DNS 泄漏到大陆。
   // 节点自身的域名解析仍使用独立 bootstrap DNS，避免代理建立前出现循环依赖。
   const secureProxyDns = [
-    `https://1.1.1.1/dns-query#${GROUP.landing}`,
-    `https://8.8.8.8/dns-query#${GROUP.landing}`
+    `https://1.1.1.1/dns-query#${GROUP.front}`,
+    `https://8.8.8.8/dns-query#${GROUP.front}`
   ];
   const directChinaDns = [
     "https://223.5.5.5/dns-query#DIRECT",
@@ -803,14 +823,14 @@ function main(config, profileName) {
     ["+.datadoghq.com", secureProxyDns]
   ]);
 
-  // 校园认证/内网必须走当前 Wi-Fi 的 DHCP DNS + DIRECT，不能进链式落地。
+  // 校园认证/内网必须走当前 Wi-Fi 的 DHCP DNS + DIRECT，不能进链式前置。
   const campusPolicy = {
     ...Object.fromEntries(CAPTIVE_PORTAL_EXACT.map(domain => [domain, campusDnsServers])),
     ...Object.fromEntries(CAPTIVE_PORTAL_SUFFIXES.map(domain => [`+.${domain}`, campusDnsServers])),
     "geosite:private": campusDnsServers
   };
 
-  // 泄漏测试站即使被 geosite:cn 误伤，也强制走链式落地 DoH。
+  // 泄漏测试站即使被 geosite:cn 误伤，也强制走链式前置 DoH。
   const leakNameserverPolicy = Object.fromEntries([
     "dnsleaktest.com",
     "browserleaks.com",
@@ -839,7 +859,7 @@ function main(config, profileName) {
     "proxy-server-nameserver": inheritedProxyServerNS.length > 0
       ? inheritedProxyServerNS
       : directChinaDns,
-    // 不沿用订阅中未绑定代理的 nameserver；默认查询和 Claude 都经链式落地 DoH。
+    // 不沿用订阅中未绑定代理的 nameserver；默认查询和 Claude 都经链式前置 DoH。
     // 仅 geosite:cn 用国内 DoH #DIRECT。Claude / 泄漏测试 / 校园 policy 放后面覆盖。
     "nameserver": secureProxyDns,
     "nameserver-policy": {

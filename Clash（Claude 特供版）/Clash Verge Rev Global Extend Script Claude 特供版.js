@@ -172,9 +172,11 @@ function foldRemainingInlineRuleSets(config) {
   config["rule-providers"] = providers;
 
   const rules = Array.isArray(config.rules) ? config.rules.slice() : [];
-  const leakGroup = rules.some(rule => typeof rule === "string" && rule.includes("🔗 链式落地"))
-    ? "🔗 链式落地"
-    : "🚀 节点选择";
+  const leakGroup = rules.some(rule => typeof rule === "string" && rule.includes("🔗 前置代理"))
+    ? "🔗 前置代理"
+    : rules.some(rule => typeof rule === "string" && rule.includes("🔗 链式落地"))
+      ? "🔗 链式落地"
+      : "🚀 节点选择";
   const storeGroup = "Ⓜ️ 微软商店";
   const foldedNeedles = [
     "huanling.icu",
