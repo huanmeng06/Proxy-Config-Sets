@@ -812,6 +812,12 @@ function main(config, profileName) {
     ...CAPTIVE_PORTAL_EXACT.map(domain => `DOMAIN,${domain},DIRECT`),
     ...CAPTIVE_PORTAL_SUFFIXES.map(domain => `DOMAIN-SUFFIX,${domain},DIRECT`),
 
+    // Browser WebRTC STUN. Google uses stun/stun1-4.l.google.com:19302/19305.
+    // Domain names live in reject.list; these ports catch IP-literal STUN after DNS.
+    // Do not reject UDP 3478 (Discord / Telegram / games).
+    `AND,((NETWORK,udp),(DST-PORT,19302)),REJECT`,
+    `AND,((NETWORK,udp),(DST-PORT,19305)),REJECT`,
+
     // Claude/Anthropic: UDP/QUIC 强制失败回落到 TCP；进程规则只覆盖 Claude，不覆盖 ChatGPT/Codex。
     ...claudeSuffixes.map(domain => `AND,((DOMAIN-SUFFIX,${domain}),(NETWORK,udp)),REJECT`),
     ...claudeExactDomains.map(domain => `AND,((DOMAIN,${domain}),(NETWORK,udp)),REJECT`),

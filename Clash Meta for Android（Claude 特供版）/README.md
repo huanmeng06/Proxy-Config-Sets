@@ -60,7 +60,7 @@ proxies:
 - `Leak`（`1.1.1.1` / dnsleaktest / ipleak / ippure 等）走 `🔗 落地 ISP`。
 - 微软商店 RULE-SET 紧挨在 Bing / Microsoft 之前。
 - `deepl.com` / `ping0.cc` / `tjcn.org` 仍内联直连。
-- Claude / Proton / Stripe 等 UDP AND REJECT，逼回 TCP。
+- Claude / Proton / Stripe 等 UDP AND REJECT，逼回 TCP。浏览器 WebRTC STUN（`stun`/`stun1-4.l.google.com`、Cloudflare）走 `reject.list`；Clash 额外拒 UDP 19302/19305，避免按 IP 打 STUN 泄露。游戏 STUN（QQ/任天堂等）不拦。
 - Android 包名：`com.anthropic.claude`、`ch.protonmail.android` → Claude；`com.openai.chatgpt` → ChatGPT；认证页 `com.android.captiveportallogin` → DIRECT。
 - DNS：`respect-rules: false`。默认 DoH `1.1.1.1` / `8.8.8.8` `#🔗 落地 ISP`，并丢掉 qtype 64/65。只有 `geosite:cn`、内网和校园认证走国内 DoH `#DIRECT`。节点解析用现成 YepFast `tcp://121.41.16.76:8081`（可改）。没有 `dhcp://en0`。
 - TUN 不写 `stack` / `device`。sniffer 关掉 QUIC。`find-process-mode: always`。

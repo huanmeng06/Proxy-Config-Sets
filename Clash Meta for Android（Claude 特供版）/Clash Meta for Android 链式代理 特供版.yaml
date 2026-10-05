@@ -2584,6 +2584,8 @@ rules:
   - 'DOMAIN-SUFFIX,jegotrip.com.cn,DIRECT'
   - 'DOMAIN-SUFFIX,icitymobile.mobi,DIRECT'
   - 'PROCESS-NAME,com.android.captiveportallogin,DIRECT'
+  - 'AND,((NETWORK,udp),(DST-PORT,19302)),REJECT'
+  - 'AND,((NETWORK,udp),(DST-PORT,19305)),REJECT'
   - 'AND,((DOMAIN-SUFFIX,anthropic.com),(NETWORK,udp)),REJECT'
   - 'AND,((DOMAIN-SUFFIX,claude.ai),(NETWORK,udp)),REJECT'
   - 'AND,((DOMAIN-SUFFIX,claude.com),(NETWORK,udp)),REJECT'

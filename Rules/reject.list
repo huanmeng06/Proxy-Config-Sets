@@ -1,8 +1,19 @@
 # Shared remote rule set
 # Hard REJECT: domestic Claude relay + browser WebRTC STUN.
-# Game-host STUN stays in client fake-ip-filter, not here.
+# Keep DOMAIN-only so Quantumult X / Shadowrocket can parse it.
+# Game-host STUN (stun.qq.com / nintendo / xbox) stays in client fake-ip-filter, not here.
+# Google STUN ports 19302/19305 are rejected in Clash YAML/JS, not here.
 
 DOMAIN-SUFFIX,huanling.icu
+
+# Chrome / Firefox / Safari leak tests. stun1-4 are siblings, not subdomains of stun.l.google.com.
 DOMAIN-SUFFIX,stun.l.google.com
+DOMAIN,stun1.l.google.com
+DOMAIN,stun2.l.google.com
+DOMAIN,stun3.l.google.com
+DOMAIN,stun4.l.google.com
 DOMAIN-SUFFIX,stun.cloudflare.com
 DOMAIN,stun.services.mozilla.com
+DOMAIN-SUFFIX,stunprotocol.org
+DOMAIN,global.stun.twilio.com
+DOMAIN-SUFFIX,stun.nextcloud.com
