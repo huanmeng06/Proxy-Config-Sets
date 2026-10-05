@@ -211,8 +211,7 @@ function main(config, profileName) {
     port: 7134,
     username: "xwsawxzo",
     password: "f8p3xnqux6sl",
-    udp: false,
-    "dialer-proxy": GROUP.front
+    udp: false
   };
   const isStaticIspProxy = (proxy) =>
     proxy.server === staticIsp.server && Number(proxy.port) === Number(staticIsp.port);
@@ -224,7 +223,8 @@ function main(config, profileName) {
     config.proxies.push(staticIsp);
   }
 
-  const proxies = config.proxies.map(p => p.name);
+  // 地区组 / 手动切换只用机场节点，不要把落地 ISP 和链式 via 克隆算进去。
+  const proxies = subscriptionProxies.map(p => p.name);
 
   function getProxiesByRegex(regexStr) {
     return proxies.filter(p => new RegExp(regexStr, "i").test(p));
@@ -373,19 +373,41 @@ function main(config, profileName) {
 
   pushSelectGroup(GROUP.manual, allProxies);
 
-  // 两层链式结构紧跟在“手动切换”下面：前置自动选路，落地层只暴露 ISP。
-  // Clash url-test 测的是 本机→该前置→HTTP 目标，不是 ISP 机房内的单边 ping。
-  // 目标用落地 ISP 同机 80 端口（当前返回 502，expected-status 默认 * 仍算成功），近似「前置到美国 ISP」延迟。
-  // 不能拿 SOCKS 7134 当测速 URL。面板里点选节点仍可钉死。
-  const frontProxyNames = subscriptionProxies.map(proxy => proxy.name);
-  proxyGroups.push(createUrlTestGroup(GROUP.front, ["DIRECT", ...frontProxyNames], {
-    url: `http://${staticIsp.server}/`,
+  // 两层链式：为每个机场节点克隆一份落地 ISP（dialer-proxy=该节点），前置对这些克隆做 url-test。
+  // 测速走完整链路 本机→前置→ISP SOCKS→generate_204，不再打 ISP:80（机场到那个 HTTP 口会全超时）。
+  // 落地只指向前置，Claude 仍锁落地。via DIRECT 放最后，避免测速完成前误选直连。
+  const CHAIN_VIA_PREFIX = "via ";
+  const chainViaProxies = [
+    ...subscriptionProxies.map(node => ({
+      name: `${CHAIN_VIA_PREFIX}${node.name}`,
+      type: staticIsp.type,
+      server: staticIsp.server,
+      port: staticIsp.port,
+      username: staticIsp.username,
+      password: staticIsp.password,
+      udp: staticIsp.udp,
+      "dialer-proxy": node.name
+    })),
+    {
+      name: `${CHAIN_VIA_PREFIX}DIRECT`,
+      type: staticIsp.type,
+      server: staticIsp.server,
+      port: staticIsp.port,
+      username: staticIsp.username,
+      password: staticIsp.password,
+      udp: staticIsp.udp,
+      "dialer-proxy": "DIRECT"
+    }
+  ];
+  config.proxies.push(...chainViaProxies);
+  proxyGroups.push(createUrlTestGroup(GROUP.front, chainViaProxies.map(proxy => proxy.name), {
+    url: TEST_URL,
     interval: 300,
     tolerance: 50,
-    timeout: 4000,
+    timeout: 8000,
     lazy: false
   }));
-  pushSelectGroup(GROUP.landing, [staticIsp.name]);
+  pushSelectGroup(GROUP.landing, [GROUP.front]);
 
   pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node]);
 
