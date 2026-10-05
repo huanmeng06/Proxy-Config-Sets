@@ -703,7 +703,15 @@ function main(config, profileName) {
   config["keep-alive-interval"] = 30;
   config["disable-keep-alive"] = false;
   config["find-process-mode"] = "always";
-  config["global-client-fingerprint"] = "chrome";
+  delete config["global-client-fingerprint"];
+  const utlsTypes = new Set(["vmess", "vless", "trojan", "anytls"]);
+  config.proxies.forEach(proxy => {
+    if (!proxy || proxy["client-fingerprint"]) return;
+    const type = String(proxy.type || "").toLowerCase();
+    if (utlsTypes.has(type) || proxy.tls === true || proxy["reality-opts"]) {
+      proxy["client-fingerprint"] = "chrome";
+    }
+  });
   config.profile = {
     ...(config.profile || {}),
     "store-selected": true,

@@ -185,7 +185,7 @@ function main(config, profileName) {
   ];
 
   // 落地 ISP 列表：以后多买就往这里追加。落地组手动选其中一个。
-  // 不要给 ISP 节点加 dialer-proxy；第二跳由 hidden relay 接到 🔗 链式落地。
+  // 当前 mihomo 已删除 relay，改成 ISP 克隆 + dialer-proxy=机场节点。
   const landingIsps = [
     {
       name: "🔗 🇺🇸 美国 ISP",
@@ -279,15 +279,6 @@ function main(config, profileName) {
 
   function createSelectGroup(name, groupProxies) {
     return { name, type: "select", proxies: groupProxies };
-  }
-
-  function createRelayGroup(name, groupProxies, options = {}) {
-    return {
-      name,
-      type: "relay",
-      hidden: options.hidden !== false,
-      proxies: groupProxies
-    };
   }
 
   // 地区组按实际节点动态生成；普通节点和家宽节点分开测速。
@@ -403,29 +394,50 @@ function main(config, profileName) {
 
   pushSelectGroup(GROUP.manual, allProxies);
 
-  // 两层链式：落地手动选 ISP；每个机场节点做 hidden relay `via 节点` = [节点, 落地]。
-  // 前置对这些 relay 做 url-test（generate_204）。Clash 不能单独测 hop RTT，
-  // 但同一 ISP 下机场节点的相对延迟就是「到当前落地 ISP」的排序。
-  // 不要打 ISP:80，机场到那个 HTTP 口会全超时。via DIRECT 放最后。
+  // 两层链式：落地手动选 ISP。每个「机场节点 × ISP」克隆一份落地 SOCKS，
+  // dialer-proxy=该机场节点，前置对这些克隆做 url-test（generate_204）。
+  // 测速走 本机→机场→当前 ISP→网页。不要打 ISP:80，那个 HTTP 口会全超时。
+  // via DIRECT 放最后。多个 ISP 时，前置变成这些测速组的选择器。
   const CHAIN_VIA_PREFIX = "via ";
-  const chainViaNames = [
-    ...subscriptionProxies.map(node => `${CHAIN_VIA_PREFIX}${node.name}`),
-    `${CHAIN_VIA_PREFIX}DIRECT`
-  ];
-  const chainViaGroups = [
-    ...subscriptionProxies.map(node =>
-      createRelayGroup(`${CHAIN_VIA_PREFIX}${node.name}`, [node.name, GROUP.landing])
-    ),
-    createRelayGroup(`${CHAIN_VIA_PREFIX}DIRECT`, ["DIRECT", GROUP.landing])
-  ];
+  const frontDialers = [...subscriptionProxies.map(node => node.name), "DIRECT"];
+  const viaName = (dialerName, isp) =>
+    landingIsps.length === 1
+      ? `${CHAIN_VIA_PREFIX}${dialerName}`
+      : `${CHAIN_VIA_PREFIX}${dialerName} → ${isp.name}`;
+  const cloneIspVia = (isp, dialerName) => ({
+    name: viaName(dialerName, isp),
+    type: isp.type,
+    server: isp.server,
+    port: isp.port,
+    username: isp.username,
+    password: isp.password,
+    udp: isp.udp,
+    "dialer-proxy": dialerName
+  });
+  const chainViaProxies = [];
+  const ispUrlTestGroups = landingIsps.map(isp => {
+    const viaNames = frontDialers.map(dialerName => {
+      const clone = cloneIspVia(isp, dialerName);
+      chainViaProxies.push(clone);
+      return clone.name;
+    });
+    const groupName = landingIsps.length === 1 ? GROUP.front : `${GROUP.front} · ${isp.name}`;
+    return createUrlTestGroup(groupName, viaNames, {
+      url: TEST_URL,
+      interval: 300,
+      tolerance: 50,
+      timeout: 8000,
+      lazy: false
+    });
+  });
+  config.proxies.push(...chainViaProxies);
   pushSelectGroup(GROUP.landing, landingIsps.map(isp => isp.name));
-  proxyGroups.push(createUrlTestGroup(GROUP.front, chainViaNames, {
-    url: TEST_URL,
-    interval: 300,
-    tolerance: 50,
-    timeout: 8000,
-    lazy: false
-  }));
+  if (landingIsps.length === 1) {
+    proxyGroups.push(...ispUrlTestGroups);
+  } else {
+    proxyGroups.push(createSelectGroup(GROUP.front, ispUrlTestGroups.map(group => group.name)));
+    proxyGroups.push(...ispUrlTestGroups);
+  }
 
   pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node]);
 
@@ -550,8 +562,6 @@ function main(config, profileName) {
 
   // 动态地区组放在后面，主服务入口更集中。
   proxyGroups.push(...regionGroups);
-  // hidden relay 放最后：即使客户端不认 hidden，也不会插在常用组中间。
-  proxyGroups.push(...chainViaGroups);
 
   config["proxy-groups"] = proxyGroups;
   config["unified-delay"] = true;
@@ -560,7 +570,15 @@ function main(config, profileName) {
   config["keep-alive-interval"] = 30;
   config["disable-keep-alive"] = false;
   config["find-process-mode"] = "always";
-  config["global-client-fingerprint"] = "chrome";
+  delete config["global-client-fingerprint"];
+  const utlsTypes = new Set(["vmess", "vless", "trojan", "anytls"]);
+  config.proxies.forEach(proxy => {
+    if (!proxy || proxy["client-fingerprint"]) return;
+    const type = String(proxy.type || "").toLowerCase();
+    if (utlsTypes.has(type) || proxy.tls === true || proxy["reality-opts"]) {
+      proxy["client-fingerprint"] = "chrome";
+    }
+  });
   config.profile = {
     ...(config.profile || {}),
     "store-selected": true,

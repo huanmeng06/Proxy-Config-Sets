@@ -27,7 +27,7 @@ Clash Verge 会**先跑全局 `Script.js`，再跑配置自己的扩展脚本**�
 - 默认 `nameserver` 仍是 `1.1.1.1` / `8.8.8.8` `#🔗 前置代理`，且 `respect-rules: false`。Claude、境外站、泄漏测试不会回落到本地/国内 DNS。
 - 只有 `geosite:cn` 走 `223.5.5.5` / `1.12.12.12` `#DIRECT`，用来修国内站直连卡顿。不要改成全局国内 DNS，也不要把 `DirectGroup` 塞进国内 DoH。
 
-`🔗 链式落地` 是 ISP 选择器，以后多买就往脚本顶部的 `landingIsps` 加。`🔗 前置代理` 给每个机场节点做 hidden relay `via 节点名` = `[节点, 落地]`，用 `generate_204` 测 **本机→机场→当前落地 ISP→网页**。Clash 不能单独测 hop RTT，但同一 ISP 下的相对延迟就是到这个 ISP 的排序。换 ISP 后点一次前置测速（或等 300 秒）。不要打 ISP:80。Claude / 泄漏测试 / 默认 DoH 走前置，不走落地。
+`🔗 链式落地` 是 ISP 选择器，以后多买就往脚本顶部的 `landingIsps` 加。当前 mihomo 已删除 `relay`，改成给每个机场节点克隆一份落地 SOCKS（`via 节点名`，`dialer-proxy=该节点`），`🔗 前置代理` 对这些克隆做 url-test，测 **本机→机场→该 ISP→网页**。不要打 ISP:80。多个 ISP 时会生成「前置 · ISP」测速组。Claude / 泄漏测试 / 默认 DoH 走前置。也已去掉 `global-client-fingerprint`，改在节点上写 `client-fingerprint`。
 
 ## 文件
 
