@@ -412,6 +412,7 @@ function main(config) {
     "GitHub": `${RULES_BASE}/github.list`,
     "GoogleFCM": `${RULES_BASE}/google-fcm.list`,
     "Apple": `${RULES_BASE}/apple.list`,
+    "MicrosoftStore": `${RULES_BASE}/microsoft-store.list`,
     "Bing": `${RULES_BASE}/microsoft-bing.list`,
     "Microsoft": `${RULES_BASE}/microsoft.list`,
     "OneDrive": `${RULES_BASE}/microsoft-drive.list`,
@@ -424,6 +425,7 @@ function main(config) {
     "YouTube": `${RULES_BASE}/youtube.list`,
     "Telegram": `${RULES_BASE}/telegram.list`,
     "Games": `${RULES_BASE}/games.list`,
+    "Leak": `${RULES_BASE}/leak.list`,
     "DirectGroup": `${RULES_BASE}/direct.list`,
     "ProxyGFWlist": `${RULES_BASE}/proxy.list`
     // END GENERATED RULE PROVIDERS
@@ -445,33 +447,14 @@ function main(config) {
 
   // 规则顺序很重要：私有/直连和特殊覆盖在前，泛匹配放后。
   config["rules"] = [
-    `DOMAIN-SUFFIX,ipleak.net,${GROUP.node}`,
-    `DOMAIN-SUFFIX,dnsleaktest.com,${GROUP.node}`,
-    `DOMAIN-SUFFIX,deepl.com,${GROUP.direct}`,
-    `DOMAIN-SUFFIX,ping0.cc,${GROUP.direct}`,
-    `DOMAIN-SUFFIX,tjcn.org,${GROUP.direct}`,
+    `RULE-SET,Leak,${GROUP.node}`,
     `RULE-SET,DirectGroup,${GROUP.direct}`,
     `RULE-SET,BanAD,${GROUP.ads}`,
     `RULE-SET,BanProgramAD,${GROUP.appClean}`,
     `RULE-SET,GoogleFCM,${GROUP.googleFcm}`,
 
     // 商店和更新域名要先于通用 Microsoft 规则匹配。
-    `DOMAIN-SUFFIX,mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,store.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,storeedgefd.dsx.mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,displaycatalog.mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,purchase.md.mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,licensing.mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,store-images.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,storecatalogrevocation.storequality.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,dl.delivery.mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,delivery.mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,prod.do.dsp.mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,windowsupdate.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,login.live.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,account.live.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,auth.gfx.ms,${GROUP.microsoftStore}`,
-
+    `RULE-SET,MicrosoftStore,${GROUP.microsoftStore}`,
     `RULE-SET,Bing,${GROUP.microsoftBing}`,
     `RULE-SET,OneDrive,${GROUP.microsoftDrive}`,
     `RULE-SET,Microsoft,${GROUP.microsoft}`,

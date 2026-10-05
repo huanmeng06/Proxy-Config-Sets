@@ -6,7 +6,7 @@
 - 仓库里的 `Clash Verge Rev/Clash Verge Rev Global Extend Script v3.js`
 
 ChatGPT / Claude / Grok / DeepSeek 的**域名分流**走远端 `Rules/*.list`。
-脚本里只保留规则集做不到的部分：UDP AND REJECT、进程名、nameserver-policy。
+脚本里只保留规则集做不到的部分：UDP AND REJECT、进程名、nameserver-policy、校园认证。商店 / 泄漏测试 / 硬 REJECT 已进远端 RULE-SET。
 Stripe / Proton Mail / SimpleLogin / Sift / Datadog / coffee / Persona 已写入 `Rules/claude.list`。
 
 ## 这份脚本怎么跑

@@ -152,9 +152,87 @@ function addGrokDeepSeek(config) {
   return config;
 }
 
+
+function foldRemainingInlineRuleSets(config) {
+  const rulesBase = "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules";
+  const providers = config["rule-providers"] && typeof config["rule-providers"] === "object"
+    ? { ...config["rule-providers"] }
+    : {};
+  const providerTemplate = (name, file) => ({
+    type: "http",
+    behavior: "classical",
+    format: "text",
+    path: `./rulesets/Proxy-Config-Sets/${name}.list`,
+    url: `${rulesBase}/${file}`,
+    interval: 86400
+  });
+  if (!providers.Reject) providers.Reject = providerTemplate("Reject", "reject.list");
+  if (!providers.Leak) providers.Leak = providerTemplate("Leak", "leak.list");
+  if (!providers.MicrosoftStore) providers.MicrosoftStore = providerTemplate("MicrosoftStore", "microsoft-store.list");
+  config["rule-providers"] = providers;
+
+  const rules = Array.isArray(config.rules) ? config.rules.slice() : [];
+  const leakGroup = rules.some(rule => typeof rule === "string" && rule.includes("🔗 链式落地"))
+    ? "🔗 链式落地"
+    : "🚀 节点选择";
+  const storeGroup = "Ⓜ️ 微软商店";
+  const foldedNeedles = [
+    "huanling.icu",
+    "stun.l.google.com",
+    "stun.cloudflare.com",
+    "stun.services.mozilla.com",
+    "1.1.1.1/32",
+    "1.0.0.1/32",
+    "8.8.8.8/32",
+    "8.8.4.4/32",
+    "dnsleaktest.com",
+    "browserleaks.com",
+    "browserleaks.org",
+    "ipleak.net",
+    "ipleak.com",
+    "ippure.com",
+    "podcasts.apple.com",
+    "deepl.com",
+    "ping0.cc",
+    "tjcn.org"
+  ];
+
+  const next = rules.filter(rule => {
+    if (typeof rule !== "string" || rule.startsWith("RULE-SET,")) return true;
+    if (rule.includes(storeGroup)) return false;
+    return !foldedNeedles.some(needle => rule.includes(needle));
+  });
+
+  function insertAfter(matcher, line) {
+    if (next.includes(line)) return;
+    let idx = -1;
+    for (let i = 0; i < next.length; i += 1) {
+      if (typeof next[i] === "string" && matcher(next[i])) idx = i;
+    }
+    if (idx >= 0) next.splice(idx + 1, 0, line);
+    else next.unshift(line);
+  }
+
+  function insertBefore(matcher, line) {
+    if (next.includes(line)) return;
+    const idx = next.findIndex(rule => typeof rule === "string" && matcher(rule));
+    if (idx >= 0) next.splice(idx, 0, line);
+    else next.push(line);
+  }
+
+  insertAfter(rule => rule.includes("RULE-SET,Claude,"), "RULE-SET,Reject,REJECT");
+  insertAfter(
+    rule => rule === "RULE-SET,Reject,REJECT" || rule.includes("RULE-SET,Claude,"),
+    `RULE-SET,Leak,${leakGroup}`
+  );
+  insertBefore(rule => rule.includes("RULE-SET,Bing,"), `RULE-SET,MicrosoftStore,${storeGroup}`);
+  config.rules = next;
+  return config;
+}
+
 function main(config, profileName) {
   if (!config.proxies || config.proxies.length === 0) return config;
-  if (isClaudeAlreadyEnhanced(config)) return addGrokDeepSeek(addSiftDatadog(config));
+  if (isClaudeAlreadyEnhanced(config)) return foldRemainingInlineRuleSets(addGrokDeepSeek(addSiftDatadog(config)));
 
   // 全局常量：策略组显示名、测速参数和自维护规则地址集中放这里。
   const TEST_URL = "http://cp.cloudflare.com/generate_204";
@@ -644,6 +722,7 @@ function main(config, profileName) {
     "GitHub": `${RULES_BASE}/github.list`,
     "GoogleFCM": `${RULES_BASE}/google-fcm.list`,
     "Apple": `${RULES_BASE}/apple.list`,
+    "MicrosoftStore": `${RULES_BASE}/microsoft-store.list`,
     "Bing": `${RULES_BASE}/microsoft-bing.list`,
     "Microsoft": `${RULES_BASE}/microsoft.list`,
     "OneDrive": `${RULES_BASE}/microsoft-drive.list`,
@@ -656,6 +735,8 @@ function main(config, profileName) {
     "YouTube": `${RULES_BASE}/youtube.list`,
     "Telegram": `${RULES_BASE}/telegram.list`,
     "Games": `${RULES_BASE}/games.list`,
+    "Reject": `${RULES_BASE}/reject.list`,
+    "Leak": `${RULES_BASE}/leak.list`,
     "DirectGroup": `${RULES_BASE}/direct.list`,
     "ProxyGFWlist": `${RULES_BASE}/proxy.list`
     // END GENERATED RULE PROVIDERS
@@ -798,44 +879,16 @@ function main(config, profileName) {
     `RULE-SET,Claude,${GROUP.claude}`,
 
 
-    // 国内中转会把 Claude Code 标成中国用户，直接拦掉。
-    `DOMAIN-SUFFIX,huanling.icu,REJECT`,
-
-    // 浏览器 WebRTC STUN 走 REJECT，避免 UDP 泄露真实 IP；游戏主机 STUN 仍留在 fake-ip-filter。
-    `DOMAIN-SUFFIX,stun.l.google.com,REJECT`,
-    `DOMAIN-SUFFIX,stun.cloudflare.com,REJECT`,
-    `DOMAIN,stun.services.mozilla.com,REJECT`,
-
-    `IP-CIDR,1.1.1.1/32,${GROUP.node},no-resolve`,
-    `IP-CIDR,8.8.8.8/32,${GROUP.node},no-resolve`,
-
-    `DOMAIN-SUFFIX,podcasts.apple.com,${GROUP.apple}`,
-    `DOMAIN-SUFFIX,dnsleaktest.com,${GROUP.node}`,
-    `DOMAIN-SUFFIX,deepl.com,${GROUP.direct}`,
-    `DOMAIN-SUFFIX,ping0.cc,${GROUP.direct}`,
-    `DOMAIN-SUFFIX,tjcn.org,${GROUP.direct}`,
+    // 商店 / 泄漏测试 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名、校园认证仍本地。
+    `RULE-SET,Reject,REJECT`,
+    `RULE-SET,Leak,${GROUP.node}`,
     `RULE-SET,DirectGroup,${GROUP.direct}`,
     `RULE-SET,BanAD,${GROUP.ads}`,
     `RULE-SET,BanProgramAD,${GROUP.appClean}`,
     `RULE-SET,GoogleFCM,${GROUP.googleFcm}`,
 
     // 商店和更新域名要先于通用 Microsoft 规则匹配。
-    `DOMAIN-SUFFIX,mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,store.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,storeedgefd.dsx.mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,displaycatalog.mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,purchase.md.mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,licensing.mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,store-images.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,storecatalogrevocation.storequality.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,dl.delivery.mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,delivery.mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,prod.do.dsp.mp.microsoft.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,windowsupdate.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,login.live.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,account.live.com,${GROUP.microsoftStore}`,
-    `DOMAIN-SUFFIX,auth.gfx.ms,${GROUP.microsoftStore}`,
-
+    `RULE-SET,MicrosoftStore,${GROUP.microsoftStore}`,
     `RULE-SET,Bing,${GROUP.microsoftBing}`,
     `RULE-SET,OneDrive,${GROUP.microsoftDrive}`,
     `RULE-SET,Microsoft,${GROUP.microsoft}`,

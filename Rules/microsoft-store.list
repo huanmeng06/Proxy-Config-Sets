@@ -1,0 +1,19 @@
+# Shared remote rule set
+# Microsoft Store / Windows Update / MSA login used by the store
+# Must be RULE-SET immediately before generic Microsoft / Bing.
+
+DOMAIN-SUFFIX,mp.microsoft.com
+DOMAIN-SUFFIX,store.microsoft.com
+DOMAIN-SUFFIX,storeedgefd.dsx.mp.microsoft.com
+DOMAIN-SUFFIX,displaycatalog.mp.microsoft.com
+DOMAIN-SUFFIX,purchase.md.mp.microsoft.com
+DOMAIN-SUFFIX,licensing.mp.microsoft.com
+DOMAIN-SUFFIX,store-images.microsoft.com
+DOMAIN-SUFFIX,storecatalogrevocation.storequality.microsoft.com
+DOMAIN-SUFFIX,dl.delivery.mp.microsoft.com
+DOMAIN-SUFFIX,delivery.mp.microsoft.com
+DOMAIN-SUFFIX,prod.do.dsp.mp.microsoft.com
+DOMAIN-SUFFIX,windowsupdate.com
+DOMAIN-SUFFIX,login.live.com
+DOMAIN-SUFFIX,account.live.com
+DOMAIN-SUFFIX,auth.gfx.ms

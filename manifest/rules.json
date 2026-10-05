@@ -34,6 +34,17 @@
           "clashProviders": [
             "BanProgramAD"
           ]
+        },
+        {
+          "id": "reject",
+          "file": "reject.list",
+          "policy": {
+            "quantumultX": "reject",
+            "shadowrocket": "REJECT"
+          },
+          "clashProviders": [
+            "Reject"
+          ]
         }
       ]
     },
@@ -139,6 +150,17 @@
     {
       "name": "Apple / Microsoft",
       "rules": [
+        {
+          "id": "microsoft-store",
+          "file": "microsoft-store.list",
+          "policy": {
+            "quantumultX": "Ⓜ️ 微软商店",
+            "shadowrocket": "Ⓜ️ 微软商店"
+          },
+          "clashProviders": [
+            "MicrosoftStore"
+          ]
+        },
         {
           "id": "apple",
           "file": "apple.list",
@@ -297,6 +319,17 @@
     {
       "name": "Broad Match",
       "rules": [
+        {
+          "id": "leak",
+          "file": "leak.list",
+          "policy": {
+            "quantumultX": "🚀 节点选择",
+            "shadowrocket": "🚀 节点选择"
+          },
+          "clashProviders": [
+            "Leak"
+          ]
+        },
         {
           "id": "direct",
           "file": "direct.list",
