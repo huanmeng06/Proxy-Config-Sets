@@ -11,6 +11,7 @@
 - `Shadowrocket/`：Shadowrocket 主配置。
 - `Clash Verge Rev/`：Clash Verge Rev 日常全局扩展脚本。
 - `Clash（Claude 特供版）/`：Claude 特供版脚本（Sift/Datadog 同出口）。不覆盖日常脚本。
+- `Clash Meta for Android（Claude 特供版）/`：CMFA 完整链式 YAML（不是 JS）。对齐电脑端 `Clash Verge Rev 链式代理.js`：落地 ISP + `dialer-proxy`。不覆盖 Verge / Hako / SR / QX。
 - `Shadowrocket（Claude 特供版）/`：Claude 特供版 Shadowrocket 配置。链式版与电脑端 `Clash Verge Rev 链式代理.js` 对齐。不覆盖 `Shadowrocket/` 与 `Shadowrocket（Claude）/`。
 - `manifest/rules.json`：三端远程规则引用的统一清单。
 - `scripts/generate-rule-refs.js`：根据 `manifest/rules.json` 自动生成三端远程规则引用区。
