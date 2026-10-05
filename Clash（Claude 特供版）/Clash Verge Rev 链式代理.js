@@ -8,8 +8,8 @@
 // Clash Verge Rev global extend script.
 // Keep YepFast proxy-server-nameserver intact so node delay stays close to the official app.
 // Campus DNS is only used for captive portal / school / private domains.
-// Claude HTTP, default DoH, and leak-test domains exit via 🔗 前置代理 (airport → selected US ISP).
-// 🔗 链式落地 is the manual ISP selector only; 🧠 Claude is locked to the front hop.
+// Claude HTTP, default DoH, and leak-test domains exit via 🔗 链式前置 (airport → selected US ISP).
+// 🔗 落地 ISP is the manual ISP selector only; 🧠 Claude is locked to the front hop.
 // Domain/UDP/fingerprint follow coffee + 特供 routing.
 // Do not send proxy-server-nameserver through the chain.
 
@@ -75,8 +75,8 @@ function main(config, profileName) {
     direct: "🎯 全球直连",
     download: "⏬ 下载专用",
     telegram: "📲 电报消息",
-    front: "🔗 前置代理",
-    landing: "🔗 链式落地",
+    front: "🔗 链式前置",
+    landing: "🔗 落地 ISP",
     github: "🐙 GITHUB",
     ai: "💬 Ai平台",
     chatgpt: "🤖 ChatGPT",
@@ -202,13 +202,17 @@ function main(config, profileName) {
   );
   const isLandingIspProxy = (proxy) =>
     Boolean(proxy) && landingIspKeys.has(`${proxy.server}:${Number(proxy.port)}`);
-  const isGeneratedViaClone = (proxy) =>
-    Boolean(proxy) && (
-      String(proxy.name || "").startsWith("via ") ||
+  const isGeneratedViaClone = (proxy) => {
+    if (!proxy) return false;
+    const name = String(proxy.name || "");
+    return (
+      name.startsWith("via ") ||
+      name.startsWith("↪ ") ||
       (isLandingIspProxy(proxy) && Boolean(proxy["dialer-proxy"]))
     );
+  };
 
-  // 清掉上一轮脚本注入的 via 克隆，避免再次进入地区组。
+  // 清掉上一轮脚本注入的 ↪ / via 克隆，避免再次进入地区组。
   config.proxies = config.proxies.filter(proxy => !isGeneratedViaClone(proxy));
 
   config.proxies.forEach(proxy => {
@@ -397,9 +401,9 @@ function main(config, profileName) {
   // 两层链式：落地手动选 ISP。每个「机场节点 × ISP」克隆一份落地 SOCKS，
   // dialer-proxy=该机场节点，前置对这些克隆做 url-test（generate_204）。
   // 测速走 本机→机场→当前 ISP→网页。不要打 ISP:80，那个 HTTP 口会全超时。
-  // via DIRECT 放最后。多个 ISP 时，前置变成这些测速组的选择器。
+  // ↪ DIRECT 放最后。多个 ISP 时，链式前置变成这些测速组的选择器。
   // url-test 的 tolerance=0：50ms 容差会把 240 和 250 当成一样而不切换。
-  const CHAIN_VIA_PREFIX = "via ";
+  const CHAIN_VIA_PREFIX = "↪ ";
   const frontDialers = [...subscriptionProxies.map(node => node.name), "DIRECT"];
   const viaName = (dialerName, isp) =>
     landingIsps.length === 1
@@ -496,7 +500,7 @@ function main(config, profileName) {
   ]);
   const deepseekChoices = getSafeChoices([...usFirstAiChoices, GROUP.direct]);
   pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
-  // coffee 固定出口：🧠 Claude 只走 🔗 前置代理（第二跳是落地里当前选中的 ISP）。
+  // coffee 固定出口：🧠 Claude 只走 🔗 链式前置（第二跳是落地 ISP 里当前选中的节点）。
   const claudeChoices = getSafeChoices([GROUP.front]);
   pushSelectGroup(GROUP.claude, claudeChoices);
   pushSelectGroup(GROUP.gemini, usFirstAiChoices);
@@ -812,7 +816,7 @@ function main(config, profileName) {
   const campusDnsServers = getCampusDnsServers().map((server) =>
     /#/.test(server) ? server : `${server}#DIRECT`
   );
-  // 普通域名和 Claude 查询经 🔗 前置代理访问加密 DNS，与当前落地 ISP 出口对齐。
+  // 普通域名和 Claude 查询经 🔗 链式前置访问加密 DNS，与当前落地 ISP 出口对齐。
   // 国内 geosite:cn 才直连阿里/腾讯 DoH，避免解析到海外或跨网 CDN 后直连变慢。
   // 不把 DirectGroup / 泄漏测试 / Claude 放进国内 DoH，防止境外域名 DNS 泄漏到大陆。
   // 节点自身的域名解析仍使用独立 bootstrap DNS，避免代理建立前出现循环依赖。

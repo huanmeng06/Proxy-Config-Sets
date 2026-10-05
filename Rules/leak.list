@@ -1,6 +1,6 @@
 # Shared remote rule set
 # Public DNS IPs + browser leak-test sites.
-# Policy is client-specific: 链式落地 vs 节点选择.
+# Policy is client-specific: 链式前置 vs 节点选择.
 
 IP-CIDR,1.1.1.1/32,no-resolve
 IP-CIDR,1.0.0.1/32,no-resolve
