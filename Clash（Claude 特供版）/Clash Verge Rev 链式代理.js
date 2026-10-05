@@ -474,7 +474,7 @@ function main(config, profileName) {
   // dialer-proxy=该机场节点，前置对这些克隆做 url-test（generate_204）。
   // 测速走 本机→机场→当前 ISP→网页。不要打 ISP:80，那个 HTTP 口会全超时。
   // ↪ DIRECT 放最后。多个 ISP 时，链式节点变成这些测速组的选择器。
-  // url-test 的 tolerance=0：50ms 容差会把 240 和 250 当成一样而不切换。
+  // url-test 容差用地区组同一套 50ms，避免 245/248 这种噪声来回跳。
   const CHAIN_VIA_PREFIX = "↪ ";
   const frontDialers = [...subscriptionProxies.map(node => node.name), "DIRECT"];
   if (landingIsps.length === 0) {
@@ -483,7 +483,7 @@ function main(config, profileName) {
     proxyGroups.push(createUrlTestGroup(GROUP.front, frontDialers, {
       url: TEST_URL,
       interval: 300,
-      tolerance: 0,
+      tolerance: TOLERANCE,
       timeout: 8000,
       lazy: false
     }));
@@ -509,7 +509,7 @@ function main(config, profileName) {
       return createUrlTestGroup(groupName, viaNames, {
         url: TEST_URL,
         interval: 300,
-        tolerance: 0,
+        tolerance: TOLERANCE,
         timeout: 8000,
         lazy: false
       });

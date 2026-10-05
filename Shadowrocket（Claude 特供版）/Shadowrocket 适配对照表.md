@@ -27,7 +27,7 @@ Clash 不能在 Shadowrocket 里复制 `dialer-proxy` 克隆，所以**同名组
 
 导入链式特供后：**打开 `🔗 🇺🇸 美国 ISP` →「代理通过」→ `🔗 链式节点` → 保存**。不要把 Home / Claude 直接切到 `🔗 链式节点`，那会跳过 ISP。
 
-地区组测速已改成和 Clash 一样：`http://www.gstatic.com/generate_204`，`interval=3600`，`tolerance=50`。链式节点组 `interval=300`，`tolerance=0`。
+地区组测速已改成和 Clash 一样：`http://www.gstatic.com/generate_204`，`interval=3600`，`tolerance=50`。链式节点组 `interval=300`，`tolerance=50`。
 
 
 
