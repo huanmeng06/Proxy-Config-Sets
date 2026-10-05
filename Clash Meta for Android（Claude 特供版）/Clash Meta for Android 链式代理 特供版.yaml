@@ -1,10 +1,6 @@
-# Clash Meta for Android — Claude 链式代理特供版
-# 对齐电脑端 Clash Verge Rev 链式代理.js。CMFA 没有 Verge JS：不改名、不克隆 ↪ 节点。
-# 用法：把 YOUR_CLASH_SUBSCRIBE_URL 换成机场 Clash YAML 订阅。
-# 自己加落地 SOCKS（名字必须带 ISP），dialer-proxy: 🔗 链式节点。不要提交真实账号。
-# 🧠 Claude / 泄漏测试锁 🔗 落地 ISP。不要把全局或 Claude 直接切到 🔗 链式节点。
-# 链式测速是 手机→机场；真流量是 机场→ISP。电脑端测的是 机场→ISP。
-
+# CMFA Claude chain profile
+# Set Airport url to your Clash subscribe URL
+# ISP node name must include ISP. Use dialer-proxy to the chain group.
 mixed-port: 7890
 allow-lan: false
 mode: rule
@@ -26,8 +22,8 @@ tun:
   strict-route: false
   ipv6: false
   dns-hijack:
-    - any:53
-    - tcp://any:53
+    - "any:53"
+    - "tcp://any:53"
   route-exclude-address:
     - 10.0.0.0/8
     - 100.64.0.0/10
@@ -59,19 +55,18 @@ sniffer:
 proxy-providers:
   Airport:
     type: http
-    url: YOUR_CLASH_SUBSCRIBE_URL
+    url: "YOUR_CLASH_SUBSCRIBE_URL"
     interval: 86400
     path: ./providers/Airport.yaml
     override:
       udp: true
     health-check:
       enable: true
-      url: https://www.gstatic.com/generate_204
+      url: "https://www.gstatic.com/generate_204"
       interval: 3600
       lazy: true
 
-# 落地 ISP：需要时把下面整段的行首 # 一起删掉。
-# proxies: 必须顶格。只删 # 却留下空格，会报 mapping values are not allowed。
+# Uncomment the block below. proxies must start at column 0.
 #proxies:
 #  - name: "美国 ISP 怀俄明州 夏延市"
 #    type: socks5
@@ -98,240 +93,240 @@ dns:
     - 119.29.29.29
     - system
   proxy-server-nameserver:
-    - tcp://121.41.16.76:8081
-    - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    - "tcp://121.41.16.76:8081"
+    - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
   nameserver:
-    - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-    - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+    - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
   nameserver-policy:
     "geosite:cn":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "+.anthropic.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.claude.ai":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.claude.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.clau.de":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.claudemcpclient.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.claudemcpcontent.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.claudeusercontent.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.sentry.io":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.statsigapi.net":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.intercom.io":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.intercomcdn.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.stripe.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.stripecdn.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.stripe.network":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.link.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.hcaptcha.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "servd-anthropic-website.b-cdn.net":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "anthropic.com.cdn.cloudflare.net":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "anthropic.auth0.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "anthropic-com.ghost.io":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "browser-intake-us5-datadoghq.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "cdn.usefathom.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.withpersona.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.persona.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.proton.me":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.protonmail.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.protonmail.ch":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.pm.me":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.protonweb.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.protonstatus.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.protontech.ch":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.simplelogin.io":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.simplelogin.co":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.simplelogin.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.simplelogin.fr":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.slmail.me":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.passmail.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.passmail.net":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.passinbox.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.passfwd.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.aleeas.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.silomails.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.slmails.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.dralias.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.sift.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.siftcience.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.ip.net.coffee":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.net.coffee":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.datadoghq.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.dnsleaktest.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.browserleaks.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.browserleaks.org":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.ipleak.net":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.ipleak.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "+.ippure.com":
-      - https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
-      - https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true
+      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
     "geosite:private":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "captive.apple.com":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "captive.apple.com.cn":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "netctscan.apple.com":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "detectportal.firefox.com":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "connectivitycheck.gstatic.com":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "www.msftconnecttest.com":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "ipv6.msftconnecttest.com":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "dns.msftncsi.com":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "neverssl.com":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "securelogin.arubanetworks.com":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "id6.me":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "+.arubanetworks.com":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "+.arubanetworks.cc":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "+.bnbu.edu.cn":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "+.uic.edu.cn":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "+.msftconnecttest.com":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "+.cmpassport.com":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "+.jegotrip.com.cn":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
     "+.icitymobile.mobi":
-      - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-      - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
   fake-ip-filter:
     - '*.lan'
     - '*.localdomain'
@@ -510,7 +505,7 @@ proxy-groups:
     type: url-test
     include-all: true
     exclude-filter: '(?i)ISP|Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 300
     tolerance: 50
     lazy: false
@@ -1228,7 +1223,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)下[载載]|download|省流|低倍率?|大流量|0\.[0-9]+\s*[xX×]|\.[0-9]+\s*[xX×]|0\.[0-9]+\s*倍'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 600
     tolerance: 100
     lazy: true
@@ -1251,7 +1246,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(香港|\bHK\b|Hong Kong|HongKong|hongkong|深港|沪港|京港)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1264,7 +1259,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((香港|\bHK\b|Hong Kong|HongKong|hongkong|深港|沪港|京港)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((香港|\bHK\b|Hong Kong|HongKong|hongkong|深港|沪港|京港))|(\bHKBN\b|\bHGC\b|\bWTT\b)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1277,7 +1272,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(台|新北|彰化|高雄|\bTW\b|Taiwan)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1290,7 +1285,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((台|新北|彰化|高雄|\bTW\b|Taiwan)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((台|新北|彰化|高雄|\bTW\b|Taiwan))|(\bHiNet\b)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1303,7 +1298,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(日本|川日|东京|大阪|名古屋|泉日|埼玉|福冈|沪日|深日|\bJP\b|Japan)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1316,7 +1311,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((日本|川日|东京|大阪|名古屋|泉日|埼玉|福冈|沪日|深日|\bJP\b|Japan)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((日本|川日|东京|大阪|名古屋|泉日|埼玉|福冈|沪日|深日|\bJP\b|Japan))|(\bNTT\b|\bOCN\b|\bNURO\b)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1329,7 +1324,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(新加坡|坡|狮城|\bSG\b|Singapore)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1342,7 +1337,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((新加坡|坡|狮城|\bSG\b|Singapore)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((新加坡|坡|狮城|\bSG\b|Singapore))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1355,7 +1350,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(\bKR\b|Korea|\bKOR\b|首尔|春川|韩|韓)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1368,7 +1363,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((\bKR\b|Korea|\bKOR\b|首尔|春川|韩|韓)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((\bKR\b|Korea|\bKOR\b|首尔|春川|韩|韓))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1381,7 +1376,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(马来西亚|大马|吉隆坡|Malaysia|\bMY\b)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1394,7 +1389,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((马来西亚|大马|吉隆坡|Malaysia|\bMY\b)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((马来西亚|大马|吉隆坡|Malaysia|\bMY\b))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1407,7 +1402,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(印尼|印度尼西亚|雅加达|\bID\b|Indonesia)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1420,7 +1415,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((印尼|印度尼西亚|雅加达|\bID\b|Indonesia)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((印尼|印度尼西亚|雅加达|\bID\b|Indonesia))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1433,7 +1428,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(印度($|[^尼])|孟买|新德里|\bIN\b|India)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1446,7 +1441,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((印度($|[^尼])|孟买|新德里|\bIN\b|India)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((印度($|[^尼])|孟买|新德里|\bIN\b|India))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1459,7 +1454,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(菲律宾|马尼拉|\bPH\b|Philippines)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1472,7 +1467,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((菲律宾|马尼拉|\bPH\b|Philippines)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((菲律宾|马尼拉|\bPH\b|Philippines))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1485,7 +1480,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(泰国|曼谷|\bTH\b|Thailand)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1498,7 +1493,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((泰国|曼谷|\bTH\b|Thailand)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((泰国|曼谷|\bTH\b|Thailand))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1511,7 +1506,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(越南|胡志明|河内|\bVN\b|Vietnam)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1524,7 +1519,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((越南|胡志明|河内|\bVN\b|Vietnam)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((越南|胡志明|河内|\bVN\b|Vietnam))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1537,7 +1532,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(哈萨克斯坦|阿拉木图|阿斯塔纳|\bKZ\b|Kazakhstan)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1550,7 +1545,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((哈萨克斯坦|阿拉木图|阿斯塔纳|\bKZ\b|Kazakhstan)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((哈萨克斯坦|阿拉木图|阿斯塔纳|\bKZ\b|Kazakhstan))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1563,7 +1558,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(巴基斯坦|伊斯兰堡|\bPK\b|Pakistan)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1576,7 +1571,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((巴基斯坦|伊斯兰堡|\bPK\b|Pakistan)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((巴基斯坦|伊斯兰堡|\bPK\b|Pakistan))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1589,7 +1584,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(英[国國]|英格兰|伦敦|加的夫|曼彻斯特|伯克郡|\bUK\b|United Kingdom|Great Britain)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1602,7 +1597,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((英[国國]|英格兰|伦敦|加的夫|曼彻斯特|伯克郡|\bUK\b|United Kingdom|Great Britain)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((英[国國]|英格兰|伦敦|加的夫|曼彻斯特|伯克郡|\bUK\b|United Kingdom|Great Britain))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1615,7 +1610,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(法[国國]|巴黎|马赛|斯特拉斯堡|\bFR\b|France)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1628,7 +1623,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((法[国國]|巴黎|马赛|斯特拉斯堡|\bFR\b|France)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((法[国國]|巴黎|马赛|斯特拉斯堡|\bFR\b|France))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1641,7 +1636,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(德[国國]|法兰克福|柏林|杜塞尔多夫|\bDE\b|Germany)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1654,7 +1649,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((德[国國]|法兰克福|柏林|杜塞尔多夫|\bDE\b|Germany)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((德[国國]|法兰克福|柏林|杜塞尔多夫|\bDE\b|Germany))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1667,7 +1662,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(比利时|布鲁塞尔|\bBE\b|Belgium)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1680,7 +1675,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((比利时|布鲁塞尔|\bBE\b|Belgium)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((比利时|布鲁塞尔|\bBE\b|Belgium))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1693,7 +1688,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(荷兰|尼德兰|阿姆斯特丹|\bNL\b|Netherlands)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1706,7 +1701,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((荷兰|尼德兰|阿姆斯特丹|\bNL\b|Netherlands)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((荷兰|尼德兰|阿姆斯特丹|\bNL\b|Netherlands))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1719,7 +1714,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(俄[国國]|俄[罗羅]斯|莫斯科|圣彼得堡|西伯利亚|伯力|哈巴罗夫斯克|\bRU\b|Russia)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1732,7 +1727,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((俄[国國]|俄[罗羅]斯|莫斯科|圣彼得堡|西伯利亚|伯力|哈巴罗夫斯克|\bRU\b|Russia)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((俄[国國]|俄[罗羅]斯|莫斯科|圣彼得堡|西伯利亚|伯力|哈巴罗夫斯克|\bRU\b|Russia))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1745,7 +1740,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(瑞士|苏黎世|日内瓦|\bCH\b|Switzerland)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1758,7 +1753,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((瑞士|苏黎世|日内瓦|\bCH\b|Switzerland)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((瑞士|苏黎世|日内瓦|\bCH\b|Switzerland))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1771,7 +1766,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(瑞典|斯德哥尔摩|\bSE\b|Sweden)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1784,7 +1779,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((瑞典|斯德哥尔摩|\bSE\b|Sweden)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((瑞典|斯德哥尔摩|\bSE\b|Sweden))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1797,7 +1792,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(意大[利里]|米兰|罗马|\bIT\b|Italy)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1810,7 +1805,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((意大[利里]|米兰|罗马|\bIT\b|Italy)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((意大[利里]|米兰|罗马|\bIT\b|Italy))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1823,7 +1818,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(西班牙|马德里|\bES\b|Spain)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1836,7 +1831,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((西班牙|马德里|\bES\b|Spain)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((西班牙|马德里|\bES\b|Spain))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1849,7 +1844,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(波兰|华沙|\bPL\b|Poland)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1862,7 +1857,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((波兰|华沙|\bPL\b|Poland)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((波兰|华沙|\bPL\b|Poland))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1875,7 +1870,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(乌克兰|基辅|\bUA\b|Ukraine)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1888,7 +1883,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((乌克兰|基辅|\bUA\b|Ukraine)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((乌克兰|基辅|\bUA\b|Ukraine))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1901,7 +1896,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(奥地利|维也纳|\bAT\b|Austria)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1914,7 +1909,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((奥地利|维也纳|\bAT\b|Austria)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((奥地利|维也纳|\bAT\b|Austria))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1927,7 +1922,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(爱尔兰|都柏林|\bIE\b|Ireland)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1940,7 +1935,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((爱尔兰|都柏林|\bIE\b|Ireland)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((爱尔兰|都柏林|\bIE\b|Ireland))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1953,7 +1948,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(摩尔多瓦|基希讷乌|\bMD\b|Moldova)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1966,7 +1961,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((摩尔多瓦|基希讷乌|\bMD\b|Moldova)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((摩尔多瓦|基希讷乌|\bMD\b|Moldova))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1979,7 +1974,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(美|华盛顿|波特兰|达拉斯|俄勒冈|凤凰城|菲尼克斯|费利蒙|弗里蒙特|硅谷|旧金山|拉斯维加斯|洛杉|圣何塞|圣荷西|圣塔?克拉拉|西雅图|芝加哥|哥伦布|纽约|阿什本|纽瓦克|丹佛|加利福尼亚|弗吉尼亚|马纳萨斯|俄亥俄|得克萨斯|[佐乔]治亚|亚特兰大|佛罗里达|迈阿密|\bUSA\b|United States)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -1992,7 +1987,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((美|华盛顿|波特兰|达拉斯|俄勒冈|凤凰城|菲尼克斯|费利蒙|弗里蒙特|硅谷|旧金山|拉斯维加斯|洛杉|圣何塞|圣荷西|圣塔?克拉拉|西雅图|芝加哥|哥伦布|纽约|阿什本|纽瓦克|丹佛|加利福尼亚|弗吉尼亚|马纳萨斯|俄亥俄|得克萨斯|[佐乔]治亚|亚特兰大|佛罗里达|迈阿密|\bUSA\b|United States)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((美|华盛顿|波特兰|达拉斯|俄勒冈|凤凰城|菲尼克斯|费利蒙|弗里蒙特|硅谷|旧金山|拉斯维加斯|洛杉|圣何塞|圣荷西|圣塔?克拉拉|西雅图|芝加哥|哥伦布|纽约|阿什本|纽瓦克|丹佛|加利福尼亚|弗吉尼亚|马纳萨斯|俄亥俄|得克萨斯|[佐乔]治亚|亚特兰大|佛罗里达|迈阿密|\bUSA\b|United States))|(\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2005,7 +2000,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(加拿大|[枫楓][叶葉]|多伦多|蒙特利尔|温哥华|卡尔加里|\bCA\b|Canada)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2018,7 +2013,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((加拿大|[枫楓][叶葉]|多伦多|蒙特利尔|温哥华|卡尔加里|\bCA\b|Canada)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((加拿大|[枫楓][叶葉]|多伦多|蒙特利尔|温哥华|卡尔加里|\bCA\b|Canada))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2031,7 +2026,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(阿根廷|布宜诺斯艾利斯|Argentina|\bAR\b)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2044,7 +2039,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((阿根廷|布宜诺斯艾利斯|Argentina|\bAR\b)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((阿根廷|布宜诺斯艾利斯|Argentina|\bAR\b))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2057,7 +2052,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(巴西|圣保罗|里约|\bBR\b|Brazil)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2070,7 +2065,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((巴西|圣保罗|里约|\bBR\b|Brazil)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((巴西|圣保罗|里约|\bBR\b|Brazil))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2083,7 +2078,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(墨西哥|\bMX\b|Mexico)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2096,7 +2091,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((墨西哥|\bMX\b|Mexico)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((墨西哥|\bMX\b|Mexico))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2109,7 +2104,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(智利|圣地亚哥|\bCL\b|Chile)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2122,7 +2117,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((智利|圣地亚哥|\bCL\b|Chile)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((智利|圣地亚哥|\bCL\b|Chile))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2135,7 +2130,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(土耳其|伊斯坦布尔|Turkey|\bTR\b)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2148,7 +2143,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((土耳其|伊斯坦布尔|Turkey|\bTR\b)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((土耳其|伊斯坦布尔|Turkey|\bTR\b))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2161,7 +2156,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(阿联酋|迪拜|阿拉伯联合酋长国|\bAE\b|United Arab Emirates|Dubai)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2174,7 +2169,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((阿联酋|迪拜|阿拉伯联合酋长国|\bAE\b|United Arab Emirates|Dubai)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((阿联酋|迪拜|阿拉伯联合酋长国|\bAE\b|United Arab Emirates|Dubai))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2187,7 +2182,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(以色列|特拉维夫|耶路撒冷|\bIL\b|Israel)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2200,7 +2195,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((以色列|特拉维夫|耶路撒冷|\bIL\b|Israel)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((以色列|特拉维夫|耶路撒冷|\bIL\b|Israel))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2213,7 +2208,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(沙特|利雅得|\bSA\b|Saudi Arabia)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2226,7 +2221,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((沙特|利雅得|\bSA\b|Saudi Arabia)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((沙特|利雅得|\bSA\b|Saudi Arabia))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2239,7 +2234,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(南非|约翰内斯堡|\bZA\b|South Africa)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2252,7 +2247,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((南非|约翰内斯堡|\bZA\b|South Africa)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((南非|约翰内斯堡|\bZA\b|South Africa))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2265,7 +2260,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(埃及|开罗|\bEG\b|Egypt)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2278,7 +2273,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((埃及|开罗|\bEG\b|Egypt)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((埃及|开罗|\bEG\b|Egypt))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2291,7 +2286,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(尼日利亚|拉各斯|阿布贾|\bNG\b|Nigeria)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2304,7 +2299,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((尼日利亚|拉各斯|阿布贾|\bNG\b|Nigeria)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((尼日利亚|拉各斯|阿布贾|\bNG\b|Nigeria))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2317,7 +2312,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(澳大利亚|澳洲|悉尼|墨尔本|\bAU\b|Australia)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2330,7 +2325,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((澳大利亚|澳洲|悉尼|墨尔本|\bAU\b|Australia)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((澳大利亚|澳洲|悉尼|墨尔本|\bAU\b|Australia))|(\bTelstra\b|\bOptus\b)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2343,7 +2338,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)(新西兰|奥克兰|\bNZ\b|New Zealand)'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2356,7 +2351,7 @@ proxy-groups:
     include-all: true
     filter: '(?i)((新西兰|奥克兰|\bNZ\b|New Zealand)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((新西兰|奥克兰|\bNZ\b|New Zealand))'
     exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: https://www.gstatic.com/generate_204
+    url: "https://www.gstatic.com/generate_204"
     interval: 3600
     tolerance: 50
     lazy: true
@@ -2370,196 +2365,196 @@ rule-providers:
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/BanAD.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/ads.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/ads.list"
     interval: 86400
   BanProgramAD:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/BanProgramAD.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/app-clean.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/app-clean.list"
     interval: 86400
   ChatGPT:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/ChatGPT.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/chatgpt.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/chatgpt.list"
     interval: 86400
   Claude:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/Claude.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/claude.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/claude.list"
     interval: 86400
   Gemini:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/Gemini.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/gemini.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/gemini.list"
     interval: 86400
   Grok:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/Grok.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/grok.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/grok.list"
     interval: 86400
   DeepSeek:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/DeepSeek.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/deepseek.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/deepseek.list"
     interval: 86400
   AI:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/AI.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/ai.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/ai.list"
     interval: 86400
   GitHub:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/GitHub.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/github.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/github.list"
     interval: 86400
   GoogleFCM:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/GoogleFCM.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/google-fcm.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/google-fcm.list"
     interval: 86400
   Apple:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/Apple.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/apple.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/apple.list"
     interval: 86400
   MicrosoftStore:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/MicrosoftStore.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft-store.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft-store.list"
     interval: 86400
   Bing:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/Bing.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft-bing.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft-bing.list"
     interval: 86400
   Microsoft:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/Microsoft.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft.list"
     interval: 86400
   OneDrive:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/OneDrive.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft-drive.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft-drive.list"
     interval: 86400
   ProxyMedia:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/ProxyMedia.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/global-media.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/global-media.list"
     interval: 86400
   ChinaMedia:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/ChinaMedia.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/domestic-media.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/domestic-media.list"
     interval: 86400
   BilibiliHMT:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/BilibiliHMT.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/bilibili.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/bilibili.list"
     interval: 86400
   Bahamut:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/Bahamut.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/bahamut.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/bahamut.list"
     interval: 86400
   NetEaseMusic:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/NetEaseMusic.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/netease-music.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/netease-music.list"
     interval: 86400
   Netflix:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/Netflix.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/netflix.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/netflix.list"
     interval: 86400
   YouTube:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/YouTube.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/youtube.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/youtube.list"
     interval: 86400
   Telegram:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/Telegram.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/telegram.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/telegram.list"
     interval: 86400
   Games:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/Games.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/games.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/games.list"
     interval: 86400
   Reject:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/Reject.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/reject.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/reject.list"
     interval: 86400
   Leak:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/Leak.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/leak.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/leak.list"
     interval: 86400
   DirectGroup:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/DirectGroup.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/direct.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/direct.list"
     interval: 86400
   ProxyGFWlist:
     type: http
     behavior: classical
     format: text
     path: ./rulesets/Proxy-Config-Sets/ProxyGFWlist.list
-    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/proxy.list
+    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/proxy.list"
     interval: 86400
 
 rules:
