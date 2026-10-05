@@ -21,11 +21,14 @@ Clash 不能在 Shadowrocket 里复制 `dialer-proxy` 克隆，所以**同名组
 | Clash | Shadowrocket 链式特供 | 说明 |
 |---|---|---|
 | `🔗 链式节点` url-test（`↪ 机场节点` 克隆，测 机场→ISP） | `🔗 链式节点` url-test（机场节点，给 ISP「代理通过」用） | iOS 测的是 本机→机场，不是 机场→ISP |
-| `🔗 落地 ISP` 手动选 ISP | `🔗 落地 ISP` 手动选 ISP | 两边都是 ISP 选择器 |
+| `🔗 落地 ISP` 手动选 ISP | `🔗 落地 ISP` 正则收录名字带 ISP 的本地节点 | 两边都是 ISP 选择器。SR 用 `^.*ISP.*`，排除 ↪ / via / 组名本身 |
+| 额外节点原名带 ISP → 自动改成 `🔗🇺🇸 美国 怀俄明州 夏延市 [ISP]` | 不能改名；名字里有 ISP 就会进落地组 | 本地节点请自己写成带 ISP。可选手动改成 Clash 同款 |
 | Claude / 泄漏 / 节点选择走 **链式节点** | Claude / 泄漏 / 节点选择走 **落地 ISP** | SR 必须选落地，ISP 节点再「代理通过」链式节点，才会出美国 ISP |
 | 克隆前缀 `↪ 日本 02` | 无克隆 | 配置文件写不了 per-node 代理通过 |
 
-导入链式特供后：自己加落地 SOCKS（名字带 ISP），「代理通过」选 `🔗 链式节点`。配置不自带美国 ISP。不要把 Home / Claude 直接切到 `🔗 链式节点`，那会跳过落地。
+导入链式特供后：自己加落地 SOCKS（**名字里必须带 `ISP`**），「代理通过」选 `🔗 链式节点`。配置不自带美国 ISP。不要把 Home / Claude 直接切到 `🔗 链式节点`，那会跳过落地。
+
+Shadowrocket **不能自动改名**（没有 Clash 那种 JS）。落地组靠 `policy-regex-filter=(?i)^.*ISP.*` 收录本地节点。旧写法 `(?i)ISP` 在 SR 里是整名匹配，只会命中就叫 `ISP` 的节点，所以 `美国 ISP 怀俄明州 夏延市` 进不了组。重新导入后，落地组里应出现这个本地节点；若还留着旧占位 `🔗🇺🇸 美国 ISP`，删掉它，再手动选城市那条。想和电脑同款显示，可把本地节点改成 `🔗🇺🇸 美国 怀俄明州 夏延市 [ISP]`，不是必须。
 
 地区组测速已改成和 Clash 一样：`http://www.gstatic.com/generate_204`，`interval=3600`，`tolerance=50`。链式节点组 `interval=300`，`tolerance=50`。
 
@@ -40,6 +43,7 @@ Clash 不能在 Shadowrocket 里复制 `dialer-proxy` 克隆，所以**同名组
 | `🚀 节点选择` select，成员=实际存在的地区组 | 同名 select，预置常用地区 + 手动 + 直连 | ⚠️ | iOS 不能按订阅动态删空组。没节点的地区组会空着，用 `🚀 手动切换` 兜底 |
 | `🚀 手动切换` = 过滤后的全部节点 | `policy-regex-filter` 排除流量/到期说明行 | ⚠️ | 不能在导入时改节点名或从订阅里删节点，只能正则隐藏 |
 | 节点名加 🇭🇰🏠⏬ 前缀 | 无 | ❌ | Shadowrocket 不能改订阅节点显示名。正则按原始机场名匹配 |
+| 落地 ISP 原名带 ISP 则自动改名并进组 | 落地组 `^.*ISP.*` 收录本地节点，不改名 | ⚠️ | 必须重新导入。名字带 ISP 即可进组；想 Clash 同款显示请手动改名 |
 | 过滤 Data Left / 到期 / 分割线 | 手动组正则排除 | ⚠️ | 节点仍在订阅列表里，只是不进手动组 |
 | 地区组 `url-test`，`interval=3600`，`tolerance=50`，`url=gstatic generate_204` | 链式特供已改成 3600 / gstatic | ✅ | 旧 SR 用 86400 + cloudflare，已跟上 Clash |
 | 家宽与普通节点拆开测速 | 香港/台湾/日本/狮城/美国家宽独立 url-test | ⚠️ | 常用地区已拆。印尼/欧洲等冷门地区请走手动组，避免几十个空组 |
@@ -199,9 +203,11 @@ ChatGPT / Claude / Grok / DeepSeek **域名分流**已收到远端 `Rules/*.list
 1. Shadowrocket 里备份当前配置。
 2. 隔空投送 `Shadowrocket Config Claude 链式代理 特供版.conf`，用 **Shadowrocket** 打开。
 3. 订阅节点如果丢了，从旧配置把订阅拷回来。
-4. 自己加落地 SOCKS（名字带 ISP）→「代理通过」→ `🔗 链式节点` → 保存。不要用仓库里的占位节点。
-5. 确认 `🧠 Claude` 和 `🚀 节点选择` 是 `🔗 落地 ISP`。不要直接选 `🔗 链式节点`。
-6. Wi-Fi DNS = 自动。Private Relay 关。时区 Los Angeles。English (US) 第一。
+4. 自己加落地 SOCKS，**名字里要有 ISP**（例如 `美国 ISP 怀俄明州 夏延市`）。Shadowrocket 不会自动改名。不要用仓库占位节点。
+5. 打开该节点 →「代理通过」→ `🔗 链式节点` → 保存。
+6. 打开 `🔗 落地 ISP`，应看到这条本地节点。若还在选旧的 `🔗🇺🇸 美国 ISP`，删掉那条占位，改选城市名那条。
+7. 确认 `🧠 Claude` 和 `🚀 节点选择` 是 `🔗 落地 ISP`。不要直接选 `🔗 链式节点`。
+8. Wi-Fi DNS = 自动。Private Relay 关。时区 Los Angeles。English (US) 第一。
 
 家里（代理开着）：
 
