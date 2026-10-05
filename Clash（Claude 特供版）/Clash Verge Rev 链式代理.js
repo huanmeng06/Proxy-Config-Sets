@@ -12,7 +12,7 @@
 // DoH URLs drop TYPE64/SVCB and TYPE65/HTTPS (disable-qtype-64/65 fragment).
 // 🔗 落地 ISP is the manual ISP selector only; 🧠 Claude is locked to the front hop.
 // Do not hardcode landing SOCKS in this script. Add it in Clash Verge Merge/extra proxies
-// (name must contain ISP, e.g. 🔗 🇺🇸 美国 ISP).
+// (original name must contain ISP). Script rewrites it to 🔗🇺🇸 美国 … [ISP].
 // Domain/UDP/fingerprint follow coffee + 特供 routing.
 // Do not send proxy-server-nameserver through the chain.
 
@@ -188,7 +188,53 @@ function main(config, profileName) {
   ];
 
   // 落地 ISP 不要写进脚本。在 Clash Verge 的 Merge / 额外节点自己加 SOCKS，
-  // 名字里带 ISP 即可，例如「🔗 🇺🇸 美国 ISP」。脚本只识别现有节点并做链式克隆。
+  // 原名带 ISP 才会进 🔗 落地 ISP，并改成「🔗🇺🇸 美国 怀俄明州 夏延市 [ISP]」。
+  const LANDING_REGION_BY_FLAG = {
+    "🇭🇰": "香港",
+    "🇨🇳": "台湾",
+    "🇯🇵": "日本",
+    "🇸🇬": "狮城",
+    "🇰🇷": "韩国",
+    "🇲🇾": "马来西亚",
+    "🇮🇩": "印尼",
+    "🇮🇳": "印度",
+    "🇵🇭": "菲律宾",
+    "🇹🇭": "泰国",
+    "🇻🇳": "越南",
+    "🇰🇿": "哈萨克斯坦",
+    "🇵🇰": "巴基斯坦",
+    "🇬🇧": "英国",
+    "🇫🇷": "法国",
+    "🇩🇪": "德国",
+    "🇧🇪": "比利时",
+    "🇳🇱": "荷兰",
+    "🇷🇺": "俄罗斯",
+    "🇨🇭": "瑞士",
+    "🇸🇪": "瑞典",
+    "🇮🇹": "意大利",
+    "🇪🇸": "西班牙",
+    "🇵🇱": "波兰",
+    "🇺🇦": "乌克兰",
+    "🇦🇹": "奥地利",
+    "🇮🇪": "爱尔兰",
+    "🇲🇩": "摩尔多瓦",
+    "🇺🇸": "美国",
+    "🇨🇦": "加拿大",
+    "🇦🇷": "阿根廷",
+    "🇧🇷": "巴西",
+    "🇲🇽": "墨西哥",
+    "🇨🇱": "智利",
+    "🇹🇷": "土耳其",
+    "🇦🇪": "阿联酋",
+    "🇮🇱": "以色列",
+    "🇸🇦": "沙特",
+    "🇿🇦": "南非",
+    "🇪🇬": "埃及",
+    "🇳🇬": "尼日利亚",
+    "🇦🇺": "澳洲",
+    "🇳🇿": "新西兰"
+  };
+
   const isGeneratedViaName = (name) => {
     const n = String(name || "");
     return n.startsWith("via ") || n.startsWith("↪ ");
@@ -201,11 +247,43 @@ function main(config, profileName) {
   const isLandingIspProxy = (proxy) => Boolean(proxy) && isLandingIspName(proxy.name);
   const isGeneratedViaClone = (proxy) => Boolean(proxy) && isGeneratedViaName(proxy.name);
 
+  const formatLandingIspName = (raw) => {
+    const original = String(raw || "").trim();
+    let matchedRule = null;
+    for (const rule of emojiRules) {
+      if (!LANDING_REGION_BY_FLAG[rule.emoji]) continue;
+      if (original.includes(rule.emoji) || rule.regex.test(original)) {
+        matchedRule = rule;
+        break;
+      }
+    }
+    const flag = matchedRule ? matchedRule.emoji : "";
+    const region = flag ? LANDING_REGION_BY_FLAG[flag] : "";
+    let extra = original;
+    for (const rule of emojiRules) {
+      extra = extra.split(rule.emoji).join(" ");
+    }
+    extra = extra
+      .replace(/[🔗🌟🏠🛬⏬🔰]/g, " ")
+      .replace(/\[\s*ISP\s*\]/ig, " ")
+      .replace(/ISP/ig, " ")
+      .replace(/[^\u4e00-\u9fa5a-zA-Z0-9\s\-\.\_]/g, " ");
+    if (matchedRule) extra = extra.replace(matchedRule.regex, " ");
+    if (region) extra = extra.split(region).join(" ");
+    extra = extra.replace(/\s+/g, " ").trim();
+    const body = [region, extra].filter(Boolean).join(" ");
+    if (flag) return body ? `🔗${flag} ${body} [ISP]` : `🔗${flag} [ISP]`;
+    return body ? `🔗 ${body} [ISP]` : "🔗 [ISP]";
+  };
+
   // 清掉上一轮脚本注入的 ↪ / via 克隆，避免再次进入地区组。
   config.proxies = config.proxies.filter(proxy => !isGeneratedViaClone(proxy));
 
   config.proxies.forEach(proxy => {
-    if (isLandingIspProxy(proxy)) return;
+    if (isLandingIspProxy(proxy)) {
+      proxy.name = formatLandingIspName(proxy.name);
+      return;
+    }
     const cleanName = proxy.name
       .replace(/[^\u4e00-\u9fa5a-zA-Z0-9\s\-\.\_\(\)\[\]\|\u00d7]/g, "")
       .trim();
