@@ -22,6 +22,11 @@ Clash Verge 会**先跑全局 `Script.js`，再跑配置自己的扩展脚本**�
 
 `🧠 Claude` 仍选 **美国 05** / 链式落地。
 
+链式 DNS 防泄漏边界：
+
+- 默认 `nameserver` 仍是 `1.1.1.1` / `8.8.8.8` `#🔗 链式落地`，且 `respect-rules: false`。Claude、境外站、泄漏测试不会回落到本地/国内 DNS。
+- 只有 `geosite:cn` 走 `223.5.5.5` / `1.12.12.12` `#DIRECT`，用来修国内站直连卡顿。不要改成全局国内 DNS，也不要把 `DirectGroup` 塞进国内 DoH。
+
 ## 文件
 
 - `Clash Verge Rev 链式代理.js`

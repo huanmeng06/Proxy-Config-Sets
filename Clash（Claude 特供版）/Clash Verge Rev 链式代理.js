@@ -743,6 +743,8 @@ function main(config, profileName) {
     /#/.test(server) ? server : `${server}#DIRECT`
   );
   // 普通域名和 Claude 查询经 🔗 链式落地访问加密 DNS，与美国 ISP 出口对齐。
+  // 国内 geosite:cn 才直连阿里/腾讯 DoH，避免解析到海外或跨网 CDN 后直连变慢。
+  // 不把 DirectGroup / 泄漏测试 / Claude 放进国内 DoH，防止境外域名 DNS 泄漏到大陆。
   // 节点自身的域名解析仍使用独立 bootstrap DNS，避免代理建立前出现循环依赖。
   const secureProxyDns = [
     `https://1.1.1.1/dns-query#${GROUP.landing}`,
@@ -777,6 +779,16 @@ function main(config, profileName) {
     "geosite:private": campusDnsServers
   };
 
+  // 泄漏测试站即使被 geosite:cn 误伤，也强制走链式落地 DoH。
+  const leakNameserverPolicy = Object.fromEntries([
+    "dnsleaktest.com",
+    "browserleaks.com",
+    "browserleaks.org",
+    "ipleak.net",
+    "ipleak.com",
+    "ippure.com"
+  ].map(domain => [`+.${domain}`, secureProxyDns]));
+
   config.dns = {
     ...inheritedDns,
     "enable": true,
@@ -784,7 +796,7 @@ function main(config, profileName) {
     "prefer-h3": false,
     "use-hosts": inheritedDns["use-hosts"] !== false,
     "use-system-hosts": inheritedDns["use-system-hosts"] !== false,
-    // DNS 不跟随 DIRECT 规则，避免规则命中后回落到本地解析。
+    // DNS 不跟随 DIRECT 规则：否则 Claude/境外域命中直连后会回落到本地/国内 DNS，造成泄漏。
     "respect-rules": false,
     "enhanced-mode": inheritedDns["enhanced-mode"] || "fake-ip",
     "fake-ip-range": inheritedDns["fake-ip-range"] || "198.18.0.1/16",
@@ -796,11 +808,14 @@ function main(config, profileName) {
     "proxy-server-nameserver": inheritedProxyServerNS.length > 0
       ? inheritedProxyServerNS
       : directChinaDns,
-    // 不沿用订阅中未绑定代理的 nameserver；普通查询和 Claude 都经链式落地 DoH。
+    // 不沿用订阅中未绑定代理的 nameserver；默认查询和 Claude 都经链式落地 DoH。
+    // 仅 geosite:cn 用国内 DoH #DIRECT。Claude / 泄漏测试 / 校园 policy 放后面覆盖。
     "nameserver": secureProxyDns,
     "nameserver-policy": {
       ...inheritedPolicy,
+      "geosite:cn": directChinaDns,
       ...claudeNameserverPolicy,
+      ...leakNameserverPolicy,
       ...campusPolicy
     },
     "fake-ip-filter": unique([
