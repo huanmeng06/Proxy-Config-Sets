@@ -106,7 +106,7 @@ ChatGPT / Claude / Grok / DeepSeek **域名分流**已收到远端 `Rules/*.list
 | DoH `disable-qtype-64/65` 丢掉 SVCB/HTTPS | 无 | ❌ | SR 没有 TYPE64/TYPE65 过滤。关 IPv6 + Claude UDP REJECT **不等于**丢掉 HTTPS 记录里的 h3/ECH |
 | `use-hosts` / `use-system-hosts` | `[Host] localhost` | ⚠️ | |
 | fake-ip-filter：lan/local/captive/ntp/stun 游戏例外 | `skip-proxy` + `tun-excluded-routes` + captive DIRECT + DST-PORT 123 | ⚠️ | 没有 fake-ip 黑名单语法。`always-real-ip` 不是用户这份 default.conf 的键，未写 |
-| STUN 浏览器 REJECT，游戏 STUN 保留 | `reject.list` 三条浏览器 STUN | ✅ | 没有写 `stun.*.*` 全拦，避免误伤游戏 |
+| STUN 浏览器 REJECT，游戏 STUN 保留 | `reject.list` + `AND,((DEST-PORT,19302/19305),(PROTOCOL,UDP)),REJECT` | ✅ | `stun1-4.l.google.com` 不是 `stun.l.google.com` 的子域；端口规则拦按 IP 打的 STUN。不拦 3478 / 游戏 STUN |
 | `1.1.1.1/32` `8.8.8.8/32` → 链式节点 | 链式特供 `leak.list` + dns.google 走 `🔗 落地 ISP` | ✅ | 硬编码 DNS 不直连大陆；SR 落地组会再经链式节点出 ISP |
 | `private-ip-answer` | `true` | ✅ | false 会把校园门户 10.x 当成污染并强制代理 |
 | Chrome 安全 DNS / iCloud Private Relay | 配置管不了 | ❌ | 必须手关 Private Relay；否则绕过 Shadowrocket |
@@ -166,7 +166,7 @@ ChatGPT / Claude / Grok / DeepSeek **域名分流**已收到远端 `Rules/*.list
 | 不要港/澳/大陆出 Claude | 正则排除 | ✅ |
 | IPv6 关 | `ipv6=false` | ✅ |
 | 不要全局关 UDP | 只拒 Claude 域 UDP | ✅ |
-| WebRTC STUN 拦浏览器，不影响游戏 | `reject.list` 三条 STUN | ✅ |
+| WebRTC STUN 拦浏览器，不影响游戏 | `reject.list` + UDP 19302/19305 | ✅ |
 | DNS 不要手填 114 / 1.1.1.1 | 配置不用 114；全局不用 1.1.1.1 DoH | ✅ 系统 Wi-Fi 仍须自动 |
 | 校园网先关代理再认证 | skip-proxy + DIRECT + README | ⚠️ 仍要手动关一次 App |
 | 泄漏测试走代理 | `leak.list` | ✅ |

@@ -14,7 +14,7 @@
 - `Shadowrocket Config Claude 特供版.conf`
 
 ChatGPT / Claude / Grok / DeepSeek 的**域名分流**走远端 `Rules/*.list`。
-本地只留 UDP AND REJECT（`PROTOCOL,UDP`，写在 RULE-SET 前面）以及局域网 / 认证页。
+本地只留 UDP AND REJECT（`PROTOCOL,UDP`，写在 RULE-SET 前面）、浏览器 STUN 端口 19302/19305，以及局域网 / 认证页。
 Stripe / Proton Mail / Sift / Datadog / coffee / Persona 已写入 `Rules/claude.list`。
 
 ## 链式特供怎么对应电脑
