@@ -1,76 +1,39 @@
-# Clash Meta for Android（Claude 链式特供）
+# CMFA：Claude 链式代理脱敏模板
 
-对齐电脑端 `Clash Verge Rev 链式代理.js` 的 **完整 YAML**，给 [Clash Meta for Android](https://github.com/MetaCubeX/ClashMetaForAndroid) 用。
+2026-10-08 更新。本目录只发布可填写的模板，不包含真实机场订阅、ISP 地址、账号密码或节点快照。
 
-CMFA **不能跑 Verge JS**：不会自动改名，也不会给每个机场节点克隆 `↪` SOCKS。链式靠落地 ISP 节点上的 `dialer-proxy: 🔗 链式节点`。
+## 导入前填写
 
-不要拿这份 YAML 去覆盖 Hako / Quantumult X / Shadowrocket / Clash Verge。
+1. 下载同目录的 `Clash Meta for Android 链式代理 特供版.yaml`。
+2. 将所有 `https://YOUR_AIRPORT_SUBSCRIPTION.invalid/clash.yaml` 替换为自己的 Clash YAML 订阅。文件内有 3 个 provider，都应使用同一份机场订阅。
+3. 将 `YOUR_CHEYENNE_ISP_HOST.invalid` 和 `YOUR_NYC_ISP_HOST.invalid` 替换为自己的 ISP 地址。地址在出口节点和两个 HTTP 测速地址中重复出现，必须全部替换。
+4. 填写两个 ISP 的 `YOUR_*_USER` / `YOUR_*_PASSWORD`。
+5. 核对协议端口：本模板的夏延服务同时在 6544 支持 HTTP/SOCKS5；IPRoyal 纽约 HTTP=12323、SOCKS5=12324。其他供应商必须使用自己的实际端口，不能直接套用这组数字。
+6. 只有一个 ISP 时，删除不用的出口节点、对应的前置组/provider，并从 Claude 和链式节点组中删去相应引用。没有任何 ISP 时，将这两个业务选择组改为只含 `REJECT`。
+7. CMFA 导入本地 YAML，更新 3 个 provider，使用规则模式，并通过客户端开启 VPN/TUN。
 
-## 导入
+`.invalid` 是故意不能用于公网访问的占位地址。模板可做结构校验，但未填写前不能联网。
 
-1. 用文本编辑器打开 `Clash Meta for Android 链式代理 特供版.yaml`。
-2. 把 `YOUR_CLASH_SUBSCRIBE_URL` 换成机场的 **Clash YAML** 订阅（和电脑端同一份）。
-3. 按下面模板加落地 SOCKS。`proxies:` 必须顶格，行首不能有空格，否则 Clash 会报 `mapping values are not allowed`。**不要把账号提交进 Git。**
-4. CMFA → 配置 → 从文件导入这份 YAML。
-5. 更新 `Airport` provider。Rule 模式。打开 TUN。
-6. `🔗 落地 ISP` 里应出现你的 ISP 节点。没有的话检查节点名是否包含 `ISP`。
-7. `🧠 Claude` 应已锁在 `🔗 落地 ISP`。`🚀 节点选择` 第一项也是落地 ISP。
-8. **不要**把全局、Home 或 Claude 直接切到 `🔗 链式节点`，那会跳过落地、露出机场 IP。
+## 链路与测速
 
-## 落地 ISP 模板
+- `🔗 链式节点`、`🧠 Claude` 只选择实际 ISP 出口：`↪ 📡 机场前置 → 🇺🇸 国家 城市 [ISP]`。
+- 原来的两个 `📡 机场前置 → … ISP 1/2` 组负责比较前置；没有额外的“落地 ISP”组。
+- `Airport_CHEYENNE` / `Airport_NYC` 从机场订阅产生独立命名的前置节点池，使用 `↪ 原订阅节点名 → ISP` 格式。订阅原名的旗帜是否存在取决于机场；CMFA 不执行 Verge 的 JavaScript 自动地区改名。
+- 每个前置节点向 ISP 的 HTTP 端口发送未认证请求，`expected-status: 407` 代表收到“需要认证”的回应。provider 自身的 health-check 和前置组 URL 保持相同。
+- 1800 秒间隔、200 ms 容差、8000 ms 超时。407 成功只说明到 HTTP 端口的路径能回应，不保证 SOCKS5 登录和网站访问一定成功。
+- 实际 ISP 节点携带凭据，其 `dialer-proxy` 指向对应前置组：手机 → 选中的机场 → ISP → 网站。没有机场直出兜底。
+- `DIRECT` 是前置候选，选中它会变成手机 → ISP → 网站，仍然经过 ISP。若要求必须经过机场，可删除前置组里的 DIRECT。
+- 不要把业务策略直接改到前置组；前置组里的节点是机场，只用于 ISP 拨号。
+- 单来源 ISP 在换前置时可能受旧入口占用影响，切换不保证无中断。
 
-名字必须带 `ISP`，才会进 `🔗 落地 ISP`，并且被美国节点 / 链式节点排除。
+## DNS 与分流
 
-```yaml
-proxies:
-  - name: 美国 ISP 怀俄明州 夏延市
-    type: socks5
-    server: YOUR_ISP_HOST
-    port: 1080
-    username: YOUR_ISP_USER
-    password: YOUR_ISP_PASS
-    udp: true
-    dialer-proxy: 🔗 链式节点
-```
+默认 Cloudflare / Google DoH 经 `🔗 链式节点` 当前选中的 ISP。Claude 域名使用同一路径；它不会自动跟随 Claude 组的独立出口选择，必要时同步选择这两个组。
 
-州市自己写在节点名里。CMFA 不会请求 ippure，也不会自动改成 `🔗🇺🇸 … [ISP]`。
+国内 geosite:cn 使用阿里/腾讯 DoH 直连。认证页/内网使用 Android 系统 DNS，替代 macOS 的 `dhcp://en0`。节点解析与引导 DNS 使用公共直连解析器；若机场要求专用 bootstrap DNS，应自行填入私有配置，不要提交账号标识。
 
-没有 ISP 节点时，落地组只有 `DIRECT`，配置仍能加载。Claude / 泄漏测试会暂时直连，加上 ISP 后才会走美国家宽出口。
+Claude、Anthropic 邮件子域名及其他服务使用仓库 `Rules/*.list`。保留 TCP/UDP 分流和 Android 包名规则，移除 macOS 进程绑定。泄漏测试站不再有专用的链式分流或 DNS 覆盖。
 
-## 分组怎么工作
+## 校验范围
 
-| 组 | 作用 |
-| --- | --- |
-| `🔗 落地 ISP` | `select`，`filter: (?i)ISP`。手动选哪条落地。DIRECT 兜底。 |
-| `🔗 链式节点` | 机场 `url-test`（排除 ISP / 说明行）。给落地 SOCKS 当 `dialer-proxy`。 |
-| `🧠 Claude` | **只挂落地 ISP**。Proton 邮箱跟 Claude 同出口。 |
-| `🚀 节点选择` | 落地 ISP 放第一（对标电脑端把链式节点插到最前）。 |
-| ChatGPT / Gemini / Grok | 仍美国优先，末尾可选手落地 ISP。 |
-| DeepSeek | 同上，再加全球直连。 |
-
-真流量：手机 → 机场（链式节点当前选中的）→ ISP SOCKS → 网站。
-
-测速限制：CMFA 的 url-test 测的是 **手机→机场**，不是电脑那种 **机场→ISP**。`interval: 300`、`timeout: 8000`、`lazy: false`、`tolerance: 50`。地区组 `interval: 3600`、`tolerance: 50`，测速 URL 与 Verge 一样是 `https://www.gstatic.com/generate_204`。
-
-空的地区组 `empty-fallback: COMPATIBLE`，机场缺某个国家时配置不会加载失败。所有 `include-all` 都排除 `ISP`，避免 `美国 ISP 怀俄明州 夏延市` 进美国节点。
-
-## 规则 / DNS
-
-- 域名分流走远端 `Rules/*.list`（ChatGPT 在 Claude 前）。`protonvpn.com` 不进 Claude。
-- `Leak`（`1.1.1.1` / dnsleaktest / ipleak / ippure 等）走 `🔗 落地 ISP`。
-- 微软商店 RULE-SET 紧挨在 Bing / Microsoft 之前。
-- `deepl.com` / `ping0.cc` / `tjcn.org` 仍内联直连。
-- Claude / Proton / Stripe 等 UDP AND REJECT，逼回 TCP。浏览器 WebRTC STUN（`stun`/`stun1-4.l.google.com`、Cloudflare）走 `reject.list`；Clash 额外拒 UDP 19302/19305，避免按 IP 打 STUN 泄露。游戏 STUN（QQ/任天堂等）不拦。
-- Android 包名：`com.anthropic.claude`、`ch.protonmail.android` → Claude；`com.openai.chatgpt` → ChatGPT；认证页 `com.android.captiveportallogin` → DIRECT。
-- DNS：`respect-rules: false`。默认 DoH `1.1.1.1` / `8.8.8.8` `#🔗 落地 ISP`，并丢掉 qtype 64/65。只有 `geosite:cn`、内网和校园认证走国内 DoH `#DIRECT`。节点解析用现成 YepFast `tcp://121.41.16.76:8081`（可改）。没有 `dhcp://en0`。
-- TUN 不写 `stack` / `device`。sniffer 关掉 QUIC。`find-process-mode: always`。
-
-## 相对电脑端做不到的
-
-- 不改名、不克隆 `↪` 节点。
-- 不能按「机场→当前 ISP」测延迟；只能按手机→机场选前置。
-- 没有 macOS 进程名（`Claude.app` / `Proton Mail Bridge`）。手机靠包名 + 规则集。
-
-## 安全
-
-仓库和这份文件都 **不带** 机场订阅、ISP 账号、token。提交前再搜一遍 `YOUR_` 以外的 host / 密码。
+发布前已验证：脱敏、YAML 加载、组/provider/出口引用、ISP-only 业务出口与 407 设置。占位模板的手机联网和供应商具体端口仍需填写后验证。所有前置失效时，ISP 连接失败；不得为此将 Claude 改成机场或 DIRECT。

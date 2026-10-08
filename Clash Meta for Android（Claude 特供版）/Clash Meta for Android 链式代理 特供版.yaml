@@ -1,37 +1,14 @@
-# CMFA Claude chain profile
-# Set Airport url to your Clash subscribe URL
-# ISP node name must include ISP. Use dialer-proxy to the chain group.
-mixed-port: 7890
-allow-lan: false
+# Public sanitized template: replace YOUR_* before use. No real subscription or credentials.
+---
 mode: rule
+mixed-port: 7897
+allow-lan: false
 log-level: info
 ipv6: false
 unified-delay: true
-tcp-concurrent: true
-keep-alive-idle: 30
-keep-alive-interval: 30
-disable-keep-alive: false
-find-process-mode: always
 profile:
   store-selected: true
   store-fake-ip: true
-
-tun:
-  auto-route: true
-  auto-detect-interface: true
-  strict-route: false
-  ipv6: false
-  dns-hijack:
-    - "any:53"
-    - "tcp://any:53"
-  route-exclude-address:
-    - 10.0.0.0/8
-    - 100.64.0.0/10
-    - 169.254.0.0/16
-    - 172.16.0.0/12
-    - 192.168.0.0/16
-    - 224.0.0.0/4
-
 sniffer:
   enable: true
   force-dns-mapping: true
@@ -39,2639 +16,1430 @@ sniffer:
   override-destination: false
   sniff:
     HTTP:
-      ports: [80, 8080]
+      ports:
+      - 80
+      - 8080
       override-destination: false
     TLS:
-      ports: [443, 8443]
+      ports:
+      - 443
+      - 8443
     QUIC:
       ports: []
   skip-domain:
-    - Mijia Cloud
-    - dlg.io.mi.com
-    - +.apple.com
-    - +.gstatic.com
-    - www.gstatic.com
-
-proxy-providers:
-  Airport:
-    type: http
-    url: "YOUR_CLASH_SUBSCRIBE_URL"
-    interval: 86400
-    path: ./providers/Airport.yaml
-    override:
-      udp: true
-    health-check:
-      enable: true
-      url: "https://www.gstatic.com/generate_204"
-      interval: 3600
-      lazy: true
-
-# Uncomment the block below. proxies must start at column 0.
-#proxies:
-#  - name: "美国 ISP 怀俄明州 夏延市"
-#    type: socks5
-#    server: YOUR_ISP_HOST
-#    port: 1080
-#    username: YOUR_ISP_USER
-#    password: YOUR_ISP_PASS
-#    udp: true
-#    dialer-proxy: "🔗 链式节点"
-
+  - Mijia Cloud
+  - dlg.io.mi.com
+  - "+.apple.com"
+  - "+.gstatic.com"
+  - www.gstatic.com
+find-process-mode: always
+keep-alive-interval: 30
+tcp-concurrent: true
 dns:
   enable: true
-  ipv6: false
-  prefer-h3: false
   use-hosts: true
   use-system-hosts: false
-  respect-rules: false
-  enhanced-mode: fake-ip
-  fake-ip-range: 198.18.0.1/16
-  fake-ip-filter-mode: blacklist
-  default-nameserver:
-    - 223.5.5.5
-    - 223.6.6.6
-    - 119.29.29.29
-    - system
-  proxy-server-nameserver:
-    - "tcp://121.41.16.76:8081"
-    - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-  nameserver:
-    - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-  nameserver-policy:
-    "geosite:cn":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "+.anthropic.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.claude.ai":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.claude.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.clau.de":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.claudemcpclient.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.claudemcpcontent.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.claudeusercontent.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.sentry.io":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.statsigapi.net":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.intercom.io":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.intercomcdn.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.stripe.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.stripecdn.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.stripe.network":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.link.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.hcaptcha.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "servd-anthropic-website.b-cdn.net":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "anthropic.com.cdn.cloudflare.net":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "anthropic.auth0.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "anthropic-com.ghost.io":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "browser-intake-us5-datadoghq.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "cdn.usefathom.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.withpersona.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.persona.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.proton.me":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.protonmail.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.protonmail.ch":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.pm.me":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.protonweb.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.protonstatus.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.protontech.ch":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.simplelogin.io":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.simplelogin.co":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.simplelogin.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.simplelogin.fr":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.slmail.me":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.passmail.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.passmail.net":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.passinbox.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.passfwd.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.aleeas.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.silomails.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.slmails.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.dralias.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.sift.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.siftcience.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.ip.net.coffee":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.net.coffee":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.datadoghq.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.dnsleaktest.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.browserleaks.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.browserleaks.org":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.ipleak.net":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.ipleak.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "+.ippure.com":
-      - "https://1.1.1.1/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://8.8.8.8/dns-query#🔗 落地 ISP&disable-qtype-64=true&disable-qtype-65=true"
-    "geosite:private":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "captive.apple.com":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "captive.apple.com.cn":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "netctscan.apple.com":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "detectportal.firefox.com":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "connectivitycheck.gstatic.com":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "www.msftconnecttest.com":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "ipv6.msftconnecttest.com":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "dns.msftncsi.com":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "neverssl.com":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "securelogin.arubanetworks.com":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "id6.me":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "+.arubanetworks.com":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "+.arubanetworks.cc":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "+.bnbu.edu.cn":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "+.uic.edu.cn":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "+.msftconnecttest.com":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "+.cmpassport.com":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "+.jegotrip.com.cn":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-    "+.icitymobile.mobi":
-      - "https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
-      - "https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true"
+  fake-ip-range: 198.18.0.1/15
   fake-ip-filter:
-    - '*.lan'
-    - '*.localdomain'
-    - '*.example'
-    - '*.invalid'
-    - '*.localhost'
-    - '*.test'
-    - '*.local'
-    - '*.home.arpa'
-    - 'captive.apple.com'
-    - 'captive.apple.com.cn'
-    - 'netctscan.apple.com'
-    - 'detectportal.firefox.com'
-    - 'connectivitycheck.gstatic.com'
-    - 'www.msftconnecttest.com'
-    - 'ipv6.msftconnecttest.com'
-    - 'dns.msftncsi.com'
-    - 'neverssl.com'
-    - 'securelogin.arubanetworks.com'
-    - 'id6.me'
-    - 'arubanetworks.com'
-    - '*.arubanetworks.com'
-    - 'arubanetworks.cc'
-    - '*.arubanetworks.cc'
-    - 'bnbu.edu.cn'
-    - '*.bnbu.edu.cn'
-    - 'uic.edu.cn'
-    - '*.uic.edu.cn'
-    - 'msftconnecttest.com'
-    - '*.msftconnecttest.com'
-    - 'cmpassport.com'
-    - '*.cmpassport.com'
-    - 'jegotrip.com.cn'
-    - '*.jegotrip.com.cn'
-    - 'icitymobile.mobi'
-    - '*.icitymobile.mobi'
-    - 'time.*.com'
-    - 'time.*.gov'
-    - 'time.*.edu.cn'
-    - 'time.*.apple.com'
-    - 'time-ios.apple.com'
-    - 'time1.*.com'
-    - 'time2.*.com'
-    - 'time3.*.com'
-    - 'time4.*.com'
-    - 'time5.*.com'
-    - 'time6.*.com'
-    - 'time7.*.com'
-    - 'ntp.*.com'
-    - 'ntp.*.org'
-    - 'pool.ntp.org'
-    - '+.srv.nintendo.net'
-    - '+.igwf.netease.com'
-    - 'stun.qq.com'
-    - 'dns.alidns.com'
-    - 'doh.pub'
-    - 'dns.google'
-    - 'cloudflare-dns.com'
-    - 'www.gstatic.com'
-    - 'gstatic.com'
-
+  - "*.lan"
+  - "*.localdomain"
+  - "*.example"
+  - "*.invalid"
+  - "*.localhost"
+  - "*.test"
+  - "*.local"
+  - "*.home.arpa"
+  - time.*.com
+  - time.*.gov
+  - time.*.edu.cn
+  - time.*.apple.com
+  - time1.*.com
+  - time2.*.com
+  - time3.*.com
+  - time4.*.com
+  - time5.*.com
+  - time6.*.com
+  - time7.*.com
+  - ntp.*.com
+  - ntp1.*.com
+  - ntp2.*.com
+  - ntp3.*.com
+  - ntp4.*.com
+  - ntp5.*.com
+  - ntp6.*.com
+  - ntp7.*.com
+  - "*.time.edu.cn"
+  - "*.ntp.org.cn"
+  - "+.pool.ntp.org"
+  - time1.cloud.tencent.com
+  - swscan.apple.com
+  - mesu.apple.com
+  - music.163.com
+  - "*.music.163.com"
+  - "*.126.net"
+  - musicapi.taihe.com
+  - music.taihe.com
+  - songsearch.kugou.com
+  - trackercdn.kugou.com
+  - "*.kuwo.cn"
+  - api-jooxtt.sanook.com
+  - api.joox.com
+  - y.qq.com
+  - "*.y.qq.com"
+  - streamoc.music.tc.qq.com
+  - mobileoc.music.tc.qq.com
+  - isure.stream.qqmusic.qq.com
+  - dl.stream.qqmusic.qq.com
+  - aqqmusic.tc.qq.com
+  - amobile.music.tc.qq.com
+  - localhost.ptlogin2.qq.com
+  - "*.msftconnecttest.com"
+  - "*.msftncsi.com"
+  - "*.xiami.com"
+  - "*.music.migu.cn"
+  - music.migu.cn
+  - "+.wotgame.cn"
+  - "+.wggames.cn"
+  - "+.wowsgame.cn"
+  - "+.wargaming.net"
+  - "*.*.*.srv.nintendo.net"
+  - "*.*.stun.playstation.net"
+  - xbox.*.*.microsoft.com
+  - "*.*.xboxlive.com"
+  - "*.ipv6.microsoft.com"
+  - teredo.*.*.*
+  - teredo.*.*
+  - speedtest.cros.wr.pvp.net
+  - "+.jjvip8.com"
+  - www.douyu.com
+  - activityapi.huya.com
+  - activityapi.huya.com.w.cdngslb.com
+  - www.bilibili.com
+  - api.bilibili.com
+  - a.w.bilicdn1.com
+  - captive.apple.com
+  - netctscan.apple.com
+  - detectportal.firefox.com
+  - connectivitycheck.gstatic.com
+  - www.msftconnecttest.com
+  - ipv6.msftconnecttest.com
+  - dns.msftncsi.com
+  - neverssl.com
+  - securelogin.arubanetworks.com
+  - arubanetworks.com
+  - "*.arubanetworks.com"
+  - arubanetworks.cc
+  - "*.arubanetworks.cc"
+  - bnbu.edu.cn
+  - "*.bnbu.edu.cn"
+  - uic.edu.cn
+  - "*.uic.edu.cn"
+  - msftconnecttest.com
+  - time-ios.apple.com
+  - ntp.*.org
+  - pool.ntp.org
+  - "+.srv.nintendo.net"
+  - "+.igwf.netease.com"
+  - stun.qq.com
+  - dns.alidns.com
+  - doh.pub
+  - dns.google
+  - cloudflare-dns.com
+  - www.gstatic.com
+  - gstatic.com
+  default-nameserver:
+  - 223.5.5.5
+  - 119.29.29.29
+  - system
+  nameserver:
+  - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+  - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+  proxy-server-nameserver:
+  - https://223.5.5.5/dns-query#DIRECT
+  - https://1.12.12.12/dns-query#DIRECT
+  ipv6: false
+  enhanced-mode: fake-ip
+  prefer-h3: false
+  respect-rules: false
+  fake-ip-filter-mode: blacklist
+  nameserver-policy:
+    geosite:cn:
+    - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    "+.anthropic.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.claude.ai":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.claude.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.clau.de":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.claudemcpclient.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.claudemcpcontent.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.claudeusercontent.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.sentry.io":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.statsigapi.net":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.intercom.io":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.intercomcdn.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.stripe.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.stripecdn.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.stripe.network":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.link.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.hcaptcha.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.proton.me":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.protonmail.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.protonmail.ch":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.pm.me":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.protonweb.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.protonstatus.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.protontech.ch":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.simplelogin.io":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.simplelogin.co":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.simplelogin.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.simplelogin.fr":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.slmail.me":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.passmail.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.passmail.net":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.passinbox.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.passfwd.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.aleeas.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.silomails.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.slmails.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.dralias.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.sift.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.siftcience.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.ip.net.coffee":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.net.coffee":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.withpersona.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.persona.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    servd-anthropic-website.b-cdn.net:
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    anthropic.com.cdn.cloudflare.net:
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    anthropic.auth0.com:
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    anthropic-com.ghost.io:
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    browser-intake-us5-datadoghq.com:
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    cdn.usefathom.com:
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    "+.datadoghq.com":
+    - "https://1.1.1.1/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F517 链式节点&disable-qtype-64=true&disable-qtype-65=true"
+    captive.apple.com:
+    - system
+    netctscan.apple.com:
+    - system
+    detectportal.firefox.com:
+    - system
+    connectivitycheck.gstatic.com:
+    - system
+    www.msftconnecttest.com:
+    - system
+    ipv6.msftconnecttest.com:
+    - system
+    dns.msftncsi.com:
+    - system
+    neverssl.com:
+    - system
+    securelogin.arubanetworks.com:
+    - system
+    "+.arubanetworks.com":
+    - system
+    "+.arubanetworks.cc":
+    - system
+    "+.bnbu.edu.cn":
+    - system
+    "+.uic.edu.cn":
+    - system
+    "+.msftconnecttest.com":
+    - system
+    geosite:private:
+    - system
+disable-keep-alive: false
+tun:
+  auto-detect-interface: true
+  auto-route: true
+  dns-hijack:
+  - any:53
+  mtu: 1500
+  route-exclude-address:
+  - 10.0.0.0/8
+  - 100.64.0.0/10
+  - 169.254.0.0/16
+  - 172.16.0.0/12
+  - 192.168.0.0/16
+  - 224.0.0.0/4
+  strict-route: false
+  ipv6: false
+keep-alive-idle: 30
+proxies:
+- type: socks5
+  name: "↪ \U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 夏延 [ISP]"
+  port: 6544
+  dialer-proxy: "\U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 夏延 ISP 1"
+  server: YOUR_CHEYENNE_ISP_HOST.invalid
+  username: YOUR_CHEYENNE_ISP_USER
+  password: YOUR_CHEYENNE_ISP_PASSWORD
+- type: socks5
+  name: "↪ \U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 纽约 [ISP]"
+  port: 12324
+  dialer-proxy: "\U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 纽约 ISP 2"
+  server: YOUR_NYC_ISP_HOST.invalid
+  username: YOUR_NYC_ISP_USER
+  password: YOUR_NYC_ISP_PASSWORD
 proxy-groups:
-  - name: '🚀 节点选择'
-    type: select
-    proxies:
-      - '🔗 落地 ISP'
-      - '🇭🇰 香港节点'
-      - '🏠🇭🇰 香港家宽'
-      - '🇨🇳 台湾节点'
-      - '🏠🇨🇳 台湾家宽'
-      - '🇯🇵 日本节点'
-      - '🏠🇯🇵 日本家宽'
-      - '🇸🇬 狮城节点'
-      - '🏠🇸🇬 狮城家宽'
-      - '🇰🇷 韩国节点'
-      - '🏠🇰🇷 韩国家宽'
-      - '🇲🇾 马来西亚节点'
-      - '🏠🇲🇾 马来西亚家宽'
-      - '🇮🇩 印尼节点'
-      - '🏠🇮🇩 印尼家宽'
-      - '🇮🇳 印度节点'
-      - '🏠🇮🇳 印度家宽'
-      - '🇵🇭 菲律宾节点'
-      - '🏠🇵🇭 菲律宾家宽'
-      - '🇹🇭 泰国节点'
-      - '🏠🇹🇭 泰国家宽'
-      - '🇻🇳 越南节点'
-      - '🏠🇻🇳 越南家宽'
-      - '🇰🇿 哈萨克斯坦节点'
-      - '🏠🇰🇿 哈萨克斯坦家宽'
-      - '🇵🇰 巴基斯坦节点'
-      - '🏠🇵🇰 巴基斯坦家宽'
-      - '🇬🇧 英国节点'
-      - '🏠🇬🇧 英国家宽'
-      - '🇫🇷 法国节点'
-      - '🏠🇫🇷 法国家宽'
-      - '🇩🇪 德国节点'
-      - '🏠🇩🇪 德国家宽'
-      - '🇧🇪 比利时节点'
-      - '🏠🇧🇪 比利时家宽'
-      - '🇳🇱 荷兰节点'
-      - '🏠🇳🇱 荷兰家宽'
-      - '🇷🇺 俄罗斯节点'
-      - '🏠🇷🇺 俄罗斯家宽'
-      - '🇨🇭 瑞士节点'
-      - '🏠🇨🇭 瑞士家宽'
-      - '🇸🇪 瑞典节点'
-      - '🏠🇸🇪 瑞典家宽'
-      - '🇮🇹 意大利节点'
-      - '🏠🇮🇹 意大利家宽'
-      - '🇪🇸 西班牙节点'
-      - '🏠🇪🇸 西班牙家宽'
-      - '🇵🇱 波兰节点'
-      - '🏠🇵🇱 波兰家宽'
-      - '🇺🇦 乌克兰节点'
-      - '🏠🇺🇦 乌克兰家宽'
-      - '🇦🇹 奥地利节点'
-      - '🏠🇦🇹 奥地利家宽'
-      - '🇮🇪 爱尔兰节点'
-      - '🏠🇮🇪 爱尔兰家宽'
-      - '🇲🇩 摩尔多瓦节点'
-      - '🏠🇲🇩 摩尔多瓦家宽'
-      - '🇺🇸 美国节点'
-      - '🏠🇺🇸 美国家宽'
-      - '🇨🇦 加拿大节点'
-      - '🏠🇨🇦 加拿大家宽'
-      - '🇦🇷 阿根廷节点'
-      - '🏠🇦🇷 阿根廷家宽'
-      - '🇧🇷 巴西节点'
-      - '🏠🇧🇷 巴西家宽'
-      - '🇲🇽 墨西哥节点'
-      - '🏠🇲🇽 墨西哥家宽'
-      - '🇨🇱 智利节点'
-      - '🏠🇨🇱 智利家宽'
-      - '🇹🇷 土耳其节点'
-      - '🏠🇹🇷 土耳其家宽'
-      - '🇦🇪 阿联酋节点'
-      - '🏠🇦🇪 阿联酋家宽'
-      - '🇮🇱 以色列节点'
-      - '🏠🇮🇱 以色列家宽'
-      - '🇸🇦 沙特节点'
-      - '🏠🇸🇦 沙特家宽'
-      - '🇿🇦 南非节点'
-      - '🏠🇿🇦 南非家宽'
-      - '🇪🇬 埃及节点'
-      - '🏠🇪🇬 埃及家宽'
-      - '🇳🇬 尼日利亚节点'
-      - '🏠🇳🇬 尼日利亚家宽'
-      - '🇦🇺 澳洲节点'
-      - '🏠🇦🇺 澳洲家宽'
-      - '🇳🇿 新西兰节点'
-      - '🏠🇳🇿 新西兰家宽'
-      - '⏬ 下载专用'
-      - '🆘 防失联组'
-      - '🚀 手动切换'
-      - 'DIRECT'
-
-  - name: '🚀 手动切换'
-    type: select
-    include-all: true
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    empty-fallback: COMPATIBLE
-    proxies:
-      - 'DIRECT'
-
-  - name: '🔗 落地 ISP'
-    type: select
-    include-all: true
-    filter: '(?i)ISP'
-    exclude-filter: '(?i)↪|^via |Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB'
-    empty-fallback: COMPATIBLE
-    proxies:
-      - 'DIRECT'
-
-  - name: '🔗 链式节点'
-    type: url-test
-    include-all: true
-    exclude-filter: '(?i)ISP|Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 300
-    tolerance: 50
-    lazy: false
-    timeout: 8000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🎯 全球直连'
-    type: select
-    proxies:
-      - 'DIRECT'
-      - '🚀 节点选择'
-
-  - name: '📲 电报消息'
-    type: select
-    proxies:
-      - '🚀 节点选择'
-      - '🇭🇰 香港节点'
-      - '🏠🇭🇰 香港家宽'
-      - '🇨🇳 台湾节点'
-      - '🏠🇨🇳 台湾家宽'
-      - '🇯🇵 日本节点'
-      - '🏠🇯🇵 日本家宽'
-      - '🇸🇬 狮城节点'
-      - '🏠🇸🇬 狮城家宽'
-      - '🇰🇷 韩国节点'
-      - '🏠🇰🇷 韩国家宽'
-      - '🇲🇾 马来西亚节点'
-      - '🏠🇲🇾 马来西亚家宽'
-      - '🇮🇩 印尼节点'
-      - '🏠🇮🇩 印尼家宽'
-      - '🇮🇳 印度节点'
-      - '🏠🇮🇳 印度家宽'
-      - '🇵🇭 菲律宾节点'
-      - '🏠🇵🇭 菲律宾家宽'
-      - '🇹🇭 泰国节点'
-      - '🏠🇹🇭 泰国家宽'
-      - '🇻🇳 越南节点'
-      - '🏠🇻🇳 越南家宽'
-      - '🇰🇿 哈萨克斯坦节点'
-      - '🏠🇰🇿 哈萨克斯坦家宽'
-      - '🇵🇰 巴基斯坦节点'
-      - '🏠🇵🇰 巴基斯坦家宽'
-      - '🇬🇧 英国节点'
-      - '🏠🇬🇧 英国家宽'
-      - '🇫🇷 法国节点'
-      - '🏠🇫🇷 法国家宽'
-      - '🇩🇪 德国节点'
-      - '🏠🇩🇪 德国家宽'
-      - '🇧🇪 比利时节点'
-      - '🏠🇧🇪 比利时家宽'
-      - '🇳🇱 荷兰节点'
-      - '🏠🇳🇱 荷兰家宽'
-      - '🇷🇺 俄罗斯节点'
-      - '🏠🇷🇺 俄罗斯家宽'
-      - '🇨🇭 瑞士节点'
-      - '🏠🇨🇭 瑞士家宽'
-      - '🇸🇪 瑞典节点'
-      - '🏠🇸🇪 瑞典家宽'
-      - '🇮🇹 意大利节点'
-      - '🏠🇮🇹 意大利家宽'
-      - '🇪🇸 西班牙节点'
-      - '🏠🇪🇸 西班牙家宽'
-      - '🇵🇱 波兰节点'
-      - '🏠🇵🇱 波兰家宽'
-      - '🇺🇦 乌克兰节点'
-      - '🏠🇺🇦 乌克兰家宽'
-      - '🇦🇹 奥地利节点'
-      - '🏠🇦🇹 奥地利家宽'
-      - '🇮🇪 爱尔兰节点'
-      - '🏠🇮🇪 爱尔兰家宽'
-      - '🇲🇩 摩尔多瓦节点'
-      - '🏠🇲🇩 摩尔多瓦家宽'
-      - '🇺🇸 美国节点'
-      - '🏠🇺🇸 美国家宽'
-      - '🇨🇦 加拿大节点'
-      - '🏠🇨🇦 加拿大家宽'
-      - '🇦🇷 阿根廷节点'
-      - '🏠🇦🇷 阿根廷家宽'
-      - '🇧🇷 巴西节点'
-      - '🏠🇧🇷 巴西家宽'
-      - '🇲🇽 墨西哥节点'
-      - '🏠🇲🇽 墨西哥家宽'
-      - '🇨🇱 智利节点'
-      - '🏠🇨🇱 智利家宽'
-      - '🇹🇷 土耳其节点'
-      - '🏠🇹🇷 土耳其家宽'
-      - '🇦🇪 阿联酋节点'
-      - '🏠🇦🇪 阿联酋家宽'
-      - '🇮🇱 以色列节点'
-      - '🏠🇮🇱 以色列家宽'
-      - '🇸🇦 沙特节点'
-      - '🏠🇸🇦 沙特家宽'
-      - '🇿🇦 南非节点'
-      - '🏠🇿🇦 南非家宽'
-      - '🇪🇬 埃及节点'
-      - '🏠🇪🇬 埃及家宽'
-      - '🇳🇬 尼日利亚节点'
-      - '🏠🇳🇬 尼日利亚家宽'
-      - '🇦🇺 澳洲节点'
-      - '🏠🇦🇺 澳洲家宽'
-      - '🇳🇿 新西兰节点'
-      - '🏠🇳🇿 新西兰家宽'
-      - '⏬ 下载专用'
-      - '🆘 防失联组'
-      - '🚀 手动切换'
-      - 'DIRECT'
-
-  - name: '🐙 GITHUB'
-    type: select
-    proxies:
-      - '🚀 节点选择'
-      - '🚀 手动切换'
-      - '🇭🇰 香港节点'
-      - '🇸🇬 狮城节点'
-      - '🇯🇵 日本节点'
-      - '🇺🇸 美国节点'
-      - '🇨🇳 台湾节点'
-      - '⏬ 下载专用'
-      - '🎯 全球直连'
-      - '🔗 落地 ISP'
-  - name: '💬 Ai平台'
-    type: select
-    proxies:
-      - '🇺🇸 美国节点'
-      - '🏠🇺🇸 美国家宽'
-      - '🇯🇵 日本节点'
-      - '🏠🇯🇵 日本家宽'
-      - '🇸🇬 狮城节点'
-      - '🏠🇸🇬 狮城家宽'
-      - '🇨🇳 台湾节点'
-      - '🏠🇨🇳 台湾家宽'
-      - '🚀 手动切换'
-      - '🔗 落地 ISP'
-  - name: '🤖 ChatGPT'
-    type: select
-    proxies:
-      - '🇺🇸 美国节点'
-      - '🏠🇺🇸 美国家宽'
-      - '🇯🇵 日本节点'
-      - '🏠🇯🇵 日本家宽'
-      - '🇸🇬 狮城节点'
-      - '🇨🇳 台湾节点'
-      - '🚀 手动切换'
-      - '🔗 落地 ISP'
-  - name: '🧠 Claude'
-    type: select
-    proxies:
-      - '🔗 落地 ISP'
-
-  - name: '✨ Gemini'
-    type: select
-    proxies:
-      - '🇺🇸 美国节点'
-      - '🏠🇺🇸 美国家宽'
-      - '🇯🇵 日本节点'
-      - '🏠🇯🇵 日本家宽'
-      - '🇸🇬 狮城节点'
-      - '🇨🇳 台湾节点'
-      - '🚀 手动切换'
-      - '🔗 落地 ISP'
-  - name: '✖️ Grok'
-    type: select
-    proxies:
-      - '🇺🇸 美国节点'
-      - '🏠🇺🇸 美国家宽'
-      - '🇯🇵 日本节点'
-      - '🏠🇯🇵 日本家宽'
-      - '🇸🇬 狮城节点'
-      - '🇨🇳 台湾节点'
-      - '🚀 手动切换'
-      - '🔗 落地 ISP'
-  - name: '🐋 DeepSeek'
-    type: select
-    proxies:
-      - '🇺🇸 美国节点'
-      - '🏠🇺🇸 美国家宽'
-      - '🇯🇵 日本节点'
-      - '🏠🇯🇵 日本家宽'
-      - '🇸🇬 狮城节点'
-      - '🇨🇳 台湾节点'
-      - '🚀 手动切换'
-      - '🎯 全球直连'
-      - '🔗 落地 ISP'
-  - name: '📹 油管视频'
-    type: select
-    proxies:
-      - '🚀 节点选择'
-      - '🇭🇰 香港节点'
-      - '🏠🇭🇰 香港家宽'
-      - '🇨🇳 台湾节点'
-      - '🏠🇨🇳 台湾家宽'
-      - '🇯🇵 日本节点'
-      - '🏠🇯🇵 日本家宽'
-      - '🇸🇬 狮城节点'
-      - '🏠🇸🇬 狮城家宽'
-      - '🇰🇷 韩国节点'
-      - '🏠🇰🇷 韩国家宽'
-      - '🇲🇾 马来西亚节点'
-      - '🏠🇲🇾 马来西亚家宽'
-      - '🇮🇩 印尼节点'
-      - '🏠🇮🇩 印尼家宽'
-      - '🇮🇳 印度节点'
-      - '🏠🇮🇳 印度家宽'
-      - '🇵🇭 菲律宾节点'
-      - '🏠🇵🇭 菲律宾家宽'
-      - '🇹🇭 泰国节点'
-      - '🏠🇹🇭 泰国家宽'
-      - '🇻🇳 越南节点'
-      - '🏠🇻🇳 越南家宽'
-      - '🇰🇿 哈萨克斯坦节点'
-      - '🏠🇰🇿 哈萨克斯坦家宽'
-      - '🇵🇰 巴基斯坦节点'
-      - '🏠🇵🇰 巴基斯坦家宽'
-      - '🇬🇧 英国节点'
-      - '🏠🇬🇧 英国家宽'
-      - '🇫🇷 法国节点'
-      - '🏠🇫🇷 法国家宽'
-      - '🇩🇪 德国节点'
-      - '🏠🇩🇪 德国家宽'
-      - '🇧🇪 比利时节点'
-      - '🏠🇧🇪 比利时家宽'
-      - '🇳🇱 荷兰节点'
-      - '🏠🇳🇱 荷兰家宽'
-      - '🇷🇺 俄罗斯节点'
-      - '🏠🇷🇺 俄罗斯家宽'
-      - '🇨🇭 瑞士节点'
-      - '🏠🇨🇭 瑞士家宽'
-      - '🇸🇪 瑞典节点'
-      - '🏠🇸🇪 瑞典家宽'
-      - '🇮🇹 意大利节点'
-      - '🏠🇮🇹 意大利家宽'
-      - '🇪🇸 西班牙节点'
-      - '🏠🇪🇸 西班牙家宽'
-      - '🇵🇱 波兰节点'
-      - '🏠🇵🇱 波兰家宽'
-      - '🇺🇦 乌克兰节点'
-      - '🏠🇺🇦 乌克兰家宽'
-      - '🇦🇹 奥地利节点'
-      - '🏠🇦🇹 奥地利家宽'
-      - '🇮🇪 爱尔兰节点'
-      - '🏠🇮🇪 爱尔兰家宽'
-      - '🇲🇩 摩尔多瓦节点'
-      - '🏠🇲🇩 摩尔多瓦家宽'
-      - '🇺🇸 美国节点'
-      - '🏠🇺🇸 美国家宽'
-      - '🇨🇦 加拿大节点'
-      - '🏠🇨🇦 加拿大家宽'
-      - '🇦🇷 阿根廷节点'
-      - '🏠🇦🇷 阿根廷家宽'
-      - '🇧🇷 巴西节点'
-      - '🏠🇧🇷 巴西家宽'
-      - '🇲🇽 墨西哥节点'
-      - '🏠🇲🇽 墨西哥家宽'
-      - '🇨🇱 智利节点'
-      - '🏠🇨🇱 智利家宽'
-      - '🇹🇷 土耳其节点'
-      - '🏠🇹🇷 土耳其家宽'
-      - '🇦🇪 阿联酋节点'
-      - '🏠🇦🇪 阿联酋家宽'
-      - '🇮🇱 以色列节点'
-      - '🏠🇮🇱 以色列家宽'
-      - '🇸🇦 沙特节点'
-      - '🏠🇸🇦 沙特家宽'
-      - '🇿🇦 南非节点'
-      - '🏠🇿🇦 南非家宽'
-      - '🇪🇬 埃及节点'
-      - '🏠🇪🇬 埃及家宽'
-      - '🇳🇬 尼日利亚节点'
-      - '🏠🇳🇬 尼日利亚家宽'
-      - '🇦🇺 澳洲节点'
-      - '🏠🇦🇺 澳洲家宽'
-      - '🇳🇿 新西兰节点'
-      - '🏠🇳🇿 新西兰家宽'
-      - '⏬ 下载专用'
-      - '🆘 防失联组'
-      - '🚀 手动切换'
-      - 'DIRECT'
-
-  - name: '🎥 奈飞视频'
-    type: select
-    proxies:
-      - '🎥 奈飞节点'
-      - '🚀 节点选择'
-      - '🇭🇰 香港节点'
-      - '🏠🇭🇰 香港家宽'
-      - '🇨🇳 台湾节点'
-      - '🏠🇨🇳 台湾家宽'
-      - '🇯🇵 日本节点'
-      - '🏠🇯🇵 日本家宽'
-      - '🇸🇬 狮城节点'
-      - '🏠🇸🇬 狮城家宽'
-      - '🇰🇷 韩国节点'
-      - '🏠🇰🇷 韩国家宽'
-      - '🇲🇾 马来西亚节点'
-      - '🏠🇲🇾 马来西亚家宽'
-      - '🇮🇩 印尼节点'
-      - '🏠🇮🇩 印尼家宽'
-      - '🇮🇳 印度节点'
-      - '🏠🇮🇳 印度家宽'
-      - '🇵🇭 菲律宾节点'
-      - '🏠🇵🇭 菲律宾家宽'
-      - '🇹🇭 泰国节点'
-      - '🏠🇹🇭 泰国家宽'
-      - '🇻🇳 越南节点'
-      - '🏠🇻🇳 越南家宽'
-      - '🇰🇿 哈萨克斯坦节点'
-      - '🏠🇰🇿 哈萨克斯坦家宽'
-      - '🇵🇰 巴基斯坦节点'
-      - '🏠🇵🇰 巴基斯坦家宽'
-      - '🇬🇧 英国节点'
-      - '🏠🇬🇧 英国家宽'
-      - '🇫🇷 法国节点'
-      - '🏠🇫🇷 法国家宽'
-      - '🇩🇪 德国节点'
-      - '🏠🇩🇪 德国家宽'
-      - '🇧🇪 比利时节点'
-      - '🏠🇧🇪 比利时家宽'
-      - '🇳🇱 荷兰节点'
-      - '🏠🇳🇱 荷兰家宽'
-      - '🇷🇺 俄罗斯节点'
-      - '🏠🇷🇺 俄罗斯家宽'
-      - '🇨🇭 瑞士节点'
-      - '🏠🇨🇭 瑞士家宽'
-      - '🇸🇪 瑞典节点'
-      - '🏠🇸🇪 瑞典家宽'
-      - '🇮🇹 意大利节点'
-      - '🏠🇮🇹 意大利家宽'
-      - '🇪🇸 西班牙节点'
-      - '🏠🇪🇸 西班牙家宽'
-      - '🇵🇱 波兰节点'
-      - '🏠🇵🇱 波兰家宽'
-      - '🇺🇦 乌克兰节点'
-      - '🏠🇺🇦 乌克兰家宽'
-      - '🇦🇹 奥地利节点'
-      - '🏠🇦🇹 奥地利家宽'
-      - '🇮🇪 爱尔兰节点'
-      - '🏠🇮🇪 爱尔兰家宽'
-      - '🇲🇩 摩尔多瓦节点'
-      - '🏠🇲🇩 摩尔多瓦家宽'
-      - '🇺🇸 美国节点'
-      - '🏠🇺🇸 美国家宽'
-      - '🇨🇦 加拿大节点'
-      - '🏠🇨🇦 加拿大家宽'
-      - '🇦🇷 阿根廷节点'
-      - '🏠🇦🇷 阿根廷家宽'
-      - '🇧🇷 巴西节点'
-      - '🏠🇧🇷 巴西家宽'
-      - '🇲🇽 墨西哥节点'
-      - '🏠🇲🇽 墨西哥家宽'
-      - '🇨🇱 智利节点'
-      - '🏠🇨🇱 智利家宽'
-      - '🇹🇷 土耳其节点'
-      - '🏠🇹🇷 土耳其家宽'
-      - '🇦🇪 阿联酋节点'
-      - '🏠🇦🇪 阿联酋家宽'
-      - '🇮🇱 以色列节点'
-      - '🏠🇮🇱 以色列家宽'
-      - '🇸🇦 沙特节点'
-      - '🏠🇸🇦 沙特家宽'
-      - '🇿🇦 南非节点'
-      - '🏠🇿🇦 南非家宽'
-      - '🇪🇬 埃及节点'
-      - '🏠🇪🇬 埃及家宽'
-      - '🇳🇬 尼日利亚节点'
-      - '🏠🇳🇬 尼日利亚家宽'
-      - '🇦🇺 澳洲节点'
-      - '🏠🇦🇺 澳洲家宽'
-      - '🇳🇿 新西兰节点'
-      - '🏠🇳🇿 新西兰家宽'
-      - '⏬ 下载专用'
-      - '🆘 防失联组'
-      - '🚀 手动切换'
-      - 'DIRECT'
-
-  - name: '📺 巴哈姆特'
-    type: select
-    proxies:
-      - '🇨🇳 台湾节点'
-      - '🚀 节点选择'
-      - '🚀 手动切换'
-      - 'DIRECT'
-
-  - name: '📺 哔哩哔哩'
-    type: select
-    proxies:
-      - '🎯 全球直连'
-      - '🇨🇳 台湾节点'
-      - '🇭🇰 香港节点'
-
-  - name: '🌍 国外媒体'
-    type: select
-    proxies:
-      - '🚀 节点选择'
-      - '🇭🇰 香港节点'
-      - '🏠🇭🇰 香港家宽'
-      - '🇨🇳 台湾节点'
-      - '🏠🇨🇳 台湾家宽'
-      - '🇯🇵 日本节点'
-      - '🏠🇯🇵 日本家宽'
-      - '🇸🇬 狮城节点'
-      - '🏠🇸🇬 狮城家宽'
-      - '🇰🇷 韩国节点'
-      - '🏠🇰🇷 韩国家宽'
-      - '🇲🇾 马来西亚节点'
-      - '🏠🇲🇾 马来西亚家宽'
-      - '🇮🇩 印尼节点'
-      - '🏠🇮🇩 印尼家宽'
-      - '🇮🇳 印度节点'
-      - '🏠🇮🇳 印度家宽'
-      - '🇵🇭 菲律宾节点'
-      - '🏠🇵🇭 菲律宾家宽'
-      - '🇹🇭 泰国节点'
-      - '🏠🇹🇭 泰国家宽'
-      - '🇻🇳 越南节点'
-      - '🏠🇻🇳 越南家宽'
-      - '🇰🇿 哈萨克斯坦节点'
-      - '🏠🇰🇿 哈萨克斯坦家宽'
-      - '🇵🇰 巴基斯坦节点'
-      - '🏠🇵🇰 巴基斯坦家宽'
-      - '🇬🇧 英国节点'
-      - '🏠🇬🇧 英国家宽'
-      - '🇫🇷 法国节点'
-      - '🏠🇫🇷 法国家宽'
-      - '🇩🇪 德国节点'
-      - '🏠🇩🇪 德国家宽'
-      - '🇧🇪 比利时节点'
-      - '🏠🇧🇪 比利时家宽'
-      - '🇳🇱 荷兰节点'
-      - '🏠🇳🇱 荷兰家宽'
-      - '🇷🇺 俄罗斯节点'
-      - '🏠🇷🇺 俄罗斯家宽'
-      - '🇨🇭 瑞士节点'
-      - '🏠🇨🇭 瑞士家宽'
-      - '🇸🇪 瑞典节点'
-      - '🏠🇸🇪 瑞典家宽'
-      - '🇮🇹 意大利节点'
-      - '🏠🇮🇹 意大利家宽'
-      - '🇪🇸 西班牙节点'
-      - '🏠🇪🇸 西班牙家宽'
-      - '🇵🇱 波兰节点'
-      - '🏠🇵🇱 波兰家宽'
-      - '🇺🇦 乌克兰节点'
-      - '🏠🇺🇦 乌克兰家宽'
-      - '🇦🇹 奥地利节点'
-      - '🏠🇦🇹 奥地利家宽'
-      - '🇮🇪 爱尔兰节点'
-      - '🏠🇮🇪 爱尔兰家宽'
-      - '🇲🇩 摩尔多瓦节点'
-      - '🏠🇲🇩 摩尔多瓦家宽'
-      - '🇺🇸 美国节点'
-      - '🏠🇺🇸 美国家宽'
-      - '🇨🇦 加拿大节点'
-      - '🏠🇨🇦 加拿大家宽'
-      - '🇦🇷 阿根廷节点'
-      - '🏠🇦🇷 阿根廷家宽'
-      - '🇧🇷 巴西节点'
-      - '🏠🇧🇷 巴西家宽'
-      - '🇲🇽 墨西哥节点'
-      - '🏠🇲🇽 墨西哥家宽'
-      - '🇨🇱 智利节点'
-      - '🏠🇨🇱 智利家宽'
-      - '🇹🇷 土耳其节点'
-      - '🏠🇹🇷 土耳其家宽'
-      - '🇦🇪 阿联酋节点'
-      - '🏠🇦🇪 阿联酋家宽'
-      - '🇮🇱 以色列节点'
-      - '🏠🇮🇱 以色列家宽'
-      - '🇸🇦 沙特节点'
-      - '🏠🇸🇦 沙特家宽'
-      - '🇿🇦 南非节点'
-      - '🏠🇿🇦 南非家宽'
-      - '🇪🇬 埃及节点'
-      - '🏠🇪🇬 埃及家宽'
-      - '🇳🇬 尼日利亚节点'
-      - '🏠🇳🇬 尼日利亚家宽'
-      - '🇦🇺 澳洲节点'
-      - '🏠🇦🇺 澳洲家宽'
-      - '🇳🇿 新西兰节点'
-      - '🏠🇳🇿 新西兰家宽'
-      - '⏬ 下载专用'
-      - '🆘 防失联组'
-      - '🚀 手动切换'
-      - 'DIRECT'
-
-  - name: '🌏 国内媒体'
-    type: select
-    proxies:
-      - 'DIRECT'
-      - '🇭🇰 香港节点'
-      - '🇨🇳 台湾节点'
-      - '🇸🇬 狮城节点'
-      - '🇯🇵 日本节点'
-      - '🚀 手动切换'
-
-  - name: '📢 谷歌FCM'
-    type: select
-    proxies:
-      - 'DIRECT'
-      - '🚀 节点选择'
-      - '🇺🇸 美国节点'
-      - '🇭🇰 香港节点'
-      - '🇨🇳 台湾节点'
-      - '🇸🇬 狮城节点'
-      - '🇯🇵 日本节点'
-      - '🇰🇷 韩国节点'
-      - '🚀 手动切换'
-
-  - name: 'Ⓜ️ 微软商店'
-    type: select
-    proxies:
-      - '🚀 节点选择'
-      - '🇭🇰 香港节点'
-      - '🇯🇵 日本节点'
-      - '🇸🇬 狮城节点'
-      - '🇨🇳 台湾节点'
-      - '🇺🇸 美国节点'
-      - '🚀 手动切换'
-      - 'DIRECT'
-
-  - name: 'Ⓜ️ 微软Bing'
-    type: select
-    proxies:
-      - 'DIRECT'
-      - '🚀 节点选择'
-      - '🇺🇸 美国节点'
-      - '🇭🇰 香港节点'
-      - '🇨🇳 台湾节点'
-      - '🇸🇬 狮城节点'
-      - '🇯🇵 日本节点'
-      - '🇰🇷 韩国节点'
-      - '🚀 手动切换'
-
-  - name: 'Ⓜ️ 微软云盘'
-    type: select
-    proxies:
-      - 'DIRECT'
-      - '🚀 节点选择'
-      - '🇺🇸 美国节点'
-      - '🇭🇰 香港节点'
-      - '🇨🇳 台湾节点'
-      - '🇸🇬 狮城节点'
-      - '🇯🇵 日本节点'
-      - '🇰🇷 韩国节点'
-      - '🚀 手动切换'
-
-  - name: 'Ⓜ️ 微软服务'
-    type: select
-    proxies:
-      - 'DIRECT'
-      - '🚀 节点选择'
-      - '🇺🇸 美国节点'
-      - '🇭🇰 香港节点'
-      - '🇨🇳 台湾节点'
-      - '🇸🇬 狮城节点'
-      - '🇯🇵 日本节点'
-      - '🇰🇷 韩国节点'
-      - '🚀 手动切换'
-
-  - name: '🍎 苹果服务'
-    type: select
-    proxies:
-      - 'DIRECT'
-      - '🚀 节点选择'
-      - '🇺🇸 美国节点'
-      - '🇭🇰 香港节点'
-      - '🇨🇳 台湾节点'
-      - '🇸🇬 狮城节点'
-      - '🇯🇵 日本节点'
-      - '🇰🇷 韩国节点'
-      - '🚀 手动切换'
-
-  - name: '🎮 游戏平台'
-    type: select
-    proxies:
-      - 'DIRECT'
-      - '🚀 节点选择'
-      - '🇺🇸 美国节点'
-      - '🇭🇰 香港节点'
-      - '🇨🇳 台湾节点'
-      - '🇸🇬 狮城节点'
-      - '🇯🇵 日本节点'
-      - '🇰🇷 韩国节点'
-      - '🚀 手动切换'
-
-  - name: '🎶 网易音乐'
-    type: select
-    include-all: true
-    filter: '(?i)(网易|音乐|解锁|Music|NetEase)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    empty-fallback: COMPATIBLE
-    proxies:
-      - 'DIRECT'
-      - '🚀 节点选择'
-
-  - name: '🛑 广告拦截'
-    type: select
-    proxies:
-      - 'REJECT'
-      - 'DIRECT'
-
-  - name: '🍃 应用净化'
-    type: select
-    proxies:
-      - 'REJECT'
-      - 'DIRECT'
-
-  - name: '🐟 漏网之鱼'
-    type: select
-    proxies:
-      - '🚀 节点选择'
-      - 'DIRECT'
-      - '🇭🇰 香港节点'
-      - '🏠🇭🇰 香港家宽'
-      - '🇨🇳 台湾节点'
-      - '🏠🇨🇳 台湾家宽'
-      - '🇯🇵 日本节点'
-      - '🏠🇯🇵 日本家宽'
-      - '🇸🇬 狮城节点'
-      - '🏠🇸🇬 狮城家宽'
-      - '🇰🇷 韩国节点'
-      - '🏠🇰🇷 韩国家宽'
-      - '🇲🇾 马来西亚节点'
-      - '🏠🇲🇾 马来西亚家宽'
-      - '🇮🇩 印尼节点'
-      - '🏠🇮🇩 印尼家宽'
-      - '🇮🇳 印度节点'
-      - '🏠🇮🇳 印度家宽'
-      - '🇵🇭 菲律宾节点'
-      - '🏠🇵🇭 菲律宾家宽'
-      - '🇹🇭 泰国节点'
-      - '🏠🇹🇭 泰国家宽'
-      - '🇻🇳 越南节点'
-      - '🏠🇻🇳 越南家宽'
-      - '🇰🇿 哈萨克斯坦节点'
-      - '🏠🇰🇿 哈萨克斯坦家宽'
-      - '🇵🇰 巴基斯坦节点'
-      - '🏠🇵🇰 巴基斯坦家宽'
-      - '🇬🇧 英国节点'
-      - '🏠🇬🇧 英国家宽'
-      - '🇫🇷 法国节点'
-      - '🏠🇫🇷 法国家宽'
-      - '🇩🇪 德国节点'
-      - '🏠🇩🇪 德国家宽'
-      - '🇧🇪 比利时节点'
-      - '🏠🇧🇪 比利时家宽'
-      - '🇳🇱 荷兰节点'
-      - '🏠🇳🇱 荷兰家宽'
-      - '🇷🇺 俄罗斯节点'
-      - '🏠🇷🇺 俄罗斯家宽'
-      - '🇨🇭 瑞士节点'
-      - '🏠🇨🇭 瑞士家宽'
-      - '🇸🇪 瑞典节点'
-      - '🏠🇸🇪 瑞典家宽'
-      - '🇮🇹 意大利节点'
-      - '🏠🇮🇹 意大利家宽'
-      - '🇪🇸 西班牙节点'
-      - '🏠🇪🇸 西班牙家宽'
-      - '🇵🇱 波兰节点'
-      - '🏠🇵🇱 波兰家宽'
-      - '🇺🇦 乌克兰节点'
-      - '🏠🇺🇦 乌克兰家宽'
-      - '🇦🇹 奥地利节点'
-      - '🏠🇦🇹 奥地利家宽'
-      - '🇮🇪 爱尔兰节点'
-      - '🏠🇮🇪 爱尔兰家宽'
-      - '🇲🇩 摩尔多瓦节点'
-      - '🏠🇲🇩 摩尔多瓦家宽'
-      - '🇺🇸 美国节点'
-      - '🏠🇺🇸 美国家宽'
-      - '🇨🇦 加拿大节点'
-      - '🏠🇨🇦 加拿大家宽'
-      - '🇦🇷 阿根廷节点'
-      - '🏠🇦🇷 阿根廷家宽'
-      - '🇧🇷 巴西节点'
-      - '🏠🇧🇷 巴西家宽'
-      - '🇲🇽 墨西哥节点'
-      - '🏠🇲🇽 墨西哥家宽'
-      - '🇨🇱 智利节点'
-      - '🏠🇨🇱 智利家宽'
-      - '🇹🇷 土耳其节点'
-      - '🏠🇹🇷 土耳其家宽'
-      - '🇦🇪 阿联酋节点'
-      - '🏠🇦🇪 阿联酋家宽'
-      - '🇮🇱 以色列节点'
-      - '🏠🇮🇱 以色列家宽'
-      - '🇸🇦 沙特节点'
-      - '🏠🇸🇦 沙特家宽'
-      - '🇿🇦 南非节点'
-      - '🏠🇿🇦 南非家宽'
-      - '🇪🇬 埃及节点'
-      - '🏠🇪🇬 埃及家宽'
-      - '🇳🇬 尼日利亚节点'
-      - '🏠🇳🇬 尼日利亚家宽'
-      - '🇦🇺 澳洲节点'
-      - '🏠🇦🇺 澳洲家宽'
-      - '🇳🇿 新西兰节点'
-      - '🏠🇳🇿 新西兰家宽'
-      - '⏬ 下载专用'
-      - '🆘 防失联组'
-      - '🚀 手动切换'
-      - '🔗 落地 ISP'
-  - name: '🎥 奈飞节点'
-    type: select
-    include-all: true
-    filter: '(?i)(NF|奈飞|解锁|Netflix|NETFLIX|Media)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    empty-fallback: COMPATIBLE
-    proxies:
-      - '🚀 节点选择'
-      - '🚀 手动切换'
-
-  - name: '⏬ 下载专用'
-    type: url-test
-    include-all: true
-    filter: '(?i)下[载載]|download|省流|低倍率?|大流量|0\.[0-9]+\s*[xX×]|\.[0-9]+\s*[xX×]|0\.[0-9]+\s*倍'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 600
-    tolerance: 100
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🆘 防失联组'
-    type: select
-    include-all: true
-    filter: '(?i)(防失联|备用)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    empty-fallback: COMPATIBLE
-    proxies:
-      - '🚀 手动切换'
-      - 'DIRECT'
-
-  - name: '🇭🇰 香港节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(香港|\bHK\b|Hong Kong|HongKong|hongkong|深港|沪港|京港)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇭🇰 香港家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((香港|\bHK\b|Hong Kong|HongKong|hongkong|深港|沪港|京港)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((香港|\bHK\b|Hong Kong|HongKong|hongkong|深港|沪港|京港))|(\bHKBN\b|\bHGC\b|\bWTT\b)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇨🇳 台湾节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(台|新北|彰化|高雄|\bTW\b|Taiwan)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇨🇳 台湾家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((台|新北|彰化|高雄|\bTW\b|Taiwan)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((台|新北|彰化|高雄|\bTW\b|Taiwan))|(\bHiNet\b)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇯🇵 日本节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(日本|川日|东京|大阪|名古屋|泉日|埼玉|福冈|沪日|深日|\bJP\b|Japan)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇯🇵 日本家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((日本|川日|东京|大阪|名古屋|泉日|埼玉|福冈|沪日|深日|\bJP\b|Japan)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((日本|川日|东京|大阪|名古屋|泉日|埼玉|福冈|沪日|深日|\bJP\b|Japan))|(\bNTT\b|\bOCN\b|\bNURO\b)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇸🇬 狮城节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(新加坡|坡|狮城|\bSG\b|Singapore)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇸🇬 狮城家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((新加坡|坡|狮城|\bSG\b|Singapore)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((新加坡|坡|狮城|\bSG\b|Singapore))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇰🇷 韩国节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(\bKR\b|Korea|\bKOR\b|首尔|春川|韩|韓)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇰🇷 韩国家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((\bKR\b|Korea|\bKOR\b|首尔|春川|韩|韓)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((\bKR\b|Korea|\bKOR\b|首尔|春川|韩|韓))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇲🇾 马来西亚节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(马来西亚|大马|吉隆坡|Malaysia|\bMY\b)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇲🇾 马来西亚家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((马来西亚|大马|吉隆坡|Malaysia|\bMY\b)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((马来西亚|大马|吉隆坡|Malaysia|\bMY\b))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇮🇩 印尼节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(印尼|印度尼西亚|雅加达|\bID\b|Indonesia)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇮🇩 印尼家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((印尼|印度尼西亚|雅加达|\bID\b|Indonesia)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((印尼|印度尼西亚|雅加达|\bID\b|Indonesia))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇮🇳 印度节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(印度($|[^尼])|孟买|新德里|\bIN\b|India)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇮🇳 印度家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((印度($|[^尼])|孟买|新德里|\bIN\b|India)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((印度($|[^尼])|孟买|新德里|\bIN\b|India))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇵🇭 菲律宾节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(菲律宾|马尼拉|\bPH\b|Philippines)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇵🇭 菲律宾家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((菲律宾|马尼拉|\bPH\b|Philippines)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((菲律宾|马尼拉|\bPH\b|Philippines))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇹🇭 泰国节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(泰国|曼谷|\bTH\b|Thailand)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇹🇭 泰国家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((泰国|曼谷|\bTH\b|Thailand)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((泰国|曼谷|\bTH\b|Thailand))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇻🇳 越南节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(越南|胡志明|河内|\bVN\b|Vietnam)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇻🇳 越南家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((越南|胡志明|河内|\bVN\b|Vietnam)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((越南|胡志明|河内|\bVN\b|Vietnam))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇰🇿 哈萨克斯坦节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(哈萨克斯坦|阿拉木图|阿斯塔纳|\bKZ\b|Kazakhstan)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇰🇿 哈萨克斯坦家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((哈萨克斯坦|阿拉木图|阿斯塔纳|\bKZ\b|Kazakhstan)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((哈萨克斯坦|阿拉木图|阿斯塔纳|\bKZ\b|Kazakhstan))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇵🇰 巴基斯坦节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(巴基斯坦|伊斯兰堡|\bPK\b|Pakistan)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇵🇰 巴基斯坦家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((巴基斯坦|伊斯兰堡|\bPK\b|Pakistan)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((巴基斯坦|伊斯兰堡|\bPK\b|Pakistan))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇬🇧 英国节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(英[国國]|英格兰|伦敦|加的夫|曼彻斯特|伯克郡|\bUK\b|United Kingdom|Great Britain)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇬🇧 英国家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((英[国國]|英格兰|伦敦|加的夫|曼彻斯特|伯克郡|\bUK\b|United Kingdom|Great Britain)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((英[国國]|英格兰|伦敦|加的夫|曼彻斯特|伯克郡|\bUK\b|United Kingdom|Great Britain))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇫🇷 法国节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(法[国國]|巴黎|马赛|斯特拉斯堡|\bFR\b|France)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇫🇷 法国家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((法[国國]|巴黎|马赛|斯特拉斯堡|\bFR\b|France)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((法[国國]|巴黎|马赛|斯特拉斯堡|\bFR\b|France))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇩🇪 德国节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(德[国國]|法兰克福|柏林|杜塞尔多夫|\bDE\b|Germany)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇩🇪 德国家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((德[国國]|法兰克福|柏林|杜塞尔多夫|\bDE\b|Germany)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((德[国國]|法兰克福|柏林|杜塞尔多夫|\bDE\b|Germany))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇧🇪 比利时节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(比利时|布鲁塞尔|\bBE\b|Belgium)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇧🇪 比利时家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((比利时|布鲁塞尔|\bBE\b|Belgium)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((比利时|布鲁塞尔|\bBE\b|Belgium))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇳🇱 荷兰节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(荷兰|尼德兰|阿姆斯特丹|\bNL\b|Netherlands)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇳🇱 荷兰家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((荷兰|尼德兰|阿姆斯特丹|\bNL\b|Netherlands)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((荷兰|尼德兰|阿姆斯特丹|\bNL\b|Netherlands))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇷🇺 俄罗斯节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(俄[国國]|俄[罗羅]斯|莫斯科|圣彼得堡|西伯利亚|伯力|哈巴罗夫斯克|\bRU\b|Russia)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇷🇺 俄罗斯家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((俄[国國]|俄[罗羅]斯|莫斯科|圣彼得堡|西伯利亚|伯力|哈巴罗夫斯克|\bRU\b|Russia)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((俄[国國]|俄[罗羅]斯|莫斯科|圣彼得堡|西伯利亚|伯力|哈巴罗夫斯克|\bRU\b|Russia))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇨🇭 瑞士节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(瑞士|苏黎世|日内瓦|\bCH\b|Switzerland)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇨🇭 瑞士家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((瑞士|苏黎世|日内瓦|\bCH\b|Switzerland)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((瑞士|苏黎世|日内瓦|\bCH\b|Switzerland))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇸🇪 瑞典节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(瑞典|斯德哥尔摩|\bSE\b|Sweden)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇸🇪 瑞典家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((瑞典|斯德哥尔摩|\bSE\b|Sweden)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((瑞典|斯德哥尔摩|\bSE\b|Sweden))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇮🇹 意大利节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(意大[利里]|米兰|罗马|\bIT\b|Italy)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇮🇹 意大利家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((意大[利里]|米兰|罗马|\bIT\b|Italy)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((意大[利里]|米兰|罗马|\bIT\b|Italy))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇪🇸 西班牙节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(西班牙|马德里|\bES\b|Spain)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇪🇸 西班牙家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((西班牙|马德里|\bES\b|Spain)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((西班牙|马德里|\bES\b|Spain))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇵🇱 波兰节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(波兰|华沙|\bPL\b|Poland)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇵🇱 波兰家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((波兰|华沙|\bPL\b|Poland)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((波兰|华沙|\bPL\b|Poland))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇺🇦 乌克兰节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(乌克兰|基辅|\bUA\b|Ukraine)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇺🇦 乌克兰家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((乌克兰|基辅|\bUA\b|Ukraine)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((乌克兰|基辅|\bUA\b|Ukraine))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇦🇹 奥地利节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(奥地利|维也纳|\bAT\b|Austria)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇦🇹 奥地利家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((奥地利|维也纳|\bAT\b|Austria)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((奥地利|维也纳|\bAT\b|Austria))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇮🇪 爱尔兰节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(爱尔兰|都柏林|\bIE\b|Ireland)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇮🇪 爱尔兰家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((爱尔兰|都柏林|\bIE\b|Ireland)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((爱尔兰|都柏林|\bIE\b|Ireland))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇲🇩 摩尔多瓦节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(摩尔多瓦|基希讷乌|\bMD\b|Moldova)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇲🇩 摩尔多瓦家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((摩尔多瓦|基希讷乌|\bMD\b|Moldova)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((摩尔多瓦|基希讷乌|\bMD\b|Moldova))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇺🇸 美国节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(美|华盛顿|波特兰|达拉斯|俄勒冈|凤凰城|菲尼克斯|费利蒙|弗里蒙特|硅谷|旧金山|拉斯维加斯|洛杉|圣何塞|圣荷西|圣塔?克拉拉|西雅图|芝加哥|哥伦布|纽约|阿什本|纽瓦克|丹佛|加利福尼亚|弗吉尼亚|马纳萨斯|俄亥俄|得克萨斯|[佐乔]治亚|亚特兰大|佛罗里达|迈阿密|\bUSA\b|United States)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇺🇸 美国家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((美|华盛顿|波特兰|达拉斯|俄勒冈|凤凰城|菲尼克斯|费利蒙|弗里蒙特|硅谷|旧金山|拉斯维加斯|洛杉|圣何塞|圣荷西|圣塔?克拉拉|西雅图|芝加哥|哥伦布|纽约|阿什本|纽瓦克|丹佛|加利福尼亚|弗吉尼亚|马纳萨斯|俄亥俄|得克萨斯|[佐乔]治亚|亚特兰大|佛罗里达|迈阿密|\bUSA\b|United States)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((美|华盛顿|波特兰|达拉斯|俄勒冈|凤凰城|菲尼克斯|费利蒙|弗里蒙特|硅谷|旧金山|拉斯维加斯|洛杉|圣何塞|圣荷西|圣塔?克拉拉|西雅图|芝加哥|哥伦布|纽约|阿什本|纽瓦克|丹佛|加利福尼亚|弗吉尼亚|马纳萨斯|俄亥俄|得克萨斯|[佐乔]治亚|亚特兰大|佛罗里达|迈阿密|\bUSA\b|United States))|(\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇨🇦 加拿大节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(加拿大|[枫楓][叶葉]|多伦多|蒙特利尔|温哥华|卡尔加里|\bCA\b|Canada)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇨🇦 加拿大家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((加拿大|[枫楓][叶葉]|多伦多|蒙特利尔|温哥华|卡尔加里|\bCA\b|Canada)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((加拿大|[枫楓][叶葉]|多伦多|蒙特利尔|温哥华|卡尔加里|\bCA\b|Canada))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇦🇷 阿根廷节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(阿根廷|布宜诺斯艾利斯|Argentina|\bAR\b)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇦🇷 阿根廷家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((阿根廷|布宜诺斯艾利斯|Argentina|\bAR\b)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((阿根廷|布宜诺斯艾利斯|Argentina|\bAR\b))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇧🇷 巴西节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(巴西|圣保罗|里约|\bBR\b|Brazil)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇧🇷 巴西家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((巴西|圣保罗|里约|\bBR\b|Brazil)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((巴西|圣保罗|里约|\bBR\b|Brazil))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇲🇽 墨西哥节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(墨西哥|\bMX\b|Mexico)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇲🇽 墨西哥家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((墨西哥|\bMX\b|Mexico)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((墨西哥|\bMX\b|Mexico))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇨🇱 智利节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(智利|圣地亚哥|\bCL\b|Chile)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇨🇱 智利家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((智利|圣地亚哥|\bCL\b|Chile)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((智利|圣地亚哥|\bCL\b|Chile))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇹🇷 土耳其节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(土耳其|伊斯坦布尔|Turkey|\bTR\b)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇹🇷 土耳其家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((土耳其|伊斯坦布尔|Turkey|\bTR\b)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((土耳其|伊斯坦布尔|Turkey|\bTR\b))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇦🇪 阿联酋节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(阿联酋|迪拜|阿拉伯联合酋长国|\bAE\b|United Arab Emirates|Dubai)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇦🇪 阿联酋家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((阿联酋|迪拜|阿拉伯联合酋长国|\bAE\b|United Arab Emirates|Dubai)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((阿联酋|迪拜|阿拉伯联合酋长国|\bAE\b|United Arab Emirates|Dubai))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇮🇱 以色列节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(以色列|特拉维夫|耶路撒冷|\bIL\b|Israel)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇮🇱 以色列家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((以色列|特拉维夫|耶路撒冷|\bIL\b|Israel)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((以色列|特拉维夫|耶路撒冷|\bIL\b|Israel))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇸🇦 沙特节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(沙特|利雅得|\bSA\b|Saudi Arabia)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇸🇦 沙特家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((沙特|利雅得|\bSA\b|Saudi Arabia)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((沙特|利雅得|\bSA\b|Saudi Arabia))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇿🇦 南非节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(南非|约翰内斯堡|\bZA\b|South Africa)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇿🇦 南非家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((南非|约翰内斯堡|\bZA\b|South Africa)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((南非|约翰内斯堡|\bZA\b|South Africa))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇪🇬 埃及节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(埃及|开罗|\bEG\b|Egypt)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇪🇬 埃及家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((埃及|开罗|\bEG\b|Egypt)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((埃及|开罗|\bEG\b|Egypt))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇳🇬 尼日利亚节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(尼日利亚|拉各斯|阿布贾|\bNG\b|Nigeria)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇳🇬 尼日利亚家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((尼日利亚|拉各斯|阿布贾|\bNG\b|Nigeria)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((尼日利亚|拉各斯|阿布贾|\bNG\b|Nigeria))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇦🇺 澳洲节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(澳大利亚|澳洲|悉尼|墨尔本|\bAU\b|Australia)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇦🇺 澳洲家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((澳大利亚|澳洲|悉尼|墨尔本|\bAU\b|Australia)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((澳大利亚|澳洲|悉尼|墨尔本|\bAU\b|Australia))|(\bTelstra\b|\bOptus\b)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🇳🇿 新西兰节点'
-    type: url-test
-    include-all: true
-    filter: '(?i)(新西兰|奥克兰|\bNZ\b|New Zealand)'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
-  - name: '🏠🇳🇿 新西兰家宽'
-    type: url-test
-    include-all: true
-    filter: '(?i)((新西兰|奥克兰|\bNZ\b|New Zealand)).*(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b)|(🏠|家[宽寬]|家庭|住宅|民用|宽[带帶]|\bBroadband\b|\bResidential\b|\bHome\b|\bHKBN\b|\bHGC\b|\bWTT\b|\bNTT\b|\bOCN\b|\bNURO\b|\bHiNet\b|\bComcast\b|\bXfinity\b|\bSpectrum\b|\bVerizon\b|\bFrontier\b|\bCenturyLink\b|\bTelstra\b|\bOptus\b).*((新西兰|奥克兰|\bNZ\b|New Zealand))'
-    exclude-filter: '(?i)Data Left|Remain:|Traffic:|Expir[ey]|Reset|剩[余餘]流量|流量：|[到过過效]期|[时時][间間]|重置|分割线|残り使用容量|残りデータ通信量|有効期限|リセット|🔰 (ID|HSD|SNI):|📝 Gói:|最新[网網][站址]|官[网方]|获取|地址|群|更新|\d[\d.]*\s*[MG]B|\d[\d.]*\s*GB|ISP'
-    url: "https://www.gstatic.com/generate_204"
-    interval: 3600
-    tolerance: 50
-    lazy: true
-    timeout: 3000
-    max-failed-times: 3
-    empty-fallback: COMPATIBLE
-
+- name: "\U0001F680 节点选择"
+  type: select
+  proxies:
+  - "\U0001F517 链式节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F1F2\U0001F1FE 马来西亚节点"
+  - "\U0001F1EE\U0001F1E9 印尼节点"
+  - "\U0001F1EE\U0001F1F3 印度节点"
+  - "\U0001F1F5\U0001F1ED 菲律宾节点"
+  - "\U0001F1F9\U0001F1ED 泰国节点"
+  - "\U0001F1FB\U0001F1F3 越南节点"
+  - "\U0001F1EC\U0001F1E7 英国节点"
+  - "\U0001F1E9\U0001F1EA 德国节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1E7\U0001F1F7 巴西节点"
+  - "\U0001F1F9\U0001F1F7 土耳其节点"
+  - "\U0001F1F3\U0001F1EC 尼日利亚节点"
+  - "\U0001F1E6\U0001F1FA 澳洲节点"
+  - "⏬ 下载专用"
+  - "\U0001F680 手动切换"
+  - DIRECT
+- name: "\U0001F680 手动切换"
+  type: select
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)^(?!.*ISP)(?!.*(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"
+  empty-fallback: REJECT
+- name: "\U0001F517 链式节点"
+  type: select
+  proxies:
+  - "↪ \U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 夏延 [ISP]"
+  - "↪ \U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 纽约 [ISP]"
+- name: "\U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 夏延 ISP 1"
+  type: url-test
+  url: http://YOUR_CHEYENNE_ISP_HOST.invalid:6544/generate_204
+  interval: 1800
+  tolerance: 200
+  lazy: false
+  timeout: 8000
+  max-failed-times: 3
+  proxies:
+  - DIRECT
+  expected-status: '407'
+  use:
+  - Airport_CHEYENNE
+  empty-fallback: REJECT
+- name: "\U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 纽约 ISP 2"
+  type: url-test
+  url: http://YOUR_NYC_ISP_HOST.invalid:12323/generate_204
+  interval: 1800
+  tolerance: 200
+  lazy: false
+  timeout: 8000
+  max-failed-times: 3
+  proxies:
+  - DIRECT
+  expected-status: '407'
+  use:
+  - Airport_NYC
+  empty-fallback: REJECT
+- name: "\U0001F3AF 全球直连"
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F680 节点选择"
+- name: "\U0001F4F2 电报消息"
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F517 链式节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F1F2\U0001F1FE 马来西亚节点"
+  - "\U0001F1EE\U0001F1E9 印尼节点"
+  - "\U0001F1EE\U0001F1F3 印度节点"
+  - "\U0001F1F5\U0001F1ED 菲律宾节点"
+  - "\U0001F1F9\U0001F1ED 泰国节点"
+  - "\U0001F1FB\U0001F1F3 越南节点"
+  - "\U0001F1EC\U0001F1E7 英国节点"
+  - "\U0001F1E9\U0001F1EA 德国节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1E7\U0001F1F7 巴西节点"
+  - "\U0001F1F9\U0001F1F7 土耳其节点"
+  - "\U0001F1F3\U0001F1EC 尼日利亚节点"
+  - "\U0001F1E6\U0001F1FA 澳洲节点"
+  - "⏬ 下载专用"
+  - "\U0001F680 手动切换"
+  - DIRECT
+- name: "\U0001F419 GITHUB"
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F517 链式节点"
+  - "\U0001F680 手动切换"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "⏬ 下载专用"
+  - "\U0001F3AF 全球直连"
+- name: "\U0001F4AC Ai平台"
+  type: select
+  proxies:
+  - "\U0001F517 链式节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F680 手动切换"
+- name: "\U0001F916 ChatGPT"
+  type: select
+  proxies:
+  - "\U0001F517 链式节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F680 手动切换"
+- name: "\U0001F9E0 Claude"
+  type: select
+  proxies:
+  - "↪ \U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 夏延 [ISP]"
+  - "↪ \U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 纽约 [ISP]"
+- name: "✨ Gemini"
+  type: select
+  proxies:
+  - "\U0001F517 链式节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F680 手动切换"
+- name: "✖️ Grok"
+  type: select
+  proxies:
+  - "\U0001F517 链式节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F680 手动切换"
+- name: "\U0001F40B DeepSeek"
+  type: select
+  proxies:
+  - "\U0001F517 链式节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F680 手动切换"
+  - "\U0001F3AF 全球直连"
+- name: "\U0001F4F9 油管视频"
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F517 链式节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F1F2\U0001F1FE 马来西亚节点"
+  - "\U0001F1EE\U0001F1E9 印尼节点"
+  - "\U0001F1EE\U0001F1F3 印度节点"
+  - "\U0001F1F5\U0001F1ED 菲律宾节点"
+  - "\U0001F1F9\U0001F1ED 泰国节点"
+  - "\U0001F1FB\U0001F1F3 越南节点"
+  - "\U0001F1EC\U0001F1E7 英国节点"
+  - "\U0001F1E9\U0001F1EA 德国节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1E7\U0001F1F7 巴西节点"
+  - "\U0001F1F9\U0001F1F7 土耳其节点"
+  - "\U0001F1F3\U0001F1EC 尼日利亚节点"
+  - "\U0001F1E6\U0001F1FA 澳洲节点"
+  - "⏬ 下载专用"
+  - "\U0001F680 手动切换"
+  - DIRECT
+- name: "\U0001F3A5 奈飞视频"
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F517 链式节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F1F2\U0001F1FE 马来西亚节点"
+  - "\U0001F1EE\U0001F1E9 印尼节点"
+  - "\U0001F1EE\U0001F1F3 印度节点"
+  - "\U0001F1F5\U0001F1ED 菲律宾节点"
+  - "\U0001F1F9\U0001F1ED 泰国节点"
+  - "\U0001F1FB\U0001F1F3 越南节点"
+  - "\U0001F1EC\U0001F1E7 英国节点"
+  - "\U0001F1E9\U0001F1EA 德国节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1E7\U0001F1F7 巴西节点"
+  - "\U0001F1F9\U0001F1F7 土耳其节点"
+  - "\U0001F1F3\U0001F1EC 尼日利亚节点"
+  - "\U0001F1E6\U0001F1FA 澳洲节点"
+  - "⏬ 下载专用"
+  - "\U0001F680 手动切换"
+  - DIRECT
+- name: "\U0001F4FA 巴哈姆特"
+  type: select
+  proxies:
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F680 节点选择"
+  - "\U0001F680 手动切换"
+  - DIRECT
+- name: "\U0001F4FA 哔哩哔哩"
+  type: select
+  proxies:
+  - "\U0001F3AF 全球直连"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+- name: "\U0001F30D 国外媒体"
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F517 链式节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F1F2\U0001F1FE 马来西亚节点"
+  - "\U0001F1EE\U0001F1E9 印尼节点"
+  - "\U0001F1EE\U0001F1F3 印度节点"
+  - "\U0001F1F5\U0001F1ED 菲律宾节点"
+  - "\U0001F1F9\U0001F1ED 泰国节点"
+  - "\U0001F1FB\U0001F1F3 越南节点"
+  - "\U0001F1EC\U0001F1E7 英国节点"
+  - "\U0001F1E9\U0001F1EA 德国节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1E7\U0001F1F7 巴西节点"
+  - "\U0001F1F9\U0001F1F7 土耳其节点"
+  - "\U0001F1F3\U0001F1EC 尼日利亚节点"
+  - "\U0001F1E6\U0001F1FA 澳洲节点"
+  - "⏬ 下载专用"
+  - "\U0001F680 手动切换"
+  - DIRECT
+- name: "\U0001F30F 国内媒体"
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F517 链式节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F680 手动切换"
+- name: "\U0001F4E2 谷歌FCM"
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F680 节点选择"
+  - "\U0001F517 链式节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F680 手动切换"
+- name: Ⓜ️ 微软商店
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F517 链式节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F680 手动切换"
+  - DIRECT
+- name: Ⓜ️ 微软Bing
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F680 节点选择"
+  - "\U0001F517 链式节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F680 手动切换"
+- name: Ⓜ️ 微软云盘
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F680 节点选择"
+  - "\U0001F517 链式节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F680 手动切换"
+- name: Ⓜ️ 微软服务
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F680 节点选择"
+  - "\U0001F517 链式节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F680 手动切换"
+- name: "\U0001F34E 苹果服务"
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F680 节点选择"
+  - "\U0001F517 链式节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F680 手动切换"
+- name: "\U0001F3AE 游戏平台"
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F680 节点选择"
+  - "\U0001F517 链式节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F680 手动切换"
+- name: "\U0001F3B6 网易音乐"
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F680 节点选择"
+- name: "\U0001F6D1 广告拦截"
+  type: select
+  proxies:
+  - REJECT
+  - DIRECT
+- name: "\U0001F343 应用净化"
+  type: select
+  proxies:
+  - REJECT
+  - DIRECT
+- name: "\U0001F41F 漏网之鱼"
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F517 链式节点"
+  - DIRECT
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F1F2\U0001F1FE 马来西亚节点"
+  - "\U0001F1EE\U0001F1E9 印尼节点"
+  - "\U0001F1EE\U0001F1F3 印度节点"
+  - "\U0001F1F5\U0001F1ED 菲律宾节点"
+  - "\U0001F1F9\U0001F1ED 泰国节点"
+  - "\U0001F1FB\U0001F1F3 越南节点"
+  - "\U0001F1EC\U0001F1E7 英国节点"
+  - "\U0001F1E9\U0001F1EA 德国节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1E7\U0001F1F7 巴西节点"
+  - "\U0001F1F9\U0001F1F7 土耳其节点"
+  - "\U0001F1F3\U0001F1EC 尼日利亚节点"
+  - "\U0001F1E6\U0001F1FA 澳洲节点"
+  - "⏬ 下载专用"
+  - "\U0001F680 手动切换"
+- name: "\U0001F1ED\U0001F1F0 香港节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(香港|\\bHK\\b|Hong Kong|HongKong|hongkong|深港|沪港|京港))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(香港|\\bHK\\b|Hong Kong|HongKong|hongkong|深港|沪港|京港)))(?=.*(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)"
+  empty-fallback: REJECT
+- name: "\U0001F1E8\U0001F1F3 台湾节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(台|新北|彰化|高雄|\\bTW\\b|Taiwan))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(台|新北|彰化|高雄|\\bTW\\b|Taiwan)))(?=.*(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)"
+  empty-fallback: REJECT
+- name: "\U0001F1EF\U0001F1F5 日本节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(日本|川日|东京|大阪|名古屋|泉日|埼玉|福冈|沪日|深日|\\bJP\\b|Japan))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(日本|川日|东京|大阪|名古屋|泉日|埼玉|福冈|沪日|深日|\\bJP\\b|Japan)))(?=.*(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)"
+  empty-fallback: REJECT
+- name: "\U0001F1F8\U0001F1EC 狮城节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(新加坡|坡|狮城|\\bSG\\b|Singapore))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F1F0\U0001F1F7 韩国节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(\\bKR\\b|Korea|\\bKOR\\b|首尔|春川|韩|韓))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F1F2\U0001F1FE 马来西亚节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(马来西亚|大马|吉隆坡|Malaysia|\\bMY\\b))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F1EE\U0001F1E9 印尼节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(印尼|印度尼西亚|雅加达|\\bID\\b|Indonesia))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F1EE\U0001F1F3 印度节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(印度(?!尼西亚)|孟买|新德里|\\bIN\\b|India))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F1F5\U0001F1ED 菲律宾节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(菲律宾|马尼拉|\\bPH\\b|Philippines))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F1F9\U0001F1ED 泰国节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(泰国|曼谷|\\bTH\\b|Thailand))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F1FB\U0001F1F3 越南节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(越南|胡志明|河内|\\bVN\\b|Vietnam))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F1EC\U0001F1E7 英国节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(英[国國]|英格兰|伦敦|加的夫|曼彻斯特|伯克郡|\\bUK\\b|United Kingdom|Great Britain))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F1E9\U0001F1EA 德国节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(德[国國]|法兰克福|柏林|杜塞尔多夫|\\bDE\\b|Germany))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F1FA\U0001F1F8 美国节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(美|华盛顿|波特兰|达拉斯|俄勒冈|凤凰城|菲尼克斯|费利蒙|弗里蒙特|硅谷|旧金山|拉斯维加斯|洛杉|圣何塞|圣荷西|圣塔?克拉拉|西雅图|芝加哥|哥伦布|纽约|阿什本|纽瓦克|丹佛|加利福尼亚|弗吉尼亚|马纳萨斯|俄亥俄|得克萨斯|[佐乔]治亚|亚特兰大|佛罗里达|迈阿密|\\bUSA\\b|United
+    States))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F1E7\U0001F1F7 巴西节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(巴西|圣保罗|里约|\\bBR\\b|Brazil))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F1F9\U0001F1F7 土耳其节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(土耳其|伊斯坦布尔|Turkey|\\bTR\\b))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F1F3\U0001F1EC 尼日利亚节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(尼日利亚|拉各斯|阿布贾|\\bNG\\b|Nigeria))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "\U0001F1E6\U0001F1FA 澳洲节点"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?=.*(?:(澳大利亚|澳洲|悉尼|墨尔本|\\bAU\\b|Australia))).*"
+  exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
+  empty-fallback: REJECT
+- name: "⏬ 下载专用"
+  type: url-test
+  url: https://www.gstatic.com/generate_204
+  interval: 600
+  tolerance: 100
+  lazy: true
+  timeout: 3000
+  max-failed-times: 3
+  proxies: []
+  use:
+  - Airport
+  filter: "(?i)(?:低倍率A\\ \\[0\\.2x\\]|低倍率B\\ \\[0\\.2x\\])"
+  empty-fallback: REJECT
 rule-providers:
   BanAD:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/BanAD.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/ads.list"
+    path: "./rulesets/Proxy-Config-Sets/BanAD.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/ads.list
     interval: 86400
   BanProgramAD:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/BanProgramAD.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/app-clean.list"
+    path: "./rulesets/Proxy-Config-Sets/BanProgramAD.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/app-clean.list
     interval: 86400
   ChatGPT:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/ChatGPT.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/chatgpt.list"
+    path: "./rulesets/Proxy-Config-Sets/ChatGPT.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/chatgpt.list
     interval: 86400
   Claude:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/Claude.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/claude.list"
+    path: "./rulesets/Proxy-Config-Sets/Claude.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/claude.list
     interval: 86400
   Gemini:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/Gemini.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/gemini.list"
+    path: "./rulesets/Proxy-Config-Sets/Gemini.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/gemini.list
     interval: 86400
   Grok:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/Grok.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/grok.list"
+    path: "./rulesets/Proxy-Config-Sets/Grok.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/grok.list
     interval: 86400
   DeepSeek:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/DeepSeek.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/deepseek.list"
+    path: "./rulesets/Proxy-Config-Sets/DeepSeek.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/deepseek.list
     interval: 86400
   AI:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/AI.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/ai.list"
+    path: "./rulesets/Proxy-Config-Sets/AI.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/ai.list
     interval: 86400
   GitHub:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/GitHub.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/github.list"
+    path: "./rulesets/Proxy-Config-Sets/GitHub.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/github.list
     interval: 86400
   GoogleFCM:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/GoogleFCM.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/google-fcm.list"
+    path: "./rulesets/Proxy-Config-Sets/GoogleFCM.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/google-fcm.list
     interval: 86400
   Apple:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/Apple.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/apple.list"
+    path: "./rulesets/Proxy-Config-Sets/Apple.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/apple.list
     interval: 86400
   MicrosoftStore:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/MicrosoftStore.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft-store.list"
+    path: "./rulesets/Proxy-Config-Sets/MicrosoftStore.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft-store.list
     interval: 86400
   Bing:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/Bing.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft-bing.list"
+    path: "./rulesets/Proxy-Config-Sets/Bing.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft-bing.list
     interval: 86400
   Microsoft:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/Microsoft.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft.list"
+    path: "./rulesets/Proxy-Config-Sets/Microsoft.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft.list
     interval: 86400
   OneDrive:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/OneDrive.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft-drive.list"
+    path: "./rulesets/Proxy-Config-Sets/OneDrive.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft-drive.list
     interval: 86400
   ProxyMedia:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/ProxyMedia.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/global-media.list"
+    path: "./rulesets/Proxy-Config-Sets/ProxyMedia.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/global-media.list
     interval: 86400
   ChinaMedia:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/ChinaMedia.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/domestic-media.list"
+    path: "./rulesets/Proxy-Config-Sets/ChinaMedia.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/domestic-media.list
     interval: 86400
   BilibiliHMT:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/BilibiliHMT.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/bilibili.list"
+    path: "./rulesets/Proxy-Config-Sets/BilibiliHMT.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/bilibili.list
     interval: 86400
   Bahamut:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/Bahamut.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/bahamut.list"
+    path: "./rulesets/Proxy-Config-Sets/Bahamut.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/bahamut.list
     interval: 86400
   NetEaseMusic:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/NetEaseMusic.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/netease-music.list"
+    path: "./rulesets/Proxy-Config-Sets/NetEaseMusic.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/netease-music.list
     interval: 86400
   Netflix:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/Netflix.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/netflix.list"
+    path: "./rulesets/Proxy-Config-Sets/Netflix.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/netflix.list
     interval: 86400
   YouTube:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/YouTube.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/youtube.list"
+    path: "./rulesets/Proxy-Config-Sets/YouTube.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/youtube.list
     interval: 86400
   Telegram:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/Telegram.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/telegram.list"
+    path: "./rulesets/Proxy-Config-Sets/Telegram.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/telegram.list
     interval: 86400
   Games:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/Games.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/games.list"
+    path: "./rulesets/Proxy-Config-Sets/Games.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/games.list
     interval: 86400
   Reject:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/Reject.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/reject.list"
-    interval: 86400
-  Leak:
-    type: http
-    behavior: classical
-    format: text
-    path: ./rulesets/Proxy-Config-Sets/Leak.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/leak.list"
+    path: "./rulesets/Proxy-Config-Sets/Reject.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/reject.list
     interval: 86400
   DirectGroup:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/DirectGroup.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/direct.list"
+    path: "./rulesets/Proxy-Config-Sets/DirectGroup.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/direct.list
     interval: 86400
   ProxyGFWlist:
     type: http
     behavior: classical
     format: text
-    path: ./rulesets/Proxy-Config-Sets/ProxyGFWlist.list
-    url: "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/proxy.list"
+    path: "./rulesets/Proxy-Config-Sets/ProxyGFWlist.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/proxy.list
     interval: 86400
-
 rules:
-  - 'IP-CIDR,10.0.0.0/8,DIRECT,no-resolve'
-  - 'IP-CIDR,100.64.0.0/10,DIRECT,no-resolve'
-  - 'IP-CIDR,127.0.0.0/8,DIRECT,no-resolve'
-  - 'IP-CIDR,169.254.0.0/16,DIRECT,no-resolve'
-  - 'IP-CIDR,172.16.0.0/12,DIRECT,no-resolve'
-  - 'IP-CIDR,192.168.0.0/16,DIRECT,no-resolve'
-  - 'DOMAIN,captive.apple.com,DIRECT'
-  - 'DOMAIN,captive.apple.com.cn,DIRECT'
-  - 'DOMAIN,netctscan.apple.com,DIRECT'
-  - 'DOMAIN,detectportal.firefox.com,DIRECT'
-  - 'DOMAIN,connectivitycheck.gstatic.com,DIRECT'
-  - 'DOMAIN,www.msftconnecttest.com,DIRECT'
-  - 'DOMAIN,ipv6.msftconnecttest.com,DIRECT'
-  - 'DOMAIN,dns.msftncsi.com,DIRECT'
-  - 'DOMAIN,neverssl.com,DIRECT'
-  - 'DOMAIN,securelogin.arubanetworks.com,DIRECT'
-  - 'DOMAIN,id6.me,DIRECT'
-  - 'DOMAIN-SUFFIX,arubanetworks.com,DIRECT'
-  - 'DOMAIN-SUFFIX,arubanetworks.cc,DIRECT'
-  - 'DOMAIN-SUFFIX,bnbu.edu.cn,DIRECT'
-  - 'DOMAIN-SUFFIX,uic.edu.cn,DIRECT'
-  - 'DOMAIN-SUFFIX,msftconnecttest.com,DIRECT'
-  - 'DOMAIN-SUFFIX,cmpassport.com,DIRECT'
-  - 'DOMAIN-SUFFIX,jegotrip.com.cn,DIRECT'
-  - 'DOMAIN-SUFFIX,icitymobile.mobi,DIRECT'
-  - 'PROCESS-NAME,com.android.captiveportallogin,DIRECT'
-  - 'AND,((NETWORK,udp),(DST-PORT,19302)),REJECT'
-  - 'AND,((NETWORK,udp),(DST-PORT,19305)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,anthropic.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,claude.ai),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,claude.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,clau.de),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,claudemcpclient.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,claudemcpcontent.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,claudeusercontent.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,sentry.io),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,statsigapi.net),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,intercom.io),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,intercomcdn.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,stripe.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,stripecdn.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,stripe.network),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,link.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,hcaptcha.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,proton.me),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,protonmail.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,protonmail.ch),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,pm.me),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,protonweb.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,protonstatus.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,protontech.ch),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,simplelogin.io),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,simplelogin.co),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,simplelogin.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,simplelogin.fr),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,slmail.me),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,passmail.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,passmail.net),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,passinbox.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,passfwd.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,aleeas.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,silomails.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,slmails.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,dralias.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN,servd-anthropic-website.b-cdn.net),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN,anthropic.com.cdn.cloudflare.net),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN,anthropic.auth0.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN,anthropic-com.ghost.io),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN,browser-intake-us5-datadoghq.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN,cdn.usefathom.com),(NETWORK,udp)),REJECT'
-  - 'AND,((GEOSITE,anthropic),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,sift.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,siftcience.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,ip.net.coffee),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,net.coffee),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,withpersona.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-SUFFIX,persona.com),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-KEYWORD,sift),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-KEYWORD,datadoghq),(NETWORK,udp)),REJECT'
-  - 'AND,((DOMAIN-KEYWORD,datadog),(NETWORK,udp)),REJECT'
-  - 'PROCESS-NAME,com.anthropic.claude,🧠 Claude'
-  - 'PROCESS-NAME,ch.protonmail.android,🧠 Claude'
-  - 'PROCESS-NAME,com.openai.chatgpt,🤖 ChatGPT'
-  - 'RULE-SET,ChatGPT,🤖 ChatGPT'
-  - 'GEOSITE,anthropic,🧠 Claude'
-  - 'RULE-SET,Claude,🧠 Claude'
-  - 'RULE-SET,Reject,REJECT'
-  - 'RULE-SET,Leak,🔗 落地 ISP'
-  - 'DOMAIN-SUFFIX,deepl.com,🎯 全球直连'
-  - 'DOMAIN-SUFFIX,ping0.cc,🎯 全球直连'
-  - 'DOMAIN-SUFFIX,tjcn.org,🎯 全球直连'
-  - 'RULE-SET,DirectGroup,🎯 全球直连'
-  - 'RULE-SET,BanAD,🛑 广告拦截'
-  - 'RULE-SET,BanProgramAD,🍃 应用净化'
-  - 'RULE-SET,GoogleFCM,📢 谷歌FCM'
-  - 'RULE-SET,MicrosoftStore,Ⓜ️ 微软商店'
-  - 'RULE-SET,Bing,Ⓜ️ 微软Bing'
-  - 'RULE-SET,OneDrive,Ⓜ️ 微软云盘'
-  - 'RULE-SET,Microsoft,Ⓜ️ 微软服务'
-  - 'RULE-SET,Apple,🍎 苹果服务'
-  - 'RULE-SET,Telegram,📲 电报消息'
-  - 'RULE-SET,GitHub,🐙 GITHUB'
-  - 'RULE-SET,Gemini,✨ Gemini'
-  - 'RULE-SET,Grok,✖️ Grok'
-  - 'RULE-SET,DeepSeek,🐋 DeepSeek'
-  - 'RULE-SET,AI,💬 Ai平台'
-  - 'RULE-SET,NetEaseMusic,🎶 网易音乐'
-  - 'RULE-SET,Games,🎮 游戏平台'
-  - 'RULE-SET,YouTube,📹 油管视频'
-  - 'RULE-SET,Netflix,🎥 奈飞视频'
-  - 'RULE-SET,Bahamut,📺 巴哈姆特'
-  - 'RULE-SET,BilibiliHMT,📺 哔哩哔哩'
-  - 'RULE-SET,ChinaMedia,🌏 国内媒体'
-  - 'RULE-SET,ProxyMedia,🌍 国外媒体'
-  - 'RULE-SET,ProxyGFWlist,🚀 节点选择'
-  - 'GEOIP,CN,🎯 全球直连'
-  - 'MATCH,🐟 漏网之鱼'
+- IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+- IP-CIDR,100.64.0.0/10,DIRECT,no-resolve
+- IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+- IP-CIDR,169.254.0.0/16,DIRECT,no-resolve
+- IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+- IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+- DOMAIN,captive.apple.com,DIRECT
+- DOMAIN,netctscan.apple.com,DIRECT
+- DOMAIN,detectportal.firefox.com,DIRECT
+- DOMAIN,connectivitycheck.gstatic.com,DIRECT
+- DOMAIN,www.msftconnecttest.com,DIRECT
+- DOMAIN,ipv6.msftconnecttest.com,DIRECT
+- DOMAIN,dns.msftncsi.com,DIRECT
+- DOMAIN,neverssl.com,DIRECT
+- DOMAIN,securelogin.arubanetworks.com,DIRECT
+- DOMAIN-SUFFIX,arubanetworks.com,DIRECT
+- DOMAIN-SUFFIX,arubanetworks.cc,DIRECT
+- DOMAIN-SUFFIX,bnbu.edu.cn,DIRECT
+- DOMAIN-SUFFIX,uic.edu.cn,DIRECT
+- DOMAIN-SUFFIX,msftconnecttest.com,DIRECT
+- PROCESS-NAME,com.android.captiveportallogin,DIRECT
+- "PROCESS-NAME,com.anthropic.claude,\U0001F9E0 Claude"
+- "PROCESS-NAME,ch.protonmail.android,\U0001F9E0 Claude"
+- "PROCESS-NAME,com.openai.chatgpt,\U0001F916 ChatGPT"
+- AND,((NETWORK,udp),(DST-PORT,19302)),REJECT
+- AND,((NETWORK,udp),(DST-PORT,19305)),REJECT
+- AND,((DOMAIN-SUFFIX,anthropic.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,claude.ai),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,claude.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,clau.de),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,claudemcpclient.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,claudemcpcontent.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,claudeusercontent.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,sentry.io),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,statsigapi.net),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,intercom.io),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,intercomcdn.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,stripe.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,stripecdn.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,stripe.network),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,link.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,hcaptcha.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,proton.me),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,protonmail.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,protonmail.ch),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,pm.me),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,protonweb.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,protonstatus.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,protontech.ch),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,simplelogin.io),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,simplelogin.co),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,simplelogin.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,simplelogin.fr),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,slmail.me),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,passmail.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,passmail.net),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,passinbox.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,passfwd.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,aleeas.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,silomails.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,slmails.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,dralias.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,sift.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,siftcience.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,ip.net.coffee),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,net.coffee),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,withpersona.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,persona.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN,servd-anthropic-website.b-cdn.net),(NETWORK,udp)),REJECT
+- AND,((DOMAIN,anthropic.com.cdn.cloudflare.net),(NETWORK,udp)),REJECT
+- AND,((DOMAIN,anthropic.auth0.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN,anthropic-com.ghost.io),(NETWORK,udp)),REJECT
+- AND,((DOMAIN,browser-intake-us5-datadoghq.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN,cdn.usefathom.com),(NETWORK,udp)),REJECT
+- AND,((GEOSITE,anthropic),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-KEYWORD,sift),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-KEYWORD,datadoghq),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-KEYWORD,datadog),(NETWORK,udp)),REJECT
+- "RULE-SET,ChatGPT,\U0001F916 ChatGPT"
+- "GEOSITE,anthropic,\U0001F9E0 Claude"
+- "RULE-SET,Claude,\U0001F9E0 Claude"
+- RULE-SET,Reject,REJECT
+- "DOMAIN-SUFFIX,deepl.com,\U0001F3AF 全球直连"
+- "DOMAIN-SUFFIX,ping0.cc,\U0001F3AF 全球直连"
+- "DOMAIN-SUFFIX,tjcn.org,\U0001F3AF 全球直连"
+- "RULE-SET,DirectGroup,\U0001F3AF 全球直连"
+- "RULE-SET,BanAD,\U0001F6D1 广告拦截"
+- "RULE-SET,BanProgramAD,\U0001F343 应用净化"
+- "RULE-SET,GoogleFCM,\U0001F4E2 谷歌FCM"
+- RULE-SET,MicrosoftStore,Ⓜ️ 微软商店
+- RULE-SET,Bing,Ⓜ️ 微软Bing
+- RULE-SET,OneDrive,Ⓜ️ 微软云盘
+- RULE-SET,Microsoft,Ⓜ️ 微软服务
+- "RULE-SET,Apple,\U0001F34E 苹果服务"
+- "RULE-SET,Telegram,\U0001F4F2 电报消息"
+- "RULE-SET,GitHub,\U0001F419 GITHUB"
+- RULE-SET,Gemini,✨ Gemini
+- RULE-SET,Grok,✖️ Grok
+- "RULE-SET,DeepSeek,\U0001F40B DeepSeek"
+- "RULE-SET,AI,\U0001F4AC Ai平台"
+- "RULE-SET,NetEaseMusic,\U0001F3B6 网易音乐"
+- "RULE-SET,Games,\U0001F3AE 游戏平台"
+- "RULE-SET,YouTube,\U0001F4F9 油管视频"
+- "RULE-SET,Netflix,\U0001F3A5 奈飞视频"
+- "RULE-SET,Bahamut,\U0001F4FA 巴哈姆特"
+- "RULE-SET,BilibiliHMT,\U0001F4FA 哔哩哔哩"
+- "RULE-SET,ChinaMedia,\U0001F30F 国内媒体"
+- "RULE-SET,ProxyMedia,\U0001F30D 国外媒体"
+- "RULE-SET,ProxyGFWlist,\U0001F680 节点选择"
+- "GEOIP,CN,\U0001F3AF 全球直连"
+- "MATCH,\U0001F41F 漏网之鱼"
+proxy-providers:
+  Airport:
+    type: http
+    url: https://YOUR_AIRPORT_SUBSCRIPTION.invalid/clash.yaml
+    path: "./providers/Airport.yaml"
+    interval: 86400
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 3600
+      lazy: true
+  Airport_CHEYENNE:
+    type: http
+    url: https://YOUR_AIRPORT_SUBSCRIPTION.invalid/clash.yaml
+    path: "./providers/Airport_CHEYENNE.yaml"
+    interval: 86400
+    override:
+      additional-prefix: "↪ "
+      additional-suffix: " → \U0001F517\U0001F1FA\U0001F1F8 美国 夏延 [ISP]"
+    health-check:
+      enable: true
+      url: http://YOUR_CHEYENNE_ISP_HOST.invalid:6544/generate_204
+      expected-status: '407'
+      interval: 1800
+      timeout: 8000
+      lazy: false
+  Airport_NYC:
+    type: http
+    url: https://YOUR_AIRPORT_SUBSCRIPTION.invalid/clash.yaml
+    path: "./providers/Airport_NYC.yaml"
+    interval: 86400
+    override:
+      additional-prefix: "↪ "
+      additional-suffix: " → \U0001F517\U0001F1FA\U0001F1F8 美国 纽约 [ISP]"
+    health-check:
+      enable: true
+      url: http://YOUR_NYC_ISP_HOST.invalid:12323/generate_204
+      expected-status: '407'
+      interval: 1800
+      timeout: 8000
+      lazy: false
