@@ -1,36 +1,32 @@
-# Clash（Claude 特供版）
+# Clash：Claude 特供配置
 
-在原来的 Clash 全局脚本之外**新建**的 Claude 特供版，不覆盖：
+`Clash Verge Rev Global Extend Script Claude 特供版.js` 是独立的非链式扩展；此次同步不覆盖它，也不覆盖日常 v3 脚本。
 
-- Clash Verge 正在用的 `profiles/Script.js`
-- 仓库里的 `Clash Verge Rev/Clash Verge Rev Global Extend Script v3.js`
+`Clash Verge Rev 链式代理.js` 是 2026-10-08 更新的完整链式脚本。它不带机场节点、ISP 凭据或订阅地址，也不生成回转箭头名称。
 
-ChatGPT / Claude / Grok / DeepSeek 的**域名分流**走远端 `Rules/*.list`。
-脚本里只保留规则集做不到的部分：UDP AND REJECT、进程名、nameserver-policy、校园认证。商店 / 泄漏测试 / 硬 REJECT 已进远端 RULE-SET。浏览器 WebRTC STUN 域名在 `reject.list`（含 stun1-4.l.google.com）；Clash 另拒 UDP 19302/19305。
-Stripe / Proton Mail / SimpleLogin / Sift / Datadog / coffee / Persona 已写入 `Rules/claude.list`。
+## ISP 前置采用 fallback
 
-## 这份脚本怎么跑
+1. 在自己的私有订阅/额外节点中添加机场和真实 ISP。原 ISP 节点名需要含 `ISP`，国家与城市来自原名；不要把脚本生成的出口名称当作原始节点名。
+2. 脚本为每个 ISP 生成一个 `📡 机场前置 → 国旗 国家 城市 ISP 编号` fallback 组，以及一个 `📡 机场前置 → 国旗 国家 城市 [ISP]` 实际出口。
+3. 前置候选为机场节点的副本，不发送 ISP 账号密码。向 ISP 的实际 HTTP 端口发送请求，HTTP 407 视为回应成功。
+4. fallback 按候选顺序使用首个可用前置；每 1800 秒检查，超时 8000 ms，不使用延迟排名或 tolerance。普通地区组的 URLTest 不受此改动影响。
+5. ISP 实际出口使用这个组作为 dialer-proxy。Claude 和链式节点只选择实际 ISP 出口，不选择机场前置组。
+6. 缺少 ISP 或订阅为空时，链式节点为 REJECT；实际 ISP 不可用时不回退到机场。
 
-Clash Verge 会**先跑全局 `Script.js`，再跑配置自己的扩展脚本**。
+HTTP/SOCKS5 可能使用不同端口。当前端口映射函数支持 IPRoyal 的常见 HTTP 12323 / SOCKS5 12324；其他供应商应在私有脚本中核实和调整实际 HTTP 探测端口，不根据名字猜测。
 
-- 如果全局脚本已经生成了 `🧠 Claude`（`RULE-SET,Claude` 或旧的 `DOMAIN-SUFFIX,anthropic.com`）：本文件只补 UDP / Proton 进程 / DNS，不再插域名分流。
-- 如果全局脚本是空模板：本文件会完整增强，域名仍走 RULE-SET。
+DIRECT 仍在前置候选最后。选中它是本机 → ISP → 网站，仍经过 ISP；若要求必须经过机场，可在私有脚本中去掉该候选。
 
-## 本机 Clash Verge
+HTTP 407 成功只证明到 ISP HTTP 端口的路径能回应，不保证账户认证、SOCKS5 或网站访问。单来源 ISP 切换前置仍可能受旧连接占用影响。
 
-链式代理正在用的 `profiles/Script.js` 以桌面目录的 `Clash Verge Rev 链式代理.js` 为准。改完后需要**重新生成配置**，规则页才会收成 RuleSet，而不是几十条 DomainSuffix。
+## 分流与 DNS
 
-`🧠 Claude` 锁 **🔗 链式节点**。`🔗 落地 ISP` 只用来手动选 ISP。
+Claude / Anthropic 邮件域名等共用 Rules/claude.list，其他服务共用仓库 Rules。泄漏测试站没有专用分流或 DNS 策略。UDP、进程和校园认证规则由脚本生成。
 
-链式 DNS 防泄漏边界：
+默认 Cloudflare / Google DoH 经链式节点当前选中的 ISP；它不自动跟随 Claude 组的独立选择。国内 geosite:cn 直连阿里/腾讯 DoH，macOS 校园/内网使用 DHCP DNS。节点解析保留订阅自己的 bootstrap，避免解析循环。
 
-- 默认 `nameserver` 仍是 `1.1.1.1` / `8.8.8.8` `#🔗 链式节点`，且 `respect-rules: false`。Claude、境外站、泄漏测试不会回落到本地/国内 DNS。
-- 只有 `geosite:cn` 走 `223.5.5.5` / `1.12.12.12` `#DIRECT`，用来修国内站直连卡顿。不要改成全局国内 DNS，也不要把 `DirectGroup` 塞进国内 DoH。
-- 上述 DoH（含校园 `udp://` / `dhcp://`）附加 `disable-qtype-64=true&disable-qtype-65=true`，丢掉 SVCB/HTTPS 记录，避免 Claude 从 DNS 学到 h3/ECH。这是 nameserver URL 片段，不要写成 `dns.disable-qtype-65`。YepFast `proxy-server-nameserver` 不改。
+修改后重新生成并应用 Clash Verge 配置。运行中已建立的连接可能继续走原来的前置。
 
-`🔗 落地 ISP` 是 ISP 选择器。配置和脚本都**不自带**落地 ISP。需要时在 Clash Verge 的 Merge / 额外节点里自己加 SOCKS，**原名必须带 `ISP`**。脚本会改成 `🔗🇺🇸 美国 怀俄明州 夏延市 [ISP]` 这种格式（州市来自原名，不查 ippure），也只把这些节点放进落地组。机场节点、HKBN/NTT/HiNet、链式克隆不进。给每个机场节点克隆一份落地 SOCKS（`↪ 节点名`，`dialer-proxy=该节点`），`🔗 链式节点` 对这些克隆做 url-test（`tolerance: 50`，和地区组一样，避免近延迟来回跳）。不要打 ISP:80。Clash Verge 里如果还有旧 extra groups「链式代理 ISP」，建议删掉，只留脚本生成的落地组。
+## 三端差异
 
-## 文件
-
-- `Clash Verge Rev 链式代理.js`
-- `Clash Verge Rev Global Extend Script Claude 特供版.js`
+CMFA 公共基础 YAML 不内置节点；私有前置组同样用原生 fallback 和 HTTP 407 检查。Shadowrocket 使用原生 fallback 类型，但没有核实指定 407 成功状态的配置语法，需要手机验证，且 ISP 的“代理通过”要在 App 中绑定。类型同步不等于闭源引擎的检测行为已经验证一致。

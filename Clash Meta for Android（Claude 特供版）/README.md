@@ -8,8 +8,8 @@
 
 1. 在私有 YAML 中添加自己的机场节点或 `proxy-providers`。普通地区/服务组会筛选已添加的节点与 provider；它们排除 ISP 出口。
 2. 添加每个真实 ISP 的实际出口节点，使用 `📡 机场前置 → 国旗 国家 城市 [ISP]` 命名。Claude 和链式节点只动态收录这种格式的节点，不收录普通机场。
-3. 为每个 ISP 私下建立一个前置 url-test 组，用 `📡 机场前置 → 国旗 国家 城市 ISP 编号` 命名。将该 ISP 出口的 `dialer-proxy` 指向对应组。
-4. 该组只测试机场前置，实际测试地址必须是这个 ISP 的真实 HTTP 端口；group 和 provider 的 health-check 都设置 `expected-status: 407`、1800 秒间隔、8000 ms 超时，组切换容差为 200 ms。不要把 ISP 账号密码放进测速请求。
+3. 为每个 ISP 私下建立一个前置 fallback 组，用 `📡 机场前置 → 国旗 国家 城市 ISP 编号` 命名。将该 ISP 出口的 `dialer-proxy` 指向对应组。
+4. 该组只测试机场前置，实际测试地址必须是这个 ISP 的真实 HTTP 端口；group 和 provider 的 health-check 都设置 `expected-status: 407`、1800 秒间隔、8000 ms 超时。fallback 按候选顺序选择首个可用前置，不按延迟排名切换，不设置 tolerance。不要把 ISP 账号密码放进测速请求。
 5. 有些 ISP 的 HTTP 与 SOCKS5 同端口，有些分端口；从供应商说明核实，不根据名称猜测。公开文件不提供虚构探测地址。
 6. 绑定确认后，才把默认 REJECT 改选为真实 ISP 出口。若有多个 ISP，Claude 和链式节点可以分别选择，但 DNS 出口跟随链式节点组。
 

@@ -1,5 +1,5 @@
 # Public base configuration. No nodes, subscriptions, credentials, or fill-in fields.
-# Add real airport/ISP definitions only in your private copy; Claude/chain start at REJECT.
+# Add per-ISP fallback front groups privately, with real HTTP 407 targets; Claude/chain start at REJECT.
 ---
 mode: rule
 mixed-port: 7897

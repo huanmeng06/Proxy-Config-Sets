@@ -8,16 +8,17 @@
 // Clash Verge Rev global extend script.
 // Keep YepFast proxy-server-nameserver intact so node delay stays close to the official app.
 // Campus DNS is only used for captive portal / school / private domains.
-// Claude HTTP, default DoH, and leak-test domains exit via 🔗 链式节点 (airport → selected US ISP).
+// Claude HTTP and default DoH exit via 🔗 链式节点 (airport → selected US ISP).
 // DoH URLs drop TYPE64/SVCB and TYPE65/HTTPS (disable-qtype-64/65 fragment).
-// 🔗 落地 ISP is the manual ISP selector only; 🧠 Claude is locked to the front hop.
+// 🔗 链式节点 and 🧠 Claude select actual ISP exits only; missing ISP means REJECT.
 // Do not ship or inject any landing SOCKS. If Clash extra proxies has a name containing ISP,
-// rewrite it to 🔗🇺🇸 美国 … [ISP] and put only those into 🔗 落地 ISP.
+// rewrite it to 🔗🇺🇸 美国 … [ISP] and build an independent chain test for each ISP.
 // Domain/UDP/fingerprint follow coffee + 特供 routing.
 // Do not send proxy-server-nameserver through the chain.
 
 function main(config, profileName) {
-  if (!config.proxies || config.proxies.length === 0) return config;
+  // 即使订阅为空也生成拒绝链式出口，避免沿用订阅中的机场直出策略。
+  if (!Array.isArray(config.proxies)) config.proxies = [];
 
   // 全局常量：策略组显示名、测速参数和自维护规则地址集中放这里。
   const TEST_URL = "https://www.gstatic.com/generate_204";
@@ -79,7 +80,6 @@ function main(config, profileName) {
     download: "⏬ 下载专用",
     telegram: "📲 电报消息",
     front: "🔗 链式节点",
-    landing: "🔗 落地 ISP",
     github: "🐙 GITHUB",
     ai: "💬 Ai平台",
     chatgpt: "🤖 ChatGPT",
@@ -187,7 +187,7 @@ function main(config, profileName) {
     { emoji: "🌍", regex: /(Anycast|\bBGP\b|Global)/i }
   ];
 
-  // 不自带落地 ISP。只有额外节点/Merge 里原名带 ISP 的 SOCKS 才进落地组并改名。
+  // 不自带落地 ISP。只有额外节点/Merge 里原名带 ISP 的 SOCKS 才作为链式出口并改名。
   const LANDING_REGION_BY_FLAG = {
     "🇭🇰": "香港",
     "🇨🇳": "台湾",
@@ -236,7 +236,9 @@ function main(config, profileName) {
 
   const isGeneratedViaName = (name) => {
     const n = String(name || "");
-    return n.startsWith("via ") || n.startsWith("↪ ");
+    return n.startsWith("via ") || n.startsWith(String.fromCodePoint(0x21aa) + " ")
+      || (n.includes(" → 🔗") && n.endsWith("[ISP]"))
+      || (n.startsWith("📡 机场前置 → ") && n.endsWith("[ISP]"));
   };
   const isLandingIspName = (name) => {
     const n = String(name || "");
@@ -275,7 +277,7 @@ function main(config, profileName) {
     return body ? `🔗 ${body} [ISP]` : "🔗 [ISP]";
   };
 
-  // 清掉上一轮脚本注入的 ↪ / via 克隆，避免再次进入地区组。
+  // 清掉上一轮脚本注入的 / via 克隆，避免再次进入地区组。
   config.proxies = config.proxies.filter(proxy => !isGeneratedViaClone(proxy));
 
   config.proxies.forEach(proxy => {
@@ -469,64 +471,66 @@ function main(config, profileName) {
 
   pushSelectGroup(GROUP.manual, allProxies);
 
-  // 两层链式：落地手动选 ISP。每个「机场节点 × ISP」克隆一份落地 SOCKS，
-  // dialer-proxy=该机场节点，前置对这些克隆做 url-test（generate_204）。
-  // 测速走 本机→机场→当前 ISP→网页。不要打 ISP:80，那个 HTTP 口会全超时。
-  // ↪ DIRECT 放最后。多个 ISP 时，链式节点变成这些测速组的选择器。
-  // url-test 容差用地区组同一套 50ms，避免 245/248 这种噪声来回跳。
-  const CHAIN_VIA_PREFIX = "↪ ";
+  // 所有 ISP：原链式前置组对机场副本进行未认证 HTTP 407 测速。
+  // 本机→机场→ISP HTTP 端口；每个 ISP 仅保留一个带凭据的自动前置出口。
+  // 当前已验证：IPRoyal 纽约 HTTP=12323/SOCKS5=12324；夏延同端口 6544 支持 HTTP/SOCKS5。
+  // 新供应商若 HTTP/SOCKS5 分端口，需要在 getIspHttpProbePort 中补充已核实的映射。
+  // 每 30 分钟检查可用性；fallback 按候选顺序选择，DIRECT 仍放最后。
+  const CHAIN_VIA_PREFIX = "";
   const frontDialers = [...subscriptionProxies.map(node => node.name), "DIRECT"];
   if (landingIsps.length === 0) {
-    // 还没加落地 SOCKS：组先留着，避免空 proxies 让 mihomo 校验失败。
-    pushSelectGroup(GROUP.landing, [GROUP.node, "DIRECT"]);
-    proxyGroups.push(createUrlTestGroup(GROUP.front, frontDialers, {
-      url: TEST_URL,
-      interval: 300,
-      tolerance: TOLERANCE,
-      timeout: 8000,
-      lazy: false
-    }));
+    // 缺少落地 ISP 时拒绝链式流量，绝不以机场或 DIRECT 代替 ISP 出口。
+    pushSelectGroup(GROUP.front, ["REJECT"]);
   } else {
-    const viaName = (dialerName, isp) =>
-      landingIsps.length === 1
-        ? `${CHAIN_VIA_PREFIX}${dialerName}`
-        : `${CHAIN_VIA_PREFIX}${dialerName} → ${isp.name}`;
-    const cloneIspVia = (isp, dialerName) => {
-      const clone = { ...isp };
-      clone.name = viaName(dialerName, isp);
-      clone["dialer-proxy"] = dialerName;
-      return clone;
-    };
+    const getIspHttpProbePort = isp =>
+      isp.type === "socks5" && Number(isp.port) === 12324
+        && /纽约|New\s*York|IPRoyal/i.test(isp.name)
+        ? 12323 : Number(isp.port);
     const chainViaProxies = [];
-    const ispUrlTestGroups = landingIsps.map(isp => {
-      const viaNames = frontDialers.map(dialerName => {
-        const clone = cloneIspVia(isp, dialerName);
-        chainViaProxies.push(clone);
-        return clone.name;
+    const ispExitChoices = [];
+    const ispFrontGroups = landingIsps.map((isp, index) => {
+      const landingLabel = isp.name.replace(/^🔗\s*/, "").replace(/\s*\[ISP\]$/i, "");
+      const numberMatch = landingLabel.match(/\s+(\d+)$/);
+      const regionLabel = numberMatch ? landingLabel.slice(0, numberMatch.index) : landingLabel;
+      const ispNumber = numberMatch ? numberMatch[1] : String(index + 1);
+      const groupName = `📡 机场前置 → ${regionLabel} ISP ${ispNumber}`;
+      const probePort = getIspHttpProbePort(isp);
+      const probeHost = String(isp.server).includes(":")
+        ? `[${String(isp.server).replace(/^\[|\]$/g, "")}]`
+        : isp.server;
+      // 「前置 → ISP」副本只含机场凭据，不发送 ISP 账号密码。
+      const probeNames = frontDialers.map(dialerName => {
+        const airport = subscriptionProxies.find(node => node.name === dialerName);
+        const probe = airport ? { ...airport } : { type: "direct" };
+        probe.name = `${CHAIN_VIA_PREFIX}${dialerName} → ${isp.name}`;
+        chainViaProxies.push(probe);
+        return probe.name;
       });
-      const groupName = landingIsps.length === 1 ? GROUP.front : `${GROUP.front} · ${isp.name}`;
-      return createUrlTestGroup(groupName, viaNames, {
-        url: TEST_URL,
-        interval: 300,
-        tolerance: TOLERANCE,
+      // Claude / 链式节点选择此实际出口，不能选择只含机场的测速组。
+      const exit = { ...isp, name: `${CHAIN_VIA_PREFIX}📡 机场前置 → ${isp.name.replace(/^🔗\s*/, "")}` };
+      exit["dialer-proxy"] = groupName;
+      chainViaProxies.push(exit);
+      ispExitChoices.push(exit.name);
+      const frontGroup = createUrlTestGroup(groupName, probeNames, {
+        url: `http://${probeHost}:${probePort}/generate_204`,
+        interval: 1800,
         timeout: 8000,
         lazy: false
       });
+      frontGroup.type = "fallback";
+      delete frontGroup.tolerance;
+      frontGroup["expected-status"] = "407";
+      return frontGroup;
     });
     config.proxies.push(...chainViaProxies);
-    pushSelectGroup(GROUP.landing, landingIsps.map(isp => isp.name));
-    if (landingIsps.length === 1) {
-      proxyGroups.push(...ispUrlTestGroups);
-    } else {
-      proxyGroups.push(createSelectGroup(GROUP.front, ispUrlTestGroups.map(group => group.name)));
-      proxyGroups.push(...ispUrlTestGroups);
-    }
+    proxyGroups.push(createSelectGroup(GROUP.front, ispExitChoices));
+    proxyGroups.push(...ispFrontGroups);
   }
 
   pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node]);
 
   const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, GROUP.front, "DIRECT"];
-  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, GROUP.direct, GROUP.front, GROUP.landing]);
+  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, GROUP.direct, GROUP.front]);
   const isAvailableChoice = (name) => builtInChoices.has(name) || availableRegionGroupNames.includes(name);
 
   const getSafeChoices = (preferred) => {
@@ -579,8 +583,10 @@ function main(config, profileName) {
   ]);
   const deepseekChoices = getSafeChoices([...usFirstAiChoices, GROUP.direct]);
   pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
-  // coffee 固定出口：🧠 Claude 只走 🔗 链式节点（第二跳是落地 ISP 里当前选中的节点）。
-  const claudeChoices = getSafeChoices([GROUP.front]);
+  // Claude 直接选择 ISP 对应的出口组；未配置 ISP 时使用链式节点兜底。
+  const claudeChoices = landingIsps.length > 0
+    ? [...proxyGroups.find(group => group.name === GROUP.front).proxies]
+    : [GROUP.front];
   pushSelectGroup(GROUP.claude, claudeChoices);
   pushSelectGroup(GROUP.gemini, usFirstAiChoices);
   pushSelectGroup(GROUP.grok, usFirstAiChoices);
@@ -697,7 +703,6 @@ function main(config, profileName) {
     "Telegram": `${RULES_BASE}/telegram.list`,
     "Games": `${RULES_BASE}/games.list`,
     "Reject": `${RULES_BASE}/reject.list`,
-    "Leak": `${RULES_BASE}/leak.list`,
     "DirectGroup": `${RULES_BASE}/direct.list`,
     "ProxyGFWlist": `${RULES_BASE}/proxy.list`
     // END GENERATED RULE PROVIDERS
@@ -796,7 +801,7 @@ function main(config, profileName) {
     "codex"
   ];
 
-  // 规则顺序很重要：Claude 必须在广告/直连/GFW 通配之前；Leak/DoH IP 仍走链式节点。
+  // 规则顺序很重要：Claude 必须在广告/直连/GFW 通配之前。
   config["rules"] = [
     `IP-CIDR,10.0.0.0/8,DIRECT,no-resolve`,
     `IP-CIDR,100.64.0.0/10,DIRECT,no-resolve`,
@@ -835,10 +840,10 @@ function main(config, profileName) {
     `GEOSITE,anthropic,${GROUP.claude}`,
     `RULE-SET,Claude,${GROUP.claude}`,
 
-    // 商店 / 泄漏测试 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名、校园认证仍本地。
+    // 商店 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名、校园认证仍本地。
     `RULE-SET,Reject,REJECT`,
-    `RULE-SET,Leak,${GROUP.front}`,
     `DOMAIN-SUFFIX,deepl.com,${GROUP.direct}`,
+    // `DOMAIN,codex-reset.com,REJECT`,
     `DOMAIN-SUFFIX,ping0.cc,${GROUP.direct}`,
     `DOMAIN-SUFFIX,tjcn.org,${GROUP.direct}`,
     `RULE-SET,DirectGroup,${GROUP.direct}`,
@@ -873,7 +878,7 @@ function main(config, profileName) {
 
   // DNS / TUN：保留订阅节点 DNS，只补校园网认证需要的策略。
   // 延迟相关原则：
-  // 1. YepFast 用专用 proxy-server-nameserver 解析 *.cloud.we-tencent.click。
+  // 1. 保留订阅的专用 proxy-server-nameserver 解析机场节点域名。
   //    一旦改成校园 DHCP/公共 DNS，节点会解析到更差的 IP，延迟从几十毫秒变成几百毫秒。
   // 2. 订阅的 nameserver / fake-ip-filter / fake-ip-range 一并保留，只追加校内域名策略。
   // 3. 不强制 mixed/strict-route，避免额外绕路。
@@ -903,7 +908,7 @@ function main(config, profileName) {
   );
   // 普通域名和 Claude 查询经 🔗 链式节点访问加密 DNS，与当前落地 ISP 出口对齐。
   // 国内 geosite:cn 才直连阿里/腾讯 DoH，避免解析到海外或跨网 CDN 后直连变慢。
-  // 不把 DirectGroup / 泄漏测试 / Claude 放进国内 DoH，防止境外域名 DNS 泄漏到大陆。
+  // 不把 DirectGroup / Claude 放进国内 DoH，防止境外域名 DNS 泄漏到大陆。
   // 节点自身的域名解析仍使用独立 bootstrap DNS，避免代理建立前出现循环依赖。
   const secureProxyDns = [
     `https://1.1.1.1/dns-query#${GROUP.front}`,
@@ -938,16 +943,6 @@ function main(config, profileName) {
     "geosite:private": campusDnsServers
   };
 
-  // 泄漏测试站即使被 geosite:cn 误伤，也强制走链式节点 DoH。
-  const leakNameserverPolicy = Object.fromEntries([
-    "dnsleaktest.com",
-    "browserleaks.com",
-    "browserleaks.org",
-    "ipleak.net",
-    "ipleak.com",
-    "ippure.com"
-  ].map(domain => [`+.${domain}`, secureProxyDns]));
-
   config.dns = {
     ...inheritedDns,
     "enable": true,
@@ -968,13 +963,12 @@ function main(config, profileName) {
       ? inheritedProxyServerNS
       : directChinaDns,
     // 不沿用订阅中未绑定代理的 nameserver；默认查询和 Claude 都经链式节点 DoH。
-    // 仅 geosite:cn 用国内 DoH #DIRECT。Claude / 泄漏测试 / 校园 policy 放后面覆盖。
+    // 仅 geosite:cn 用国内 DoH #DIRECT。Claude / 校园 policy 放后面覆盖。
     "nameserver": secureProxyDns,
     "nameserver-policy": {
       ...inheritedPolicy,
       "geosite:cn": directChinaDns,
       ...claudeNameserverPolicy,
-      ...leakNameserverPolicy,
       ...campusPolicy
     },
     "fake-ip-filter": unique([
