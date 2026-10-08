@@ -12,7 +12,7 @@
 // DoH URLs drop TYPE64/SVCB and TYPE65/HTTPS (disable-qtype-64/65 fragment).
 // 🔗 链式节点 and 🧠 Claude select actual ISP exits only; missing ISP means REJECT.
 // Do not ship or inject any landing SOCKS. If Clash extra proxies has a name containing ISP,
-// rewrite it to 🔗🇺🇸 美国 … [ISP] and build an independent chain test for each ISP.
+// rewrite it to 🔗🇺🇸 美国 … [ISP] and bind every ISP to the shared manual airport entry.
 // Domain/UDP/fingerprint follow coffee + 特供 routing.
 // Do not send proxy-server-nameserver through the chain.
 
@@ -471,61 +471,13 @@ function main(config, profileName) {
 
   pushSelectGroup(GROUP.manual, allProxies);
 
-  // 所有 ISP：原链式前置组对机场副本进行未认证 HTTP 407 测速。
-  // 本机→机场→ISP HTTP 端口；每个 ISP 仅保留一个带凭据的自动前置出口。
-  // 当前已验证：IPRoyal 纽约 HTTP=12323/SOCKS5=12324；夏延同端口 6544 支持 HTTP/SOCKS5。
-  // 新供应商若 HTTP/SOCKS5 分端口，需要在 getIspHttpProbePort 中补充已核实的映射。
-  // 每 30 分钟检查可用性；fallback 按候选顺序选择，DIRECT 仍放最后。
-  const CHAIN_VIA_PREFIX = "";
-  const frontDialers = [...subscriptionProxies.map(node => node.name), "DIRECT"];
-  if (landingIsps.length === 0) {
-    // 缺少落地 ISP 时拒绝链式流量，绝不以机场或 DIRECT 代替 ISP 出口。
-    pushSelectGroup(GROUP.front, ["REJECT"]);
-  } else {
-    const getIspHttpProbePort = isp =>
-      isp.type === "socks5" && Number(isp.port) === 12324
-        && /纽约|New\s*York|IPRoyal/i.test(isp.name)
-        ? 12323 : Number(isp.port);
-    const chainViaProxies = [];
-    const ispExitChoices = [];
-    const ispFrontGroups = landingIsps.map((isp, index) => {
-      const landingLabel = isp.name.replace(/^🔗\s*/, "").replace(/\s*\[ISP\]$/i, "");
-      const numberMatch = landingLabel.match(/\s+(\d+)$/);
-      const regionLabel = numberMatch ? landingLabel.slice(0, numberMatch.index) : landingLabel;
-      const ispNumber = numberMatch ? numberMatch[1] : String(index + 1);
-      const groupName = `📡 机场前置 → ${regionLabel} ISP ${ispNumber}`;
-      const probePort = getIspHttpProbePort(isp);
-      const probeHost = String(isp.server).includes(":")
-        ? `[${String(isp.server).replace(/^\[|\]$/g, "")}]`
-        : isp.server;
-      // 「前置 → ISP」副本只含机场凭据，不发送 ISP 账号密码。
-      const probeNames = frontDialers.map(dialerName => {
-        const airport = subscriptionProxies.find(node => node.name === dialerName);
-        const probe = airport ? { ...airport } : { type: "direct" };
-        probe.name = `${CHAIN_VIA_PREFIX}${dialerName} → ${isp.name}`;
-        chainViaProxies.push(probe);
-        return probe.name;
-      });
-      // Claude / 链式节点选择此实际出口，不能选择只含机场的测速组。
-      const exit = { ...isp, name: `${CHAIN_VIA_PREFIX}📡 机场前置 → ${isp.name.replace(/^🔗\s*/, "")}` };
-      exit["dialer-proxy"] = groupName;
-      chainViaProxies.push(exit);
-      ispExitChoices.push(exit.name);
-      const frontGroup = createUrlTestGroup(groupName, probeNames, {
-        url: `http://${probeHost}:${probePort}/generate_204`,
-        interval: 1800,
-        timeout: 8000,
-        lazy: false
-      });
-      frontGroup.type = "fallback";
-      delete frontGroup.tolerance;
-      frontGroup["expected-status"] = "407";
-      return frontGroup;
-    });
-    config.proxies.push(...chainViaProxies);
-    proxyGroups.push(createSelectGroup(GROUP.front, ispExitChoices));
-    proxyGroups.push(...ispFrontGroups);
-  }
+  // 所有 ISP 共用一个手动机场入口；业务组只能选择真实 ISP 出口。
+  const CHAIN_ENTRY = "📡 链式入口";
+  const airportNames = subscriptionProxies.map(node => node.name);
+  proxyGroups.push(createSelectGroup(CHAIN_ENTRY, airportNames.length ? airportNames : ["REJECT"]));
+  landingIsps.forEach(isp => { isp["dialer-proxy"] = CHAIN_ENTRY; });
+  proxyGroups.push(createSelectGroup(GROUP.front,
+    landingIsps.length ? landingIsps.map(isp => isp.name) : ["REJECT"]));
 
   pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node]);
 

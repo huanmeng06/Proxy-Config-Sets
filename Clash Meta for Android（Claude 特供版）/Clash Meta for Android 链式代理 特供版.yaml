@@ -1,5 +1,4 @@
-# Public base configuration. No nodes, subscriptions, credentials, or fill-in fields.
-# Add per-ISP fallback front groups privately, with real HTTP 407 targets; Claude/chain start at REJECT.
+# Public base: no bundled nodes, subscriptions or credentials. Bind every private ISP dialer-proxy to 📡 链式入口.
 ---
 mode: rule
 mixed-port: 7897
@@ -397,12 +396,20 @@ proxy-groups:
   filter: "(?i)^(?!.*ISP)(?!.*(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"
   empty-fallback: REJECT
   include-all: true
+- name: "\U0001F4E1 链式入口"
+  type: select
+  proxies:
+  - REJECT
+  include-all: true
+  filter: "(?i)^(?!.*ISP)(?!.*(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"
+  empty-fallback: REJECT
+  default-selected: REJECT
 - name: "\U0001F517 链式节点"
   type: select
   proxies:
   - REJECT
   include-all-proxies: true
-  filter: "^\U0001F4E1 机场前置 → .*\\[ISP\\]$"
+  filter: "(?i)ISP"
   empty-fallback: REJECT
   default-selected: REJECT
 - name: "\U0001F3AF 全球直连"
@@ -478,7 +485,7 @@ proxy-groups:
   proxies:
   - REJECT
   include-all-proxies: true
-  filter: "^\U0001F4E1 机场前置 → .*\\[ISP\\]$"
+  filter: "(?i)ISP"
   empty-fallback: REJECT
   default-selected: REJECT
 - name: "✨ Gemini"
