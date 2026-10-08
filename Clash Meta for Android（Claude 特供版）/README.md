@@ -1,39 +1,30 @@
-# CMFA：Claude 链式代理脱敏模板
+# CMFA：不内置节点的 Claude 链式基础配置
 
-2026-10-08 更新。本目录只发布可填写的模板，不包含真实机场订阅、ISP 地址、账号密码或节点快照。
+2026-10-08 修订。公开 YAML 不含任何机场节点、ISP 节点、订阅链接、账号密码或待填的示例字段，也不使用回转箭头。
 
-## 导入前填写
+可直接下载并导入，但它本身不提供代理服务。没有私有 ISP 配置时，`🧠 Claude` 和 `🔗 链式节点` 默认 REJECT；地区/机场组没有节点时也拒绝连接，不会用机场代替 ISP。
 
-1. 下载同目录的 `Clash Meta for Android 链式代理 特供版.yaml`。
-2. 将所有 `https://YOUR_AIRPORT_SUBSCRIPTION.invalid/clash.yaml` 替换为自己的 Clash YAML 订阅。文件内有 3 个 provider，都应使用同一份机场订阅。
-3. 将 `YOUR_CHEYENNE_ISP_HOST.invalid` 和 `YOUR_NYC_ISP_HOST.invalid` 替换为自己的 ISP 地址。地址在出口节点和两个 HTTP 测速地址中重复出现，必须全部替换。
-4. 填写两个 ISP 的 `YOUR_*_USER` / `YOUR_*_PASSWORD`。
-5. 核对协议端口：本模板的夏延服务同时在 6544 支持 HTTP/SOCKS5；IPRoyal 纽约 HTTP=12323、SOCKS5=12324。其他供应商必须使用自己的实际端口，不能直接套用这组数字。
-6. 只有一个 ISP 时，删除不用的出口节点、对应的前置组/provider，并从 Claude 和链式节点组中删去相应引用。没有任何 ISP 时，将这两个业务选择组改为只含 `REJECT`。
-7. CMFA 导入本地 YAML，更新 3 个 provider，使用规则模式，并通过客户端开启 VPN/TUN。
+## 在自己的私有副本中添加
 
-`.invalid` 是故意不能用于公网访问的占位地址。模板可做结构校验，但未填写前不能联网。
+1. 在私有 YAML 中添加自己的机场节点或 `proxy-providers`。普通地区/服务组会筛选已添加的节点与 provider；它们排除 ISP 出口。
+2. 添加每个真实 ISP 的实际出口节点，使用 `📡 机场前置 → 国旗 国家 城市 [ISP]` 命名。Claude 和链式节点只动态收录这种格式的节点，不收录普通机场。
+3. 为每个 ISP 私下建立一个前置 url-test 组，用 `📡 机场前置 → 国旗 国家 城市 ISP 编号` 命名。将该 ISP 出口的 `dialer-proxy` 指向对应组。
+4. 该组只测试机场前置，实际测试地址必须是这个 ISP 的真实 HTTP 端口；group 和 provider 的 health-check 都设置 `expected-status: 407`、1800 秒间隔、8000 ms 超时，组切换容差为 200 ms。不要把 ISP 账号密码放进测速请求。
+5. 有些 ISP 的 HTTP 与 SOCKS5 同端口，有些分端口；从供应商说明核实，不根据名称猜测。公开文件不提供虚构探测地址。
+6. 绑定确认后，才把默认 REJECT 改选为真实 ISP 出口。若有多个 ISP，Claude 和链式节点可以分别选择，但 DNS 出口跟随链式节点组。
 
-## 链路与测速
+业务流量必须指向实际 ISP 节点，不能指向只含机场的前置组。路径应为手机 → 机场前置 → ISP → 网站。若在前置组私下加入 DIRECT，它表示手机 → ISP → 网站，仍然不是机场直出。
 
-- `🔗 链式节点`、`🧠 Claude` 只选择实际 ISP 出口：`↪ 📡 机场前置 → 🇺🇸 国家 城市 [ISP]`。
-- 原来的两个 `📡 机场前置 → … ISP 1/2` 组负责比较前置；没有额外的“落地 ISP”组。
-- `Airport_CHEYENNE` / `Airport_NYC` 从机场订阅产生独立命名的前置节点池，使用 `↪ 原订阅节点名 → ISP` 格式。订阅原名的旗帜是否存在取决于机场；CMFA 不执行 Verge 的 JavaScript 自动地区改名。
-- 每个前置节点向 ISP 的 HTTP 端口发送未认证请求，`expected-status: 407` 代表收到“需要认证”的回应。provider 自身的 health-check 和前置组 URL 保持相同。
-- 1800 秒间隔、200 ms 容差、8000 ms 超时。407 成功只说明到 HTTP 端口的路径能回应，不保证 SOCKS5 登录和网站访问一定成功。
-- 实际 ISP 节点携带凭据，其 `dialer-proxy` 指向对应前置组：手机 → 选中的机场 → ISP → 网站。没有机场直出兜底。
-- `DIRECT` 是前置候选，选中它会变成手机 → ISP → 网站，仍然经过 ISP。若要求必须经过机场，可删除前置组里的 DIRECT。
-- 不要把业务策略直接改到前置组；前置组里的节点是机场，只用于 ISP 拨号。
-- 单来源 ISP 在换前置时可能受旧入口占用影响，切换不保证无中断。
+HTTP 407 仅证明 ISP HTTP 端口能回应，不保证 SOCKS5 认证或网站成功。单来源 ISP 换前置时可能被旧入口占用影响，因此不保证无中断。真实 ISP 不可用时，不得添加机场或 DIRECT 作为 Claude 的业务兜底。
 
 ## DNS 与分流
 
-默认 Cloudflare / Google DoH 经 `🔗 链式节点` 当前选中的 ISP。Claude 域名使用同一路径；它不会自动跟随 Claude 组的独立出口选择，必要时同步选择这两个组。
+默认 Cloudflare / Google DoH 经链式节点组当前 ISP，Claude 域名使用同一路径。未设置 ISP 时，此 DNS 路径随 REJECT 关闭。
 
-国内 geosite:cn 使用阿里/腾讯 DoH 直连。认证页/内网使用 Android 系统 DNS，替代 macOS 的 `dhcp://en0`。节点解析与引导 DNS 使用公共直连解析器；若机场要求专用 bootstrap DNS，应自行填入私有配置，不要提交账号标识。
+国内 geosite:cn 使用阿里/腾讯 DoH 直连。认证页和内网使用 Android system DNS；节点解析使用独立公共 bootstrap。机场若有专用解析要求，应只在私有配置里设置。
 
-Claude、Anthropic 邮件子域名及其他服务使用仓库 `Rules/*.list`。保留 TCP/UDP 分流和 Android 包名规则，移除 macOS 进程绑定。泄漏测试站不再有专用的链式分流或 DNS 覆盖。
+保留仓库 Rules 域名分流、Android 包名规则和 TCP/UDP 设置，不包含 macOS 接口/进程设置。无旧落地选择组，无泄漏测试站专用分流。
 
-## 校验范围
+## 校验
 
-发布前已验证：脱敏、YAML 加载、组/provider/出口引用、ISP-only 业务出口与 407 设置。占位模板的手机联网和供应商具体端口仍需填写后验证。所有前置失效时，ISP 连接失败；不得为此将 Claude 改成机场或 DIRECT。
+无节点版本已通过本机 Mihomo 加载校验，并检查动态入口过滤、REJECT 默认值和所有静态引用。实际 ISP/前置的 407 和链式连通性需在添加私有配置后验证。公开基础配置不声明手机联网 PASS。
