@@ -1,28 +1,26 @@
-# Shadowrocket：不内置节点的 Claude 链式基础配置
+# Shadowrocket：共用机场入口的 Claude 链式配置
 
-2026-10-08 修订的是 `Shadowrocket Config Claude 链式代理 特供版.conf`，非链式特供版独立保留。
+2026-10-08：链式配置采用一个固定的 `📡 链式代理入口` fallback 组。公开文件不含节点、订阅、密钥或待填字段；非链式特供版保留。
 
-公开文件的 Proxy 段为空：不含机场或 ISP 节点、订阅链接、示例账号和待填字段，也不使用回转箭头。机场及 ISP 都由用户在 Shadowrocket 首页或私有配置中添加。
+## 导入和绑定
 
-## 添加与绑定
+1. 导入配置并设为当前配置，在首页导入自己的机场订阅和真实 ISP 节点。
+2. 实际 ISP 节点名称含 `ISP` 即可，大小写不限，无需特定前缀。它会被收录进 Claude / 链式节点组。只给真实 ISP 出口使用这个标识。
+3. `📡 链式代理入口` 自动筛选不含 ISP 的机场节点，排除常见订阅流量和到期提示。不复制节点凭据，复用首页节点池。
+4. 在每个实际 ISP 节点详情中，将“代理通过”绑定到 `📡 链式代理入口`。该步骤需在 App 中操作，入组不会自动绑定。
+5. 验证代理链后，在 Claude / 链式节点中从 REJECT 改选所需 ISP。实际流向：手机 → 入口组选择的机场 → ISP → 网站。
+6. 全局路由使用“配置”，关闭“启用回退”。网站业务组不能选择 `📡 链式代理入口`，否则会跳过 ISP。
 
-1. 首页导入自己的机场订阅和真实 ISP 节点。
-2. 将每个实际 ISP 出口命名为 `📡 机场前置 → 国旗 国家 城市 [ISP]`。只有这种名称会进入 Claude / 链式节点组，普通机场不会被收录。
-3. 在自己的私有配置里为每个 ISP 添加一个 fallback 前置组，命名为 `📡 机场前置 → 国旗 国家 城市 ISP 编号`，首项设为 REJECT，再按优先顺序加入机场节点。间隔 1800 秒、超时 8 秒，不设置延迟容差。
-4. 在实际 ISP 节点详情中，将“代理通过”绑定到对应前置组。正确方向是手机 → 机场 → ISP → 网站。
-5. 核对代理链后，才在 `🧠 Claude` 和 `🔗 链式节点` 中从默认 REJECT 改选实际 ISP 出口。
-6. 全局路由用“配置”，关闭“启用回退”，避免 App 随机切换到机场。
+默认入口类型为 fallback，测试地址为 gstatic generate_204，每 600 秒测试一次，超时 5 秒，不设 tolerance。这是机场可用性检查，不是机场到 ISP 的延迟探测，也不向 ISP 并发登录。如希望固定机场，可在配置编辑器中将该组类型改为 select；fallback 的临时手选可能被后续检查替换。
 
-两个业务组没有机场或 DIRECT 兜底。缺少私有 ISP 时它们只剩 REJECT。配置已设置 `close-if-proxy-chain-missing=true`，但“代理通过”仍需用户在 App 中完成。
+入口组没有 DIRECT；Claude / 链式节点只提供 ISP 和 REJECT，默认 REJECT。配置设置 `close-if-proxy-chain-missing=true`，使绑定的中转丢失时拒绝连接。此参数不能替代首次“代理通过”绑定；未绑定的 ISP 节点仍可能直接连接 ISP。
 
-## 测速与 DNS 差异
+## DNS 与平台差异
 
-不能核实 Shadowrocket 将 HTTP 407 作为 URLTest 成功状态的配置语法，因此不写未经验证的 expected-status 参数或虚构地址。私有前置组可以使用原生 fallback，测试 URL 设置为供应商的真实 HTTP 地址，但必须先确认此版本能正确处理 407。若全部显示失败，保持业务 REJECT，并暂时使用经验证的手动前置；不能把检测失败当作机场不可达。
+General DNS 保留公共 bootstrap/直连 DNS；代理域名使用 Shadowrocket 的远端解析行为。真实 ISP 存在后可私下设置指向实际节点的 DNS-over-PROXY，并 URL 编码节点名称；切换出口时该指定名称需同步更新。
 
-基础配置的 General DNS 仅设置公共 bootstrap/直连 DNS；代理域名保留 Shadowrocket 的远端解析行为。它不引用一个尚不存在的 ISP DNS 节点，以免指定名称错误后回退到首页机场。
+Clash / CMFA 保留各 ISP 的 HTTP 407 专属前置检测。本 Shadowrocket 配置改用共用机场可用性 fallback，不声明能得到相同探测结果。域名分流继续共用仓库 Rules，无泄漏测试站特殊路由。
 
-如果要使用与 Clash 一样的 Google/Cloudflare DoH，经某个实际 ISP 查询，请在真实 ISP 节点及其代理链确认存在后，私下设置 DNS-over-PROXY，并 URL 编码实际节点名。改 DNS 出口时也需要同步修改该指定名称，不会自动跟随链式组。
+配置经过静态检查；实际手机导入、代理通过绑定和链路需在设备上确认。
 
-域名分流共用仓库 Rules，已移除旧落地组和泄漏测试站专用规则。闭源 iOS 引擎的 407 测速、动态 DNS 和 UI 代理链不声明与 Mihomo 完全相同。
-
-默认 REJECT 是为了防止尚未添加/绑定 ISP 就使用机场。此版本做了静态校验，手机导入与运行需自行确认。
+参考：[Shadowrocket 使用手册](https://github.com/LOWERTOP/Shadowrocket/wiki)、[分组配置语法](https://github.com/LOWERTOP/Shadowrocket/blob/main/lazy.conf)。
