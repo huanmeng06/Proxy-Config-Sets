@@ -11,8 +11,8 @@
 - `Shadowrocket/`：Shadowrocket 主配置。
 - `Clash Verge Rev/`：Clash Verge Rev 日常全局扩展脚本。
 - `Clash（Claude 特供版）/`：Claude 特供版脚本（Sift/Datadog 同出口）。不覆盖日常脚本。
-- `Clash Meta for Android（Claude 特供版）/`：CMFA 脱敏链式 YAML 模板。HTTP 407 自动筛选前置，实际 ISP 出口通过 `dialer-proxy` 使用前置；填写自己的订阅及 ISP 凭据后导入。
-- `Shadowrocket（Claude 特供版）/`：Claude 特供版 Shadowrocket 配置。链式模板已同步分流与 ISP-only 出口；前置手动选择、代理通过需 App 绑定，默认 REJECT。407 自动测速未核实，具体差异见该目录说明。
+- `Clash Meta for Android（Claude 特供版）/`：CMFA 无节点链式基础 YAML。没有订阅或待填字段；在私有配置里添加机场、ISP 及 HTTP 407 前置组，实际 ISP 通过 `dialer-proxy` 使用前置。
+- `Shadowrocket（Claude 特供版）/`：Claude 特供版 Shadowrocket 配置。链式基础配置不内置节点、订阅或待填字段；实际 ISP 在私有配置中添加，前置手动选择、代理通过需 App 绑定，默认 REJECT。407 自动测速未核实，具体差异见该目录说明。
 - `manifest/rules.json`：三端远程规则引用的统一清单。
 - `scripts/generate-rule-refs.js`：根据 `manifest/rules.json` 自动生成三端远程规则引用区。
 

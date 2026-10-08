@@ -1,4 +1,5 @@
-# Public sanitized template: replace YOUR_* before use. No real subscription or credentials.
+# Public base configuration. No nodes, subscriptions, credentials, or fill-in fields.
+# Add real airport/ISP definitions only in your private copy; Claude/chain start at REJECT.
 ---
 mode: rule
 mixed-port: 7897
@@ -360,21 +361,7 @@ tun:
   strict-route: false
   ipv6: false
 keep-alive-idle: 30
-proxies:
-- type: socks5
-  name: "↪ \U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 夏延 [ISP]"
-  port: 6544
-  dialer-proxy: "\U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 夏延 ISP 1"
-  server: YOUR_CHEYENNE_ISP_HOST.invalid
-  username: YOUR_CHEYENNE_ISP_USER
-  password: YOUR_CHEYENNE_ISP_PASSWORD
-- type: socks5
-  name: "↪ \U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 纽约 [ISP]"
-  port: 12324
-  dialer-proxy: "\U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 纽约 ISP 2"
-  server: YOUR_NYC_ISP_HOST.invalid
-  username: YOUR_NYC_ISP_USER
-  password: YOUR_NYC_ISP_PASSWORD
+proxies: []
 proxy-groups:
 - name: "\U0001F680 节点选择"
   type: select
@@ -407,43 +394,17 @@ proxy-groups:
 - name: "\U0001F680 手动切换"
   type: select
   proxies: []
-  use:
-  - Airport
   filter: "(?i)^(?!.*ISP)(?!.*(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F517 链式节点"
   type: select
   proxies:
-  - "↪ \U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 夏延 [ISP]"
-  - "↪ \U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 纽约 [ISP]"
-- name: "\U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 夏延 ISP 1"
-  type: url-test
-  url: http://YOUR_CHEYENNE_ISP_HOST.invalid:6544/generate_204
-  interval: 1800
-  tolerance: 200
-  lazy: false
-  timeout: 8000
-  max-failed-times: 3
-  proxies:
-  - DIRECT
-  expected-status: '407'
-  use:
-  - Airport_CHEYENNE
+  - REJECT
+  include-all-proxies: true
+  filter: "^\U0001F4E1 机场前置 → .*\\[ISP\\]$"
   empty-fallback: REJECT
-- name: "\U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 纽约 ISP 2"
-  type: url-test
-  url: http://YOUR_NYC_ISP_HOST.invalid:12323/generate_204
-  interval: 1800
-  tolerance: 200
-  lazy: false
-  timeout: 8000
-  max-failed-times: 3
-  proxies:
-  - DIRECT
-  expected-status: '407'
-  use:
-  - Airport_NYC
-  empty-fallback: REJECT
+  default-selected: REJECT
 - name: "\U0001F3AF 全球直连"
   type: select
   proxies:
@@ -515,8 +476,11 @@ proxy-groups:
 - name: "\U0001F9E0 Claude"
   type: select
   proxies:
-  - "↪ \U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 夏延 [ISP]"
-  - "↪ \U0001F4E1 机场前置 → \U0001F1FA\U0001F1F8 美国 纽约 [ISP]"
+  - REJECT
+  include-all-proxies: true
+  filter: "^\U0001F4E1 机场前置 → .*\\[ISP\\]$"
+  empty-fallback: REJECT
+  default-selected: REJECT
 - name: "✨ Gemini"
   type: select
   proxies:
@@ -801,11 +765,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(香港|\\bHK\\b|Hong Kong|HongKong|hongkong|深港|沪港|京港))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -815,11 +778,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(香港|\\bHK\\b|Hong Kong|HongKong|hongkong|深港|沪港|京港)))(?=.*(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1E8\U0001F1F3 台湾节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -829,11 +791,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(台|新北|彰化|高雄|\\bTW\\b|Taiwan))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -843,11 +804,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(台|新北|彰化|高雄|\\bTW\\b|Taiwan)))(?=.*(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1EF\U0001F1F5 日本节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -857,11 +817,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(日本|川日|东京|大阪|名古屋|泉日|埼玉|福冈|沪日|深日|\\bJP\\b|Japan))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -871,11 +830,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(日本|川日|东京|大阪|名古屋|泉日|埼玉|福冈|沪日|深日|\\bJP\\b|Japan)))(?=.*(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1F8\U0001F1EC 狮城节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -885,11 +843,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(新加坡|坡|狮城|\\bSG\\b|Singapore))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1F0\U0001F1F7 韩国节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -899,11 +856,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(\\bKR\\b|Korea|\\bKOR\\b|首尔|春川|韩|韓))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1F2\U0001F1FE 马来西亚节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -913,11 +869,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(马来西亚|大马|吉隆坡|Malaysia|\\bMY\\b))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1EE\U0001F1E9 印尼节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -927,11 +882,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(印尼|印度尼西亚|雅加达|\\bID\\b|Indonesia))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1EE\U0001F1F3 印度节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -941,11 +895,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(印度(?!尼西亚)|孟买|新德里|\\bIN\\b|India))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1F5\U0001F1ED 菲律宾节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -955,11 +908,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(菲律宾|马尼拉|\\bPH\\b|Philippines))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1F9\U0001F1ED 泰国节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -969,11 +921,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(泰国|曼谷|\\bTH\\b|Thailand))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1FB\U0001F1F3 越南节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -983,11 +934,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(越南|胡志明|河内|\\bVN\\b|Vietnam))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1EC\U0001F1E7 英国节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -997,11 +947,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(英[国國]|英格兰|伦敦|加的夫|曼彻斯特|伯克郡|\\bUK\\b|United Kingdom|Great Britain))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1E9\U0001F1EA 德国节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -1011,11 +960,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(德[国國]|法兰克福|柏林|杜塞尔多夫|\\bDE\\b|Germany))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1FA\U0001F1F8 美国节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -1025,12 +973,11 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(美|华盛顿|波特兰|达拉斯|俄勒冈|凤凰城|菲尼克斯|费利蒙|弗里蒙特|硅谷|旧金山|拉斯维加斯|洛杉|圣何塞|圣荷西|圣塔?克拉拉|西雅图|芝加哥|哥伦布|纽约|阿什本|纽瓦克|丹佛|加利福尼亚|弗吉尼亚|马纳萨斯|俄亥俄|得克萨斯|[佐乔]治亚|亚特兰大|佛罗里达|迈阿密|\\bUSA\\b|United
     States))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1E7\U0001F1F7 巴西节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -1040,11 +987,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(巴西|圣保罗|里约|\\bBR\\b|Brazil))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1F9\U0001F1F7 土耳其节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -1054,11 +1000,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(土耳其|伊斯坦布尔|Turkey|\\bTR\\b))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1F3\U0001F1EC 尼日利亚节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -1068,11 +1013,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(尼日利亚|拉各斯|阿布贾|\\bNG\\b|Nigeria))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "\U0001F1E6\U0001F1FA 澳洲节点"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -1082,11 +1026,10 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?=.*(?:(澳大利亚|澳洲|悉尼|墨尔本|\\bAU\\b|Australia))).*"
   exclude-filter: "(?i)ISP|(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)|(\U0001F3E0|家[宽寬]|家庭|住宅|民用|宽[带帶]|Broadband|Residential|\\bHome\\b|HKBN|HiNet|Comcast|Xfinity|Verizon|Spectrum|Frontier|CenturyLink)"
   empty-fallback: REJECT
+  include-all: true
 - name: "⏬ 下载专用"
   type: url-test
   url: https://www.gstatic.com/generate_204
@@ -1096,10 +1039,9 @@ proxy-groups:
   timeout: 3000
   max-failed-times: 3
   proxies: []
-  use:
-  - Airport
   filter: "(?i)(?:低倍率A\\ \\[0\\.2x\\]|低倍率B\\ \\[0\\.2x\\])"
   empty-fallback: REJECT
+  include-all: true
 rule-providers:
   BanAD:
     type: http
@@ -1402,44 +1344,3 @@ rules:
 - "RULE-SET,ProxyGFWlist,\U0001F680 节点选择"
 - "GEOIP,CN,\U0001F3AF 全球直连"
 - "MATCH,\U0001F41F 漏网之鱼"
-proxy-providers:
-  Airport:
-    type: http
-    url: https://YOUR_AIRPORT_SUBSCRIPTION.invalid/clash.yaml
-    path: "./providers/Airport.yaml"
-    interval: 86400
-    health-check:
-      enable: true
-      url: https://www.gstatic.com/generate_204
-      interval: 3600
-      lazy: true
-  Airport_CHEYENNE:
-    type: http
-    url: https://YOUR_AIRPORT_SUBSCRIPTION.invalid/clash.yaml
-    path: "./providers/Airport_CHEYENNE.yaml"
-    interval: 86400
-    override:
-      additional-prefix: "↪ "
-      additional-suffix: " → \U0001F517\U0001F1FA\U0001F1F8 美国 夏延 [ISP]"
-    health-check:
-      enable: true
-      url: http://YOUR_CHEYENNE_ISP_HOST.invalid:6544/generate_204
-      expected-status: '407'
-      interval: 1800
-      timeout: 8000
-      lazy: false
-  Airport_NYC:
-    type: http
-    url: https://YOUR_AIRPORT_SUBSCRIPTION.invalid/clash.yaml
-    path: "./providers/Airport_NYC.yaml"
-    interval: 86400
-    override:
-      additional-prefix: "↪ "
-      additional-suffix: " → \U0001F517\U0001F1FA\U0001F1F8 美国 纽约 [ISP]"
-    health-check:
-      enable: true
-      url: http://YOUR_NYC_ISP_HOST.invalid:12323/generate_204
-      expected-status: '407'
-      interval: 1800
-      timeout: 8000
-      lazy: false

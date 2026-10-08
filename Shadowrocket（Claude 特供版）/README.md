@@ -1,30 +1,28 @@
-# Shadowrocket：Claude 链式代理脱敏模板
+# Shadowrocket：不内置节点的 Claude 链式基础配置
 
-2026-10-08 更新的是 `Shadowrocket Config Claude 链式代理 特供版.conf`。本目录的非链式特供配置保持独立，不被此次发布覆盖。
+2026-10-08 修订的是 `Shadowrocket Config Claude 链式代理 特供版.conf`，非链式特供版独立保留。
 
-模板不包含机场节点、订阅链接或真实 ISP 地址/凭据。机场通过自己的订阅在 Shadowrocket 首页导入。
+公开文件的 Proxy 段为空：不含机场或 ISP 节点、订阅链接、示例账号和待填字段，也不使用回转箭头。机场及 ISP 都由用户在 Shadowrocket 首页或私有配置中添加。
 
-## 填写与绑定
+## 添加与绑定
 
-1. 下载链式 `.conf`，填写两个 ISP 节点的 `YOUR_*_HOST.invalid`、`YOUR_*_USER`、`YOUR_*_PASSWORD`，并确认 SOCKS5 端口。
-2. 在 Shadowrocket 首页导入自己的机场节点；名字中不要混入配置里的 ISP 出口。
-3. 导入并启用配置。“全局路由”使用“配置”；关闭全局“启用回退”，防止随机切换到机场。
-4. 两个 `📡 机场前置 → … ISP 1/2` 组默认 REJECT。各自手选一个机场前置。
-5. 打开夏延实际出口 `↪ 📡 机场前置 → 🇺🇸 美国 夏延 [ISP]` 的节点详情，将“代理通过”设为夏延前置组。
-6. 对纽约实际出口做同样操作，绑定纽约前置组。方向必须是手机 → 机场 → ISP，而不是让机场通过 ISP。
-7. 查看代理链确认绑定后，才在 `🧠 Claude` 和 `🔗 链式节点` 里将默认 REJECT 切到实际 ISP 出口。两个业务组不提供机场直出或 DIRECT 选项。
-8. 缺少某个 ISP 时，删除对应的节点和两个业务组里的引用。完全没有 ISP 时保留 REJECT。
+1. 首页导入自己的机场订阅和真实 ISP 节点。
+2. 将每个实际 ISP 出口命名为 `📡 机场前置 → 国旗 国家 城市 [ISP]`。只有这种名称会进入 Claude / 链式节点组，普通机场不会被收录。
+3. 在自己的私有配置里为每个 ISP 添加一个手动前置组，命名为 `📡 机场前置 → 国旗 国家 城市 ISP 编号`，组内只选择机场节点。
+4. 在实际 ISP 节点详情中，将“代理通过”绑定到对应前置组。正确方向是手机 → 机场 → ISP → 网站。
+5. 核对代理链后，才在 `🧠 Claude` 和 `🔗 链式节点` 中从默认 REJECT 改选实际 ISP 出口。
+6. 全局路由用“配置”，关闭“启用回退”，避免 App 随机切换到机场。
 
-`close-if-proxy-chain-missing=true` 和不支持 UDP 时 REJECT 已写入；绑定仍需在 App 中完成，配置没有伪造一个 Mihomo 的 dialer-proxy 参数。
+两个业务组没有机场或 DIRECT 兜底。缺少私有 ISP 时它们只剩 REJECT。配置已设置 `close-if-proxy-chain-missing=true`，但“代理通过”仍需用户在 App 中完成。
 
-## 与 Clash / CMFA 的差异
+## 测速与 DNS 差异
 
-- 共用远端分流规则、出口和前置组名称。已删除旧落地选择组和泄漏测试站的特殊分流。
-- 无法核实 Shadowrocket 的 HTTP 407 指定成功状态配置，因此前置组使用手动 select，不宣称实现了同样的自动测速。配置注释保留相应的未认证探测地址，供填写后检查。
-- 前置候选使用首页实际订阅节点，不会批量克隆或自动改成桌面端候选名称。
-- DNS-over-PROXY 明确指定纽约实际 ISP 节点，并进行 URL 编码；这是固定 DNS 出口，不是动态绑定到“链式节点”组。若更换 DNS 出口，需要同步修改 General 的 dns-server 和 fallback-dns-server。
-- 直连域名使用系统 DNS，不能完整复制 Mihomo 的 geosite DNS policy、fake-IP、sniffer 或进程分流。
+不能核实 Shadowrocket 将 HTTP 407 作为 URLTest 成功状态的配置语法，因此公开文件不写无效参数或虚构测速地址；前置按手动选择使用。若在手机上确认支持 407，再在自己的私有前置组设置供应商的实际 HTTP 探测地址。
 
-默认 REJECT 是刻意设置的保护，未完成绑定前不要解除。iOS 真机导入和连通性需在自己设备上验证。
+基础配置的 General DNS 仅设置公共 bootstrap/直连 DNS；代理域名保留 Shadowrocket 的远端解析行为。它不引用一个尚不存在的 ISP DNS 节点，以免指定名称错误后回退到首页机场。
 
-详见同目录 `Shadowrocket 适配对照表.md`。发布的是脱敏模板；自己的订阅和填写后的配置不要公开上传。
+如果要使用与 Clash 一样的 Google/Cloudflare DoH，经某个实际 ISP 查询，请在真实 ISP 节点及其代理链确认存在后，私下设置 DNS-over-PROXY，并 URL 编码实际节点名。改 DNS 出口时也需要同步修改该指定名称，不会自动跟随链式组。
+
+域名分流共用仓库 Rules，已移除旧落地组和泄漏测试站专用规则。闭源 iOS 引擎的 407 测速、动态 DNS 和 UI 代理链不声明与 Mihomo 完全相同。
+
+默认 REJECT 是为了防止尚未添加/绑定 ISP 就使用机场。此版本做了静态校验，手机导入与运行需自行确认。

@@ -1,25 +1,22 @@
-# 2026-10-08 链式配置适配对照
+# 不内置节点的手机链式基础配置
 
-| 项目 | Clash / CMFA | Shadowrocket 链式模板 |
+2026-10-08：公开配置没有节点、订阅、示例凭据、待填字段或回转箭头。实际节点及供应商信息只在用户的私有配置中添加。
+
+| 项目 | CMFA | Shadowrocket |
 | --- | --- | --- |
-| 前置组名称 | 📡 机场前置 → 国家 城市 ISP 1/2 | 相同 |
-| 实际出口名称 | ↪ 📡 机场前置 → 国家 城市 [ISP] | 相同 |
-| 前置候选命名 | CMFA provider 加前后缀，桌面脚本自动地区改名 | 使用手机首页订阅原名 |
-| 无登录筛选前置 | HTTP 407 URLTest，1800 s / 200 ms / 8000 ms | 407 匹配未核实，手动 select |
-| ISP 使用所选前置 | dialer-proxy 自动绑定 | 必须在节点详情设置“代理通过” |
-| Claude / 链式业务出口 | 只含实际 ISP；无 ISP 时 REJECT | 只含实际 ISP 与 REJECT；默认 REJECT |
-| 机场直出回退 | 不设置 | 不设置；手机关闭全局随机回退 |
-| 泄漏测试站专用规则 | 已删除 | 已删除 |
-| 默认 DNS | Cloudflare / Google DoH，经链式组当前 ISP | DoH 明确绑定纽约节点，换 DNS 出口需手改编码节点名 |
-| 国内/内网 DNS | geosite:cn 直连 DoH；Android 内网 system | 直连域名主要使用 system |
-| 平台专有设置 | Android 包名、fake-IP、Mihomo 内核设置 | 不写入 macOS/Android 进程或 Mihomo 专有参数 |
+| 私有机场节点 | 本地 proxies 或私有 provider | 首页导入订阅 |
+| 私有实际 ISP 命名 | 📡 机场前置 → 国旗 国家 城市 [ISP] | 同名 |
+| Claude / 链式入口 | 动态筛选上述 ISP 节点，默认 REJECT | 正则筛选上述 ISP 节点，默认 REJECT |
+| 未添加 ISP | 拒绝连接 | 拒绝连接 |
+| 添加前置组 | 私有 url-test 组，真实 HTTP 地址和 407 成功状态 | 私有手动 select 组；407 自动测速未核实 |
+| ISP 使用前置 | 私下配置 dialer-proxy | 在节点详情设置“代理通过” |
+| 前置组名称 | 📡 机场前置 → 国旗 国家 城市 ISP 编号 | 同名 |
+| 默认 DNS | 经链式组；没有 ISP 时该路径拒绝 | 公共 bootstrap/直连 DNS，代理域名远端解析 |
+| 经 ISP 的指定 DoH | 配置已指向链式组 | 真实节点存在后私下配置 DNS-over-PROXY |
+| 平台差异 | Android 包名、fake-IP 与 Mihomo 设置 | iOS 域名分流，不能复制进程/sniffer/geosite DNS 行为 |
 
-两份手机文件都是公开的占位模板。CMFA 从自己的机场订阅构建节点池，Shadowrocket 使用已导入节点；它们不包含任何真实账号或节点快照。
+前置候选只含机场。不要把 Claude 或网站规则指向前置组，否则会绕过 ISP；应选择实际 ISP 节点，再由其使用前置。HTTP 407 表示未认证响应，不等同于实际网站连通性。
 
-正确方向是手机 → 机场前置 → ISP → 网站。业务流量不能直接指向前置测速组，否则会绕过 ISP。HTTP 407 只证明 ISP 的 HTTP 端口能响应，不保证账户认证、SOCKS5 或网站业务成功。
+无节点的 CMFA YAML 通过了本机 Mihomo 加载校验，两份配置都检查了引用与 REJECT 默认选择。添加真实私有配置之后的手机运行不在此次静态验证范围内。
 
-Shadowrocket 初始 REJECT 不应被解除，直到两个 ISP 的“代理通过”绑定已确认。指定 DNS 节点名必须正确 URL 编码，不能替换为首页默认机场。
-
-配置已做静态结构与引用审查；CMFA YAML 还通过本机 Mihomo 加载校验。占位模板尚不能联网，Shadowrocket 闭源引擎不能在本机编译验证，不声明手机运行 PASS。
-
-参考：[Mihomo expected-status](https://wiki.metacubex.one/config/proxy-groups/#expected-status)、[Shadowrocket App Store](https://apps.apple.com/us/app/shadowrocket/id932747118)、[Shadowrocket 配置说明](https://github.com/LOWERTOP/Shadowrocket/wiki)。
+参考：[Mihomo expected-status](https://wiki.metacubex.one/config/proxy-groups/#expected-status)、[Shadowrocket 配置说明](https://github.com/LOWERTOP/Shadowrocket/wiki)。
