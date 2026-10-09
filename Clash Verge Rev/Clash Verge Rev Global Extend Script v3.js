@@ -548,7 +548,7 @@ function main(config, profileName) {
 
   // 国内外 AI 组紧跟 Grok，便于在 UI 中连续切换 AI 服务。
   const domesticAiChoices = ["DIRECT", ...regionOnlyChoices];
-  const foreignAiChoices = foreignAiRegionChoices.length > 0 ? foreignAiRegionChoices : ["REJECT"];
+  const foreignAiChoices = [GROUP.front, ...foreignAiRegionChoices];
   proxyGroups.push(createSelectGroup(GROUP.domesticAi, domesticAiChoices));
   proxyGroups.push(createSelectGroup(GROUP.foreignAi, foreignAiChoices));
 
