@@ -70,13 +70,19 @@ function main(config, profileName) {
     CAMPUS_DNS_IPS.length > 0
       ? CAMPUS_DNS_IPS.map(ip => `udp://${ip}#DIRECT`)
       : [`dhcp://${WIFI_INTERFACE}`];
+  // ===== 本地自定义分流区：只在这里添加网站规则，不需要改 Rules/ 或同步到 GitHub =====
+  // 格式：DOMAIN-SUFFIX,example.com,目标策略组；目标可以是地区组、手动组、链式组或 DIRECT。
+  // 例如："DOMAIN-SUFFIX,example.com,🇺🇸 美国节点",
+  const LOCAL_CUSTOM_RULES = [
+    // "DOMAIN-SUFFIX,example.com,🇺🇸 美国节点",
+  ];
+
   const GROUP = {
     node: "🚀 节点选择",
     manual: "🚀 手动切换",
     download: "⏬ 下载专用",
     telegram: "📲 电报消息",
     front: "🔗 链式节点",
-    custom: "🛠 自定义网站",
     domesticAi: "🇨🇳 国内 AI",
     foreignAi: "🌍 国外 AI",
     github: "🐙 GITHUB",
@@ -445,6 +451,17 @@ function main(config, profileName) {
     availableRegionGroupNames.push(GROUP.download);
   }
 
+  // 地区组统一顺序：香港、新加坡、日本、台湾、美国，其他地区最后。
+  const REGION_ORDER = ["🇭🇰", "🇸🇬", "🇯🇵", "🇨🇳", "🇺🇸"];
+  const regionRank = (name) => {
+    const normalizedName = name.replace(/^🏠/, "");
+    const flagIndex = REGION_ORDER.findIndex(flag => normalizedName.startsWith(flag));
+    const base = flagIndex >= 0 ? flagIndex * 2 : REGION_ORDER.length * 2 + 100;
+    return base + (name.includes("家宽") ? 1 : 0);
+  };
+  availableRegionGroupNames.sort((a, b) => regionRank(a) - regionRank(b));
+  regionGroups.sort((a, b) => regionRank(a.name) - regionRank(b.name));
+
   // 策略组：先放常用服务组，再追加动态地区组。
   const allProxies = proxies.length > 0 ? proxies : ["DIRECT"];
   const proxyGroups = [];
@@ -478,15 +495,6 @@ function main(config, profileName) {
   proxyGroups.push(createSelectGroup(GROUP.front,
     landingIsps.length ? landingIsps.map(isp => isp.name) : ["REJECT"]));
 
-  // 网站自定义组允许在不改脚本的情况下选择节点、地区、链式出口或 DIRECT。
-  proxyGroups.push(createSelectGroup(GROUP.custom, [
-    GROUP.node,
-    GROUP.manual,
-    GROUP.front,
-    ...regionOnlyChoices,
-    "DIRECT"
-  ]));
-
   const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, GROUP.front];
   const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, GROUP.front]);
   const isAvailableChoice = (name) => builtInChoices.has(name) || availableRegionGroupNames.includes(name);
@@ -512,11 +520,6 @@ function main(config, profileName) {
   ]);
   pushSelectGroup(GROUP.github, githubChoices);
 
-  const domesticAiChoices = ["DIRECT", ...regionOnlyChoices];
-  const foreignAiChoices = foreignAiRegionChoices.length > 0 ? foreignAiRegionChoices : ["REJECT"];
-  proxyGroups.push(createSelectGroup(GROUP.domesticAi, domesticAiChoices));
-  proxyGroups.push(createSelectGroup(GROUP.foreignAi, foreignAiChoices));
-
   // ChatGPT / Claude / Gemini / Grok 各自独立选择，顺序固定为美国、新加坡、日本、台湾。
   const usFirstAiChoices = getSafeChoices([
     "🇺🇸 美国节点",
@@ -538,6 +541,12 @@ function main(config, profileName) {
   pushSelectGroup(GROUP.claude, claudeChoices);
   pushSelectGroup(GROUP.gemini, usFirstAiChoices);
   pushSelectGroup(GROUP.grok, usFirstAiChoices);
+
+  // 国内外 AI 组紧跟 Grok，便于在 UI 中连续切换 AI 服务。
+  const domesticAiChoices = ["DIRECT", ...regionOnlyChoices];
+  const foreignAiChoices = foreignAiRegionChoices.length > 0 ? foreignAiRegionChoices : ["REJECT"];
+  proxyGroups.push(createSelectGroup(GROUP.domesticAi, domesticAiChoices));
+  proxyGroups.push(createSelectGroup(GROUP.foreignAi, foreignAiChoices));
 
   pushSelectGroup(GROUP.youtube, commonChoices);
 
@@ -616,7 +625,6 @@ function main(config, profileName) {
     "Grok": `${RULES_BASE}/grok.list`,
     "DomesticAI": `${RULES_BASE}/ai-domestic.list`,
     "ForeignAI": `${RULES_BASE}/ai-foreign.list`,
-    "Custom": `${RULES_BASE}/custom.list`,
     "GitHub": `${RULES_BASE}/github.list`,
     "GoogleFCM": `${RULES_BASE}/google-fcm.list`,
     "MicrosoftStore": `${RULES_BASE}/microsoft-store.list`,
@@ -767,7 +775,7 @@ function main(config, profileName) {
     `RULE-SET,ChatGPT,${GROUP.chatgpt}`,
     `GEOSITE,anthropic,${GROUP.claude}`,
     `RULE-SET,Claude,${GROUP.claude}`,
-    `RULE-SET,Custom,${GROUP.custom}`,
+    ...LOCAL_CUSTOM_RULES,
 
     // 商店 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名、校园认证仍本地。
     `RULE-SET,Reject,REJECT`,

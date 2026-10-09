@@ -124,18 +124,6 @@
           ]
         },
         {
-          "id": "custom",
-          "tag": "Custom",
-          "file": "custom.list",
-          "policy": {
-            "quantumultX": "🛠 自定义网站",
-            "shadowrocket": "🛠 自定义网站"
-          },
-          "clashProviders": [
-            "Custom"
-          ]
-        },
-        {
           "id": "github",
           "tag": "GitHub",
           "file": "github.list",

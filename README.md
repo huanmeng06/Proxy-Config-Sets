@@ -33,15 +33,15 @@ ads.list                 ai-domestic.list
 ai-foreign.list          app-clean.list
 apple.list               bahamut.list
 bilibili.list            chatgpt.list
-claude.list              custom.list
-domestic-media.list      games.list
-gemini.list              github.list
-global-media.list        google-fcm.list
-grok.list                microsoft-bing.list
-microsoft-drive.list     microsoft-store.list
-microsoft.list            proxy.list
-reject.list              telegram.list
-youtube.list             direct.list
+claude.list              domestic-media.list
+games.list               gemini.list
+github.list              global-media.list
+google-fcm.list          grok.list
+microsoft-bing.list      microsoft-drive.list
+microsoft-store.list     microsoft.list
+proxy.list               reject.list
+telegram.list            youtube.list
+direct.list
 ```
 
 兼容说明：仓库仍保留旧版 `ai.list`、`deepseek.list`、`netflix.list`、`netease-music.list`、`leak.list`，仅供历史特供配置读取；它们不在当前 `manifest/rules.json`，也不会进入当前生成的三端配置。
@@ -67,7 +67,7 @@ IP-CIDR6 / IP6-CIDR / PROCESS-NAME / URL-REGEX / RULE-SET / FINAL / MATCH / SCRI
 
 ### 自定义网站
 
-将 `DOMAIN` / `DOMAIN-SUFFIX` / `DOMAIN-KEYWORD` 写入 `Rules/custom.list`，三端会将它们送入 `🛠 自定义网站`；Clash 中可在该组内选择地区、手动节点、链式节点或 `DIRECT`。
+Clash 自定义规则只写在脚本顶部的“本地自定义分流区”，格式为 `DOMAIN-SUFFIX,example.com,🇺🇸 美国节点`。这些规则只保存在本机脚本，不进入 GitHub 规则集。
 
 ### 只新增一条规则
 
@@ -185,7 +185,7 @@ Clash Verge Rev/Clash Verge Rev Global Extend Script v3.js
 
 ## DNS 防泄露
 
-三端使用各自原生能力实现同一目标，不直接复制彼此的字段。自定义网站统一维护在 `Rules/custom.list`：
+三端使用各自原生能力实现同一目标，不直接复制彼此的字段。Clash 自定义网站规则只维护在本机脚本顶部的“本地自定义分流区”：
 
 - Clash Verge Rev：`fake-ip`、TUN DNS 劫持、国内直连 DoH、境外代理 DoH，并关闭 IPv6。
 - Quantumult X：`no-system`、`no-ipv6` 与 IP 形式的 DoH 端点。
