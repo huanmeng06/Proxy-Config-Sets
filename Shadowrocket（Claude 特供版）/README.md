@@ -21,4 +21,6 @@ Shadowrocket 设置 `close-if-proxy-chain-missing=true`，但首次“代理通�
 
 三端统一的是入口名称、select 类型和机场 → ISP 的流量路径。手机系统与 DNS 功能仍存在平台差异。已进行静态检查，手机实际链路需设备验证。
 
-当前公开配置已按 Clash 脚本同步：国内/国外 AI、统一微软服务、游戏规则、WebRTC UDP 19302/19305 拒绝、校园认证和远程 Rules 均已更新。Shadowrocket 通过 `proxy-dns-server`、规则集和进程规则实现平台可用的等价行为；不支持的 Clash 专属字段已在配置注释中说明。
+当前配置已尽量按 Clash 脚本实现相同功能：国内/国外 AI、统一微软服务、游戏规则、WebRTC UDP 19302/19305 拒绝、校园认证和远程 Rules 均已同步。代理 DNS 使用加密 DoH，直连与校园认证使用系统/DHCP DNS。
+
+仍无法一比一实现的部分：Shadowrocket 没有 Clash 的 `nameserver-policy`，所以不能按 Claude、Microsoft、国内 AI 等业务组分别绑定 DNS；没有 `PROCESS-PATH-REGEX`，只能使用进程名；没有 `dialer-proxy` 配置字段，ISP 的“代理通过”必须在 Shadowrocket 界面手动设置。其余行为由代理组、远程规则集、进程规则和 UDP 拒绝规则实现。
