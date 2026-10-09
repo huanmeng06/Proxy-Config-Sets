@@ -74,6 +74,10 @@ function main(config, profileName) {
   // 格式：DOMAIN-SUFFIX,example.com,目标策略组；目标可以是地区组、手动组、链式组或 DIRECT。
   // 例如："DOMAIN-SUFFIX,example.com,🇺🇸 美国节点",
   const LOCAL_CUSTOM_RULES = [
+    // 原有本地直连规则：继续放在这里，后续可直接增删或改目标策略组。
+    "DOMAIN-SUFFIX,deepl.com,DIRECT",
+    "DOMAIN-SUFFIX,ping0.cc,DIRECT",
+    "DOMAIN-SUFFIX,tjcn.org,DIRECT",
     // "DOMAIN-SUFFIX,example.com,🇺🇸 美国节点",
   ];
 
@@ -779,10 +783,7 @@ function main(config, profileName) {
 
     // 商店 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名、校园认证仍本地。
     `RULE-SET,Reject,REJECT`,
-    `DOMAIN-SUFFIX,deepl.com,DIRECT`,
     // `DOMAIN,codex-reset.com,REJECT`,
-    `DOMAIN-SUFFIX,ping0.cc,DIRECT`,
-    `DOMAIN-SUFFIX,tjcn.org,DIRECT`,
     `RULE-SET,BanAD,${GROUP.ads}`,
     `RULE-SET,BanProgramAD,${GROUP.appClean}`,
     `RULE-SET,GoogleFCM,${GROUP.googleFcm}`,
