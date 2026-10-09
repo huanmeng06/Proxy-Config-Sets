@@ -478,14 +478,9 @@ function main(config, profileName) {
   const chainChoice = hasChainGroup ? [GROUP.front] : [];
   const pushSelectGroup = (name, choices) => {
     // 已包含链式节点的组统一排序：节点选择之后、地区节点之前。
-    let orderedChoices = choices.filter(choice => choice !== GROUP.front || hasChainGroup);
-    if (choices.includes(GROUP.front)) {
-      orderedChoices = choices.filter(choice => choice !== GROUP.front);
-      const nodeIndex = orderedChoices.indexOf(GROUP.node);
-      const regionIndex = orderedChoices.findIndex(choice => availableRegionGroupNames.includes(choice));
-      const insertIndex = nodeIndex >= 0 ? nodeIndex + 1 : (regionIndex >= 0 ? regionIndex : 0);
-      orderedChoices.splice(insertIndex, 0, GROUP.front);
-    }
+    // 调用方已经明确了每个组的顺序；这里仅在没有链式组时移除该选项，
+    // 不再把它重新插回组首，避免无链式节点时产生幽灵引用。
+    const orderedChoices = choices.filter(choice => choice !== GROUP.front || hasChainGroup);
     proxyGroups.push(createSelectGroup(name, orderedChoices));
   };
 
@@ -550,8 +545,9 @@ function main(config, profileName) {
     ...chainChoice
   ]);
   pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
-  // Claude 直接选择 ISP 对应的出口组；未配置 ISP 时使用链式节点兜底。
-  const claudeChoices = hasChainGroup ? chainExitNames : ["REJECT"];
+  // Claude 只能选择真正设置了 dialer-proxy 的 ISP 落地出口；普通“链式”节点
+  // 仍可供手动链式组使用，但不作为 Claude 的出口候选。
+  const claudeChoices = landingIsps.length > 0 ? landingIsps.map(isp => isp.name) : ["REJECT"];
   pushSelectGroup(GROUP.claude, claudeChoices);
   pushSelectGroup(GROUP.gemini, usFirstAiChoices);
   pushSelectGroup(GROUP.grok, usFirstAiChoices);
@@ -560,7 +556,7 @@ function main(config, profileName) {
   const domesticAiChoices = ["DIRECT", ...regionOnlyChoices];
   const foreignAiChoices = [...chainChoice, ...foreignAiRegionChoices];
   proxyGroups.push(createSelectGroup(GROUP.domesticAi, domesticAiChoices));
-  proxyGroups.push(createSelectGroup(GROUP.foreignAi, foreignAiChoices));
+  proxyGroups.push(createSelectGroup(GROUP.foreignAi, foreignAiChoices.length > 0 ? foreignAiChoices : ["REJECT"]));
 
   pushSelectGroup(GROUP.youtube, commonChoices);
 
@@ -763,10 +759,6 @@ function main(config, profileName) {
     `PROCESS-NAME,Captive Network Assistant,DIRECT`,
     `PROCESS-NAME,WebSheet,DIRECT`,
 
-    // 校园网/星巴克认证必须走当前 Wi-Fi 的 DHCP DNS + DIRECT，不能进代理。
-    ...CAPTIVE_PORTAL_EXACT.map(domain => `DOMAIN,${domain},DIRECT`),
-    ...CAPTIVE_PORTAL_SUFFIXES.map(domain => `DOMAIN-SUFFIX,${domain},DIRECT`),
-
     // Browser WebRTC STUN. Google uses stun/stun1-4.l.google.com:19302/19305.
     // Domain names live in reject.list; these ports catch IP-literal STUN after DNS.
     // Do not reject UDP 3478 (Discord / Telegram / games).
@@ -790,6 +782,11 @@ function main(config, profileName) {
     `GEOSITE,anthropic,${GROUP.claude}`,
     `RULE-SET,Claude,${GROUP.claude}`,
     ...LOCAL_CUSTOM_RULES,
+
+    // 认证域名放在业务进程/专用域名规则之后：Claude 请求认证探测域名时，
+    // 仍先按 Claude 进程识别；系统认证进程在上方继续保持 DIRECT。
+    ...CAPTIVE_PORTAL_EXACT.map(domain => `DOMAIN,${domain},DIRECT`),
+    ...CAPTIVE_PORTAL_SUFFIXES.map(domain => `DOMAIN-SUFFIX,${domain},DIRECT`),
 
     // 商店 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名、校园认证仍本地。
     `RULE-SET,Reject,REJECT`,
@@ -917,9 +914,35 @@ function main(config, profileName) {
     "geosite:private": campusDnsServers
   };
 
+  // 只剔除会与 Claude 专用 policy 发生域名重叠的继承项；机场其余网站
+  // policy 全部保留，避免校园网或订阅的特殊解析策略被误删。
   const inheritedPolicy = inheritedDns["nameserver-policy"] && typeof inheritedDns["nameserver-policy"] === "object"
     ? inheritedDns["nameserver-policy"]
     : {};
+  const claudePolicyKeys = [...claudeSuffixes, ...claudeExactDomains].map(domain => String(domain).toLowerCase());
+  const policyKeyOverlapsClaude = (key) => {
+    const normalized = String(key || "").toLowerCase().replace(/^\+\./, "");
+    if (!normalized || normalized.includes(":") || normalized.includes("/")) return false;
+    return claudePolicyKeys.some(domain => {
+      const candidate = domain.replace(/^\+\./, "");
+      return normalized === candidate || normalized.endsWith(`.${candidate}`) || candidate.endsWith(`.${normalized}`);
+    });
+  };
+  const compatibleInheritedPolicy = Object.fromEntries(
+    Object.entries(inheritedPolicy).filter(([key]) => !policyKeyOverlapsClaude(key))
+  );
+
+  // 本地自定义 DOMAIN / DOMAIN-SUFFIX 必须和流量规则使用同一目标组解析。
+  // 其他规则类型（IP-CIDR、PROCESS 等）无法仅凭域名生成 DNS policy，因此不自动转换。
+  const customDnsPolicy = {};
+  for (const entry of LOCAL_CUSTOM_RULES) {
+    const parts = String(entry).split(",").map(part => part.trim());
+    const [kind, domain, target] = parts;
+    if (!domain || !target || !["DOMAIN", "DOMAIN-SUFFIX"].includes(kind)) continue;
+    const policyKey = kind === "DOMAIN-SUFFIX" ? `+.${domain}` : domain;
+    customDnsPolicy[policyKey] = target === "DIRECT" ? directChinaDns : dnsForGroup(target);
+  }
+
   config.dns = {
     ...inheritedDns,
     "enable": true,
@@ -948,12 +971,13 @@ function main(config, profileName) {
     "direct-nameserver-follow-policy": true,
     "fallback": [],
     "nameserver-policy": {
-      ...inheritedPolicy,
+      ...compatibleInheritedPolicy,
       // 国内域名只走直连国内加密 DNS；更具体的 Claude/业务域名策略随后覆盖。
       "geosite:cn": directChinaDns,
       ...serviceDnsPolicy,
       ...domesticServiceDnsPolicy,
       ...claudeNameserverPolicy,
+      ...customDnsPolicy,
       ...campusPolicy
     },
     "fake-ip-filter": unique([
