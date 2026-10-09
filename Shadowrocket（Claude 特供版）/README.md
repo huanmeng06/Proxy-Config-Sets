@@ -1,6 +1,6 @@
 # Shadowrocket：共用手动链式入口
 
-所有 ISP 共用一个 `📡 链式入口` select 组。该组只收录机场，不含 ISP 或 DIRECT；手动选择后不自动切换。公开文件不内置节点、订阅、密钥或待填字段。
+所有 ISP 共用一个 `📡 链式入口` select 组。该组只收录机场，不含 ISP 或 DIRECT；手动选择后不自动切换。公开配置不内置节点、订阅、密钥或 MITM 证书。
 
 ## 设置
 
@@ -20,3 +20,5 @@ Clash/CMFA 默认 Cloudflare、Google DoH 经过链式节点组；国内 DNS 与
 Shadowrocket 设置 `close-if-proxy-chain-missing=true`，但首次“代理通过”绑定仍需手动完成。Clash/CMFA 使用 dialer-proxy。运行中旧连接可能继续使用旧路径，应用后需重新建立连接。
 
 三端统一的是入口名称、select 类型和机场 → ISP 的流量路径。手机系统与 DNS 功能仍存在平台差异。已进行静态检查，手机实际链路需设备验证。
+
+当前公开配置已按 Clash 脚本同步：国内/国外 AI、统一微软服务、游戏规则、WebRTC UDP 19302/19305 拒绝、校园认证和远程 Rules 均已更新。Shadowrocket 通过 `proxy-dns-server`、规则集和进程规则实现平台可用的等价行为；不支持的 Clash 专属字段已在配置注释中说明。
