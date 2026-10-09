@@ -8,12 +8,12 @@
 // Clash Verge Rev global extend script.
 // Keep YepFast proxy-server-nameserver intact so node delay stays close to the official app.
 // Campus DNS is only used for captive portal / school / private domains.
-// Claude HTTP and default DoH exit via 🔗 链式节点 (airport → selected US ISP).
-// DoH URLs drop TYPE64/SVCB and TYPE65/HTTPS (disable-qtype-64/65 fragment).
-// 🔗 链式节点 and 🧠 Claude select actual ISP exits only; missing ISP means REJECT.
+// Ordinary DNS follows 🐟 漏网之鱼; Claude DNS follows the selected ISP exit.
+// Claude DoH drops TYPE64/SVCB and TYPE65/HTTPS (disable-qtype-64/65 fragment).
+// Airport entry is the first hop; explicit 链式 nodes and ISP exits form 🔗 链式节点. ISP entries are always listed last; no chain group means no chain entry group.
 // Do not ship or inject any landing SOCKS. If Clash extra proxies has a name containing ISP,
-// rewrite it to 🔗🇺🇸 美国 … [ISP] and bind every ISP to the shared manual airport entry.
-// Domain/UDP/fingerprint follow coffee + 特供 routing.
+// rewrite it to 🔗🇺🇸 美国 … [ISP] and list ISP entries after explicit 链式 nodes.
+// Domain/UDP/fingerprint follow the dedicated routing policy.
 // Do not send proxy-server-nameserver through the chain.
 
 function main(config, profileName) {
@@ -21,7 +21,8 @@ function main(config, profileName) {
   if (!Array.isArray(config.proxies)) config.proxies = [];
 
   // 全局常量：策略组显示名、测速参数和自维护规则地址集中放这里。
-  const TEST_URL = "https://www.gstatic.com/generate_204";
+  // 与 YepFast 对齐；HTTP 探针仅用于延迟显示，业务 HTTPS 不受影响。
+  const TEST_URL = "http://cp.cloudflare.com/generate_204";
   const INTERVAL = 3600;
   const TOLERANCE = 50;
   const RULES_BASE = "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules";
@@ -30,7 +31,6 @@ function main(config, profileName) {
   const WIFI_INTERFACE = "en0";
   // 校园网只影响认证页/校内域名的 nameserver-policy，不再覆盖节点 DNS。
   // 节点域名必须继续走订阅自带的 proxy-server-nameserver，否则延迟会明显变高。
-  const CAMPUS_MODE = true;
 
   // 默认留空：优先让 mihomo 通过 DHCP 读取校园网 DNS。
   // 如果 dhcp://en0 在你的 macOS 上取值异常，可把
@@ -46,11 +46,8 @@ function main(config, profileName) {
     "netctscan.apple.com",
     "detectportal.firefox.com",
     "connectivitycheck.gstatic.com",
-    "www.msftconnecttest.com",
-    "ipv6.msftconnecttest.com",
     "dns.msftncsi.com",
-    "neverssl.com",
-    "securelogin.arubanetworks.com"
+    "neverssl.com"
   ];
   const CAPTIVE_PORTAL_SUFFIXES = [
     "arubanetworks.com",
@@ -73,35 +70,39 @@ function main(config, profileName) {
     CAMPUS_DNS_IPS.length > 0
       ? CAMPUS_DNS_IPS.map(ip => `udp://${ip}#DIRECT`)
       : [`dhcp://${WIFI_INTERFACE}`];
+  // ===== 本地自定义分流区：只在这里添加网站规则，不需要改 Rules/ 或同步到 GitHub =====
+  // 格式：DOMAIN-SUFFIX,example.com,目标策略组；目标可以是地区组、手动组、链式组或 DIRECT。
+  // 例如："DOMAIN-SUFFIX,example.com,🇺🇸 美国节点",
+  const LOCAL_CUSTOM_RULES = [
+    // 原有本地直连规则：继续放在这里，后续可直接增删或改目标策略组。
+    "DOMAIN-SUFFIX,deepl.com,DIRECT",
+    "DOMAIN-SUFFIX,ping0.cc,DIRECT",
+    "DOMAIN-SUFFIX,tjcn.org,DIRECT",
+    // "DOMAIN-SUFFIX,example.com,🇺🇸 美国节点",
+  ];
+
   const GROUP = {
     node: "🚀 节点选择",
     manual: "🚀 手动切换",
-    direct: "🎯 全球直连",
     download: "⏬ 下载专用",
     telegram: "📲 电报消息",
     front: "🔗 链式节点",
+    domesticAi: "🇨🇳 国内 AI",
+    foreignAi: "🌍 国外 AI",
     github: "🐙 GITHUB",
-    ai: "💬 Ai平台",
     chatgpt: "🤖 ChatGPT",
     claude: "🧠 Claude",
     gemini: "✨ Gemini",
     grok: "✖️ Grok",
-    deepseek: "🐋 DeepSeek",
     youtube: "📹 油管视频",
-    netflix: "🎥 奈飞视频",
-    netflixNode: "🎥 奈飞节点",
     bahamut: "📺 巴哈姆特",
     bilibili: "📺 哔哩哔哩",
     globalMedia: "🌍 国外媒体",
     domesticMedia: "🌏 国内媒体",
     googleFcm: "📢 谷歌FCM",
-    microsoftStore: "Ⓜ️ 微软商店",
-    microsoftBing: "Ⓜ️ 微软Bing",
-    microsoftDrive: "Ⓜ️ 微软云盘",
     microsoft: "Ⓜ️ 微软服务",
     apple: "🍎 苹果服务",
     games: "🎮 游戏平台",
-    netease: "🎶 网易音乐",
     ads: "🛑 广告拦截",
     appClean: "🍃 应用净化",
     fallback: "🐟 漏网之鱼"
@@ -162,7 +163,7 @@ function main(config, profileName) {
     { emoji: "🇲🇩", regex: /(摩尔多瓦|基希讷乌|\bMD\b|Moldova)(?!中[轉转])/i },
 
     // 美洲地区
-    { emoji: "🇺🇸", regex: /(美[国國]|华盛顿|波特兰|达拉斯|俄勒冈|凤凰城|菲尼克斯|费利蒙|弗里蒙特|硅谷|旧金山|拉斯维加斯|洛杉|圣何塞|圣荷西|圣塔?克拉拉|西雅图|芝加哥|哥伦布|纽约|阿什本|纽瓦克|丹佛|加利福尼亚|弗吉尼亚|马纳萨斯|俄亥俄|得克萨斯|[佐乔]治亚|亚特兰大|佛罗里达|迈阿密|\bUSA\b|United States)(?!中[轉转])/i },
+    { emoji: "🇺🇸", regex: /(美[国國]|华盛顿|波特兰|达拉斯|俄勒冈|凤凰城|菲尼克斯|费利蒙|弗里蒙特|硅谷|旧金山|拉斯维加斯|洛杉|圣何塞|圣荷西|圣塔?克拉拉|西雅图|芝加哥|哥伦布|纽约|阿什本|纽瓦克|丹佛|加利福尼亚|弗吉尼亚|马纳萨斯|俄亥俄|得克萨斯|[佐乔]治亚|亚特兰大|佛罗里达|迈阿密|\bUS(?:A)?\b|United States)(?!中[轉转])/i },
     { emoji: "🇨🇦", regex: /(加拿大|[枫楓][叶葉]|多伦多|蒙特利尔|温哥华|卡尔加里|\bCA\b|Canada)(?!中[轉转])/i },
     { emoji: "🇦🇷", regex: /(阿根廷|布宜诺斯艾利斯|Argentina|\bAR\b)(?!中[轉转])/i },
     { emoji: "🇧🇷", regex: /(巴西|圣保罗|里约|\bBR\b|Brazil)(?!中[轉转])/i },
@@ -236,9 +237,7 @@ function main(config, profileName) {
 
   const isGeneratedViaName = (name) => {
     const n = String(name || "");
-    return n.startsWith("via ") || n.startsWith(String.fromCodePoint(0x21aa) + " ")
-      || (n.includes(" → 🔗") && n.endsWith("[ISP]"))
-      || (n.startsWith("📡 机场前置 → ") && n.endsWith("[ISP]"));
+    return n.startsWith("via ") || n.startsWith("↪ ");
   };
   const isLandingIspName = (name) => {
     const n = String(name || "");
@@ -246,6 +245,10 @@ function main(config, profileName) {
     return /ISP/i.test(n);
   };
   const isLandingIspProxy = (proxy) => Boolean(proxy) && isLandingIspName(proxy.name);
+  const isExplicitChainProxy = (proxy) => {
+    if (!proxy || isLandingIspProxy(proxy)) return false;
+    return /链式/.test(String(proxy.name || ""));
+  };
   const isGeneratedViaClone = (proxy) => Boolean(proxy) && isGeneratedViaName(proxy.name);
 
   const formatLandingIspName = (raw) => {
@@ -277,7 +280,7 @@ function main(config, profileName) {
     return body ? `🔗 ${body} [ISP]` : "🔗 [ISP]";
   };
 
-  // 清掉上一轮脚本注入的 / via 克隆，避免再次进入地区组。
+  // 清掉上一轮脚本注入的 ↪ / via 克隆，避免再次进入地区组。
   config.proxies = config.proxies.filter(proxy => !isGeneratedViaClone(proxy));
 
   config.proxies.forEach(proxy => {
@@ -305,14 +308,24 @@ function main(config, profileName) {
     proxy.name = badges ? `${badges} ${cleanName}` : cleanName;
   });
 
+  // 节点名清洗/ISP 格式化后可能碰撞；保留全部节点并追加稳定序号。
+  const nameCounts = new Map();
+  config.proxies.forEach(proxy => {
+    const base = String(proxy.name || "").trim() || "未命名节点";
+    const count = (nameCounts.get(base) || 0) + 1;
+    nameCounts.set(base, count);
+    proxy.name = count === 1 ? base : `${base} (${count})`;
+  });
+
   const landingIsps = (config.proxies || []).filter(isLandingIspProxy);
   landingIsps.forEach((isp) => {
     delete isp["dialer-proxy"];
   });
 
 
-  // 地区组 / 手动切换只用机场节点，不要把落地 ISP 算进去。
-  const subscriptionProxies = config.proxies.filter(proxy => !isLandingIspProxy(proxy));
+  // 地区组 / 手动切换只用普通机场节点；ISP 与显式链式节点只进入链式组。
+  const explicitChainProxies = config.proxies.filter(isExplicitChainProxy);
+  const subscriptionProxies = config.proxies.filter(proxy => !isLandingIspProxy(proxy) && !isExplicitChainProxy(proxy));
   const proxies = subscriptionProxies.map(p => p.name);
 
   function getProxiesByRegex(regexStr) {
@@ -349,6 +362,7 @@ function main(config, profileName) {
       tolerance: options.tolerance ?? TOLERANCE,
       lazy: options.lazy ?? true,
       timeout: options.timeout ?? 3000,
+      "expected-status": 204,
       "max-failed-times": 3,
       proxies: groupProxies
     };
@@ -438,12 +452,6 @@ function main(config, profileName) {
     availableRegionGroupNames.push("🆘 防失联组");
   }
 
-  // 奈飞专线如果存在，就额外提供一个快捷选择组。
-  const netflixProxies = getProxiesByRegex("(NF|奈飞|解锁|Netflix|NETFLIX|Media)");
-  if (netflixProxies.length > 0) {
-    regionGroups.push(createSelectGroup(GROUP.netflixNode, netflixProxies));
-  }
-
   // 低倍率下载节点单独测速，方便 GitHub release 等大文件下载场景。
   // 复用上面的 isDownloadNode，保证分组结果和 ⏬ 前缀判断永远一致。
   const downloadProxies = proxies.filter(isDownloadNode);
@@ -452,37 +460,54 @@ function main(config, profileName) {
     availableRegionGroupNames.push(GROUP.download);
   }
 
+  // 地区组统一顺序：香港、新加坡、日本、台湾、美国，其他地区最后。
+  const REGION_ORDER = ["🇭🇰", "🇸🇬", "🇯🇵", "🇨🇳", "🇺🇸"];
+  const regionRank = (name) => {
+    const normalizedName = name.replace(/^🏠/, "");
+    const flagIndex = REGION_ORDER.findIndex(flag => normalizedName.startsWith(flag));
+    const base = flagIndex >= 0 ? flagIndex * 2 : REGION_ORDER.length * 2 + 100;
+    return base + (name.includes("家宽") ? 1 : 0);
+  };
+  availableRegionGroupNames.sort((a, b) => regionRank(a) - regionRank(b));
+  regionGroups.sort((a, b) => regionRank(a.name) - regionRank(b.name));
+
   // 策略组：先放常用服务组，再追加动态地区组。
   const allProxies = proxies.length > 0 ? proxies : ["DIRECT"];
   const proxyGroups = [];
+  const hasChainGroup = config.proxies.some(proxy => isExplicitChainProxy(proxy) || isLandingIspProxy(proxy));
+  const chainChoice = hasChainGroup ? [GROUP.front] : [];
   const pushSelectGroup = (name, choices) => {
     // 已包含链式节点的组统一排序：节点选择之后、地区节点之前。
-    let orderedChoices = choices;
-    if (choices.includes(GROUP.front)) {
-      orderedChoices = choices.filter(choice => choice !== GROUP.front);
-      const nodeIndex = orderedChoices.indexOf(GROUP.node);
-      const regionIndex = orderedChoices.findIndex(choice => availableRegionGroupNames.includes(choice));
-      const insertIndex = nodeIndex >= 0 ? nodeIndex + 1 : (regionIndex >= 0 ? regionIndex : 0);
-      orderedChoices.splice(insertIndex, 0, GROUP.front);
-    }
+    // 调用方已经明确了每个组的顺序；这里仅在没有链式组时移除该选项，
+    // 不再把它重新插回组首，避免无链式节点时产生幽灵引用。
+    const orderedChoices = choices.filter(choice => choice !== GROUP.front || hasChainGroup);
     proxyGroups.push(createSelectGroup(name, orderedChoices));
   };
-  pushSelectGroup(GROUP.node, [...availableRegionGroupNames, GROUP.manual, GROUP.front, "DIRECT"]);
+
+  const regionOnlyChoices = availableRegionGroupNames.filter(name => /(?:节点|家宽)$/.test(name));
+  const foreignAiRegionChoices = regionOnlyChoices.filter(name => !name.includes("香港"));
+
+  // 国外默认组不允许 DIRECT，避免业务走代理而 DNS 却回到校园网。
+  const foreignChoices = [...availableRegionGroupNames, GROUP.manual, ...chainChoice];
+  pushSelectGroup(GROUP.node, foreignChoices);
 
   pushSelectGroup(GROUP.manual, allProxies);
 
-  // 所有 ISP 共用一个手动机场入口；业务组只能选择真实 ISP 出口。
+  // 只有显式“链式”节点或 ISP 节点存在时，才生成链式组和链式前置组。
+  const chainExitNames = [
+    ...explicitChainProxies.map(proxy => proxy.name),
+    ...landingIsps.map(isp => isp.name)
+  ];
   const CHAIN_ENTRY = "📡 链式入口";
   const airportNames = subscriptionProxies.map(node => node.name);
-  proxyGroups.push(createSelectGroup(CHAIN_ENTRY, airportNames.length ? airportNames : ["REJECT"]));
-  landingIsps.forEach(isp => { isp["dialer-proxy"] = CHAIN_ENTRY; });
-  proxyGroups.push(createSelectGroup(GROUP.front,
-    landingIsps.length ? landingIsps.map(isp => isp.name) : ["REJECT"]));
+  if (hasChainGroup) {
+    proxyGroups.push(createSelectGroup(CHAIN_ENTRY, airportNames.length ? airportNames : ["REJECT"]));
+    landingIsps.forEach(isp => { isp["dialer-proxy"] = CHAIN_ENTRY; });
+    proxyGroups.push(createSelectGroup(GROUP.front, chainExitNames));
+  }
 
-  pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node]);
-
-  const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, GROUP.front, "DIRECT"];
-  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, GROUP.direct, GROUP.front]);
+  const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, ...chainChoice];
+  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, ...(hasChainGroup ? [GROUP.front] : [])]);
   const isAvailableChoice = (name) => builtInChoices.has(name) || availableRegionGroupNames.includes(name);
 
   const getSafeChoices = (preferred) => {
@@ -502,66 +527,51 @@ function main(config, profileName) {
     "🇺🇸 美国节点",
     "🇨🇳 台湾节点",
     GROUP.download,
-    GROUP.direct,
-    GROUP.front
+    ...chainChoice
   ]);
   pushSelectGroup(GROUP.github, githubChoices);
 
-  const aiChoices = getSafeChoices([
-    "🇺🇸 美国节点",
-    "🏠🇺🇸 美国家宽",
-    "🇯🇵 日本节点",
-    "🏠🇯🇵 日本家宽",
-    "🇸🇬 狮城节点",
-    "🏠🇸🇬 狮城家宽",
-    "🇨🇳 台湾节点",
-    "🏠🇨🇳 台湾家宽",
-    GROUP.manual,
-    GROUP.front
-  ]);
-  pushSelectGroup(GROUP.ai, aiChoices);
-
-  // ChatGPT / Claude / Gemini / Grok 各自独立选择，方便按需切换不同地区。
-  // DeepSeek 同源候选，额外提供 🎯 全球直连。
+  // ChatGPT / Claude / Gemini / Grok 各自独立选择，顺序固定为美国、新加坡、日本、台湾。
   const usFirstAiChoices = getSafeChoices([
     "🇺🇸 美国节点",
     "🏠🇺🇸 美国家宽",
+    "🇸🇬 狮城节点",
+    "🏠🇸🇬 狮城家宽",
     "🇯🇵 日本节点",
     "🏠🇯🇵 日本家宽",
-    "🇸🇬 狮城节点",
     "🇨🇳 台湾节点",
+    "🏠🇨🇳 台湾家宽",
     GROUP.manual,
-    GROUP.front
+    ...chainChoice
   ]);
-  const deepseekChoices = getSafeChoices([...usFirstAiChoices, GROUP.direct]);
   pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
-  // Claude 直接选择 ISP 对应的出口组；未配置 ISP 时使用链式节点兜底。
-  const claudeChoices = landingIsps.length > 0
-    ? [...proxyGroups.find(group => group.name === GROUP.front).proxies]
-    : [GROUP.front];
+  // Claude 只能选择真正设置了 dialer-proxy 的 ISP 落地出口；普通“链式”节点
+  // 仍可供手动链式组使用，但不作为 Claude 的出口候选。
+  const claudeChoices = landingIsps.length > 0 ? landingIsps.map(isp => isp.name) : ["REJECT"];
   pushSelectGroup(GROUP.claude, claudeChoices);
   pushSelectGroup(GROUP.gemini, usFirstAiChoices);
   pushSelectGroup(GROUP.grok, usFirstAiChoices);
-  pushSelectGroup(GROUP.deepseek, deepseekChoices);
+
+  // 国内外 AI 组紧跟 Grok，便于在 UI 中连续切换 AI 服务。
+  const domesticAiChoices = ["DIRECT", ...regionOnlyChoices];
+  const foreignAiChoices = [...chainChoice, ...foreignAiRegionChoices];
+  proxyGroups.push(createSelectGroup(GROUP.domesticAi, domesticAiChoices));
+  proxyGroups.push(createSelectGroup(GROUP.foreignAi, foreignAiChoices.length > 0 ? foreignAiChoices : ["REJECT"]));
 
   pushSelectGroup(GROUP.youtube, commonChoices);
 
-  const netflixChoices = netflixProxies.length > 0 ? [GROUP.netflixNode, ...commonChoices] : commonChoices;
-  pushSelectGroup(GROUP.netflix, netflixChoices);
-
   pushSelectGroup(GROUP.bahamut, getSafeChoices(["🇨🇳 台湾节点", GROUP.node, GROUP.manual, "DIRECT"]));
 
-  pushSelectGroup(GROUP.bilibili, getSafeChoices([GROUP.direct, "🇨🇳 台湾节点", "🇭🇰 香港节点"]));
+  pushSelectGroup(GROUP.bilibili, getSafeChoices(["DIRECT", "🇨🇳 台湾节点", "🇭🇰 香港节点"]));
 
   pushSelectGroup(GROUP.globalMedia, commonChoices);
 
   pushSelectGroup(
     GROUP.domesticMedia,
-    getSafeChoices(["DIRECT", "🇭🇰 香港节点", "🇨🇳 台湾节点", "🇸🇬 狮城节点", "🇯🇵 日本节点", GROUP.manual, GROUP.front])
+    getSafeChoices(["DIRECT", "🇭🇰 香港节点", "🇨🇳 台湾节点", "🇸🇬 狮城节点", "🇯🇵 日本节点", GROUP.manual, ...chainChoice])
   );
 
   const defaultServiceChoices = getSafeChoices([
-    "DIRECT",
     "🚀 节点选择",
     "🇺🇸 美国节点",
     "🇭🇰 香港节点",
@@ -570,37 +580,23 @@ function main(config, profileName) {
     "🇯🇵 日本节点",
     "🇰🇷 韩国节点",
     GROUP.manual,
-    GROUP.front
+    ...chainChoice
   ]);
 
   pushSelectGroup(GROUP.googleFcm, defaultServiceChoices);
+  pushSelectGroup(GROUP.microsoft, defaultServiceChoices);
+  pushSelectGroup(GROUP.apple, defaultServiceChoices);
+  pushSelectGroup(GROUP.games, defaultServiceChoices);
 
-  const microsoftStoreChoices = getSafeChoices([
-    "🚀 节点选择",
-    "🇭🇰 香港节点",
-    "🇯🇵 日本节点",
-    "🇸🇬 狮城节点",
-    "🇨🇳 台湾节点",
-    "🇺🇸 美国节点",
-    GROUP.manual,
-    GROUP.front,
-    "DIRECT"
-  ]);
-  pushSelectGroup(GROUP.microsoftStore, microsoftStoreChoices);
-
-  [GROUP.microsoftBing, GROUP.microsoftDrive, GROUP.microsoft, GROUP.apple, GROUP.games].forEach(name => {
-    pushSelectGroup(name, defaultServiceChoices);
-  });
-
-  const neteaseProxies = getProxiesByRegex("(网易|音乐|解锁|Music|NetEase)");
-  const neteaseChoices = ["DIRECT", GROUP.node];
-  if (neteaseProxies.length > 0) neteaseChoices.push(...neteaseProxies);
-  pushSelectGroup(GROUP.netease, neteaseChoices);
-
-  // 收尾策略组：广告/净化/漏网之鱼。
   pushSelectGroup(GROUP.ads, ["REJECT", "DIRECT"]);
   pushSelectGroup(GROUP.appClean, ["REJECT", "DIRECT"]);
-  pushSelectGroup(GROUP.fallback, [GROUP.node, "DIRECT", ...availableRegionGroupNames, GROUP.manual, GROUP.front]);
+  proxyGroups.push(createSelectGroup(GROUP.fallback, [
+    GROUP.node,
+    GROUP.manual,
+    ...chainChoice,
+    ...availableRegionGroupNames,
+    "DIRECT"
+  ]));
 
   // 动态地区组放在后面，主服务入口更集中。
   proxyGroups.push(...regionGroups);
@@ -632,16 +628,17 @@ function main(config, profileName) {
     // BEGIN GENERATED RULE PROVIDERS
     "BanAD": `${RULES_BASE}/ads.list`,
     "BanProgramAD": `${RULES_BASE}/app-clean.list`,
+    "Reject": `${RULES_BASE}/reject.list`,
     "ChatGPT": `${RULES_BASE}/chatgpt.list`,
     "Claude": `${RULES_BASE}/claude.list`,
     "Gemini": `${RULES_BASE}/gemini.list`,
     "Grok": `${RULES_BASE}/grok.list`,
-    "DeepSeek": `${RULES_BASE}/deepseek.list`,
-    "AI": `${RULES_BASE}/ai.list`,
+    "DomesticAI": `${RULES_BASE}/ai-domestic.list`,
+    "ForeignAI": `${RULES_BASE}/ai-foreign.list`,
     "GitHub": `${RULES_BASE}/github.list`,
     "GoogleFCM": `${RULES_BASE}/google-fcm.list`,
-    "Apple": `${RULES_BASE}/apple.list`,
     "MicrosoftStore": `${RULES_BASE}/microsoft-store.list`,
+    "Apple": `${RULES_BASE}/apple.list`,
     "Bing": `${RULES_BASE}/microsoft-bing.list`,
     "Microsoft": `${RULES_BASE}/microsoft.list`,
     "OneDrive": `${RULES_BASE}/microsoft-drive.list`,
@@ -649,18 +646,17 @@ function main(config, profileName) {
     "ChinaMedia": `${RULES_BASE}/domestic-media.list`,
     "BilibiliHMT": `${RULES_BASE}/bilibili.list`,
     "Bahamut": `${RULES_BASE}/bahamut.list`,
-    "NetEaseMusic": `${RULES_BASE}/netease-music.list`,
-    "Netflix": `${RULES_BASE}/netflix.list`,
     "YouTube": `${RULES_BASE}/youtube.list`,
     "Telegram": `${RULES_BASE}/telegram.list`,
     "Games": `${RULES_BASE}/games.list`,
-    "Reject": `${RULES_BASE}/reject.list`,
-    "DirectGroup": `${RULES_BASE}/direct.list`,
     "ProxyGFWlist": `${RULES_BASE}/proxy.list`
     // END GENERATED RULE PROVIDERS
   };
 
-  config["rule-providers"] = {};
+  const inheritedRuleProviders = config["rule-providers"] && typeof config["rule-providers"] === "object"
+    ? config["rule-providers"]
+    : {};
+  config["rule-providers"] = { ...inheritedRuleProviders };
   const getRuleProviderPath = (name) => `./rulesets/Proxy-Config-Sets/${name}.list`;
 
   for (const [name, url] of Object.entries(ruleProviderUrls)) {
@@ -716,9 +712,7 @@ function main(config, profileName) {
     // Sift fraud SDK suffix; wide sift/datadog keywords live in claude.list.
     "sift.com",
     "siftcience.com",
-    // coffee / Persona share Claude US exit
-    "ip.net.coffee",
-    "net.coffee",
+    // Persona shares Claude US exit. Coffee test sites stay outside business routing.
     "withpersona.com",
     "persona.com"
   ];
@@ -765,10 +759,6 @@ function main(config, profileName) {
     `PROCESS-NAME,Captive Network Assistant,DIRECT`,
     `PROCESS-NAME,WebSheet,DIRECT`,
 
-    // 校园网/星巴克认证必须走当前 Wi-Fi 的 DHCP DNS + DIRECT，不能进代理。
-    ...CAPTIVE_PORTAL_EXACT.map(domain => `DOMAIN,${domain},DIRECT`),
-    ...CAPTIVE_PORTAL_SUFFIXES.map(domain => `DOMAIN-SUFFIX,${domain},DIRECT`),
-
     // Browser WebRTC STUN. Google uses stun/stun1-4.l.google.com:19302/19305.
     // Domain names live in reject.list; these ports catch IP-literal STUN after DNS.
     // Do not reject UDP 3478 (Discord / Telegram / games).
@@ -791,49 +781,46 @@ function main(config, profileName) {
     `RULE-SET,ChatGPT,${GROUP.chatgpt}`,
     `GEOSITE,anthropic,${GROUP.claude}`,
     `RULE-SET,Claude,${GROUP.claude}`,
+    ...LOCAL_CUSTOM_RULES,
+
+    // 认证域名放在业务进程/专用域名规则之后：Claude 请求认证探测域名时，
+    // 仍先按 Claude 进程识别；系统认证进程在上方继续保持 DIRECT。
+    ...CAPTIVE_PORTAL_EXACT.map(domain => `DOMAIN,${domain},DIRECT`),
+    ...CAPTIVE_PORTAL_SUFFIXES.map(domain => `DOMAIN-SUFFIX,${domain},DIRECT`),
 
     // 商店 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名、校园认证仍本地。
     `RULE-SET,Reject,REJECT`,
-    `DOMAIN-SUFFIX,deepl.com,${GROUP.direct}`,
     // `DOMAIN,codex-reset.com,REJECT`,
-    `DOMAIN-SUFFIX,ping0.cc,${GROUP.direct}`,
-    `DOMAIN-SUFFIX,tjcn.org,${GROUP.direct}`,
-    `RULE-SET,DirectGroup,${GROUP.direct}`,
     `RULE-SET,BanAD,${GROUP.ads}`,
     `RULE-SET,BanProgramAD,${GROUP.appClean}`,
     `RULE-SET,GoogleFCM,${GROUP.googleFcm}`,
 
-    // 商店和更新域名要先于通用 Microsoft 规则匹配。
-    `RULE-SET,MicrosoftStore,${GROUP.microsoftStore}`,
-    `RULE-SET,Bing,${GROUP.microsoftBing}`,
-    `RULE-SET,OneDrive,${GROUP.microsoftDrive}`,
+    // 商店、Bing、OneDrive 和通用 Microsoft 规则统一进入微软服务组。
+    `RULE-SET,MicrosoftStore,${GROUP.microsoft}`,
+    `RULE-SET,Bing,${GROUP.microsoft}`,
+    `RULE-SET,OneDrive,${GROUP.microsoft}`,
     `RULE-SET,Microsoft,${GROUP.microsoft}`,
     `RULE-SET,Apple,${GROUP.apple}`,
     `RULE-SET,Telegram,${GROUP.telegram}`,
     `RULE-SET,GitHub,${GROUP.github}`,
     `RULE-SET,Gemini,${GROUP.gemini}`,
     `RULE-SET,Grok,${GROUP.grok}`,
-    `RULE-SET,DeepSeek,${GROUP.deepseek}`,
-    `RULE-SET,AI,${GROUP.ai}`,
-    `RULE-SET,NetEaseMusic,${GROUP.netease}`,
+    `RULE-SET,DomesticAI,${GROUP.domesticAi}`,
+    `RULE-SET,ForeignAI,${GROUP.foreignAi}`,
     `RULE-SET,Games,${GROUP.games}`,
     `RULE-SET,YouTube,${GROUP.youtube}`,
-    `RULE-SET,Netflix,${GROUP.netflix}`,
     `RULE-SET,Bahamut,${GROUP.bahamut}`,
     `RULE-SET,BilibiliHMT,${GROUP.bilibili}`,
     `RULE-SET,ChinaMedia,${GROUP.domesticMedia}`,
     `RULE-SET,ProxyMedia,${GROUP.globalMedia}`,
     `RULE-SET,ProxyGFWlist,${GROUP.node}`,
-    `GEOIP,CN,${GROUP.direct}`,
+    `GEOIP,CN,DIRECT`,
     `MATCH,${GROUP.fallback}`
   ];
 
-  // DNS / TUN：保留订阅节点 DNS，只补校园网认证需要的策略。
-  // 延迟相关原则：
-  // 1. 保留订阅的专用 proxy-server-nameserver 解析机场节点域名。
-  //    一旦改成校园 DHCP/公共 DNS，节点会解析到更差的 IP，延迟从几十毫秒变成几百毫秒。
-  // 2. 订阅的 nameserver / fake-ip-filter / fake-ip-range 一并保留，只追加校内域名策略。
-  // 3. 不强制 mixed/strict-route，避免额外绕路。
+  // 保留订阅专用节点 DNS；这些 DNS 服务自身的域名用 IP 地址 DoH 启动解析。
+  // 普通 DNS 经机场加密解析，只有 Claude DNS 使用落地 ISP。
+  // 校园 DNS 只解析认证/内网域名；不强制 mixed/strict-route。
   config.ipv6 = false;
 
   const inheritedTun = { ...(config.tun || {}) };
@@ -848,9 +835,10 @@ function main(config, profileName) {
     "auto-detect-interface": inheritedTun["auto-detect-interface"] !== false,
     "strict-route": false,
     "ipv6": false,
-    "dns-hijack": Array.isArray(inheritedTun["dns-hijack"]) && inheritedTun["dns-hijack"].length > 0
-      ? inheritedTun["dns-hijack"]
-      : ["any:53", "tcp://any:53"],
+    "dns-hijack": unique([
+      ...(Array.isArray(inheritedTun["dns-hijack"]) ? inheritedTun["dns-hijack"] : []),
+      "any:53", "tcp://any:53"
+    ]),
     "route-exclude-address": unique([...inheritedRouteExcludes, ...LAN_ROUTE_EXCLUDES])
   };
 
@@ -858,35 +846,66 @@ function main(config, profileName) {
   const campusDnsServers = getCampusDnsServers().map((server) =>
     withQtypeDrop(/#/.test(server) ? server : `${server}#DIRECT`)
   );
-  // 普通域名和 Claude 查询经 🔗 链式节点访问加密 DNS，与当前落地 ISP 出口对齐。
-  // 国内 geosite:cn 才直连阿里/腾讯 DoH，避免解析到海外或跨网 CDN 后直连变慢。
-  // 不把 DirectGroup / Claude 放进国内 DoH，防止境外域名 DNS 泄漏到大陆。
+    // 普通查询跟随漏网之鱼当前出口；国内/校园 policy 在后面显式覆盖。
+  // Claude 与相关服务仍通过链式 DoH，与落地出口对齐。
   // 节点自身的域名解析仍使用独立 bootstrap DNS，避免代理建立前出现循环依赖。
-  const secureProxyDns = [
-    `https://1.1.1.1/dns-query#${GROUP.front}`,
-    `https://8.8.8.8/dns-query#${GROUP.front}`
+  const dnsForGroup = (group) => [
+    `https://1.1.1.1/dns-query#${group}`,
+    `https://8.8.8.8/dns-query#${group}`
   ].map(withQtypeDrop);
   const directChinaDns = [
     "https://223.5.5.5/dns-query#DIRECT",
     "https://1.12.12.12/dns-query#DIRECT"
   ].map(withQtypeDrop);
-  const inheritedProxyServerNS = unique(inheritedDns["proxy-server-nameserver"]);
-  const inheritedNameserver = unique(inheritedDns.nameserver);
-  const inheritedDefaultNS = unique(inheritedDns["default-nameserver"]);
+  const asList = (value) => value == null ? [] : (Array.isArray(value) ? value : [value]);
+  const inheritedProxyServerNS = unique(asList(inheritedDns["proxy-server-nameserver"]));
+  // 校园网诊断显示专用 HTTPS DNS/8443 会超时，而同一订阅的 TCP/8081 正常。
+  // 优先使用 TCP 上游，避免 mihomo 在两个上游之间选到失效的 HTTPS 解析器。
+  // 仅当订阅没有 TCP 上游时，才保留原始列表作为兼容回退。
+  const campusReachableProxyNS = inheritedProxyServerNS.filter(server => /^tcp:\/\//i.test(server));
+  // 未分类国外域名跟随“漏网之鱼”当前选择；截图中选链式节点时，DNS 也走同一条链。
+  const ordinaryDns = dnsForGroup(GROUP.fallback);
   const inheritedFakeIpFilter = Array.isArray(inheritedDns["fake-ip-filter"])
     ? inheritedDns["fake-ip-filter"]
     : [];
-  const inheritedPolicy = inheritedDns["nameserver-policy"] && typeof inheritedDns["nameserver-policy"] === "object"
-    ? inheritedDns["nameserver-policy"]
-    : {};
 
+  // 每个业务组的 DNS 使用同名业务组作为出站选择；业务组已去掉 DIRECT。
+  const claudeDns = dnsForGroup(GROUP.claude);
   const claudeNameserverPolicy = Object.fromEntries([
-    ...claudeSuffixes.map(domain => [`+.${domain}`, secureProxyDns]),
-    ...claudeExactDomains.map(domain => [domain, secureProxyDns]),
-    ["+.withpersona.com", secureProxyDns],
-    ["+.persona.com", secureProxyDns],
-    ["+.datadoghq.com", secureProxyDns]
+    ...claudeSuffixes.map(domain => [`+.${domain}`, claudeDns]),
+    ...claudeExactDomains.map(domain => [domain, claudeDns]),
+    ["+.withpersona.com", claudeDns],
+    ["+.persona.com", claudeDns],
+    ["+.datadoghq.com", claudeDns]
   ]);
+  const dnsDomainsByGroup = {
+    [GROUP.fallback]: ["geosite:gfw"],
+    [GROUP.github]: ["github.com", "+.github.com", "+.githubusercontent.com", "+.githubassets.com", "raw.githubusercontent.com"],
+    [GROUP.telegram]: ["telegram.org", "+.telegram.org", "t.me", "telegram.me"],
+    [GROUP.chatgpt]: ["chatgpt.com", "+.chatgpt.com", "+.openai.com", "+.oaiusercontent.com"],
+    [GROUP.claude]: claudeSuffixes.map(domain => `+.${domain}`).concat(claudeExactDomains),
+    [GROUP.gemini]: ["gemini.google.com", "+.gemini.google.com", "ai.google.dev", "+.generativelanguage.googleapis.com"],
+    [GROUP.grok]: ["x.ai", "+.x.ai", "x.com", "+.x.com", "+.twitter.com"],
+    [GROUP.domesticAi]: ["deepseek.com", "+.deepseek.com", "deepseeksvc.com", "+.deepseeksvc.com", "kimi.com", "+.kimi.com", "platform.kimi.ai", "qwen.ai", "+.qwen.ai", "yuanbao.tencent.com", "+.yuanbao.tencent.com", "bigmodel.cn", "+.bigmodel.cn"],
+    [GROUP.foreignAi]: ["perplexity.ai", "+.perplexity.ai", "mistral.ai", "+.mistral.ai", "cursor.com", "+.cursor.com", "cursor.sh", "+.cursor.sh", "api.groq.com", "api.together.xyz"],
+    [GROUP.googleFcm]: ["fcm.googleapis.com", "+.googleapis.com", "+.gstatic.com"],
+    [GROUP.youtube]: ["youtube.com", "+.youtube.com", "youtu.be", "+.googlevideo.com", "+.ytimg.com", "+.ggpht.com"],
+    [GROUP.bahamut]: ["bahamut.com.tw", "+.bahamut.com.tw"],
+    [GROUP.globalMedia]: ["spotify.com", "+.spotify.com", "twitch.tv", "+.twitch.tv", "soundcloud.com", "+.soundcloud.com"],
+    [GROUP.microsoft]: ["microsoft.com", "+.microsoft.com", "+.microsoftstore.com", "bing.com", "+.bing.com", "onedrive.com", "+.onedrive.com", "live.com", "+.live.com", "+.office.com", "+.office365.com"],
+    [GROUP.apple]: ["apple.com", "+.apple.com", "+.icloud.com"],
+    [GROUP.games]: ["steampowered.com", "+.steampowered.com", "epicgames.com", "+.epicgames.com"],
+    [GROUP.bilibili]: ["bilibili.com", "+.bilibili.com", "+.bilivideo.com", "+.hdslb.com"]
+  };
+  const serviceDnsPolicy = {};
+  for (const [group, domains] of Object.entries(dnsDomainsByGroup)) {
+    const resolver = dnsForGroup(group);
+    for (const domain of domains) serviceDnsPolicy[domain] = resolver;
+  }
+  const domesticServiceDnsPolicy = {};
+  for (const domain of [
+    "bilibili.com", "+.bilibili.com", "+.bilivideo.com", "+.hdslb.com"
+  ]) domesticServiceDnsPolicy[domain] = directChinaDns;
 
   // 校园认证/内网必须走当前 Wi-Fi 的 DHCP DNS + DIRECT，不能进链式节点。
   const campusPolicy = {
@@ -894,6 +913,35 @@ function main(config, profileName) {
     ...Object.fromEntries(CAPTIVE_PORTAL_SUFFIXES.map(domain => [`+.${domain}`, campusDnsServers])),
     "geosite:private": campusDnsServers
   };
+
+  // 只剔除会与 Claude 专用 policy 发生域名重叠的继承项；机场其余网站
+  // policy 全部保留，避免校园网或订阅的特殊解析策略被误删。
+  const inheritedPolicy = inheritedDns["nameserver-policy"] && typeof inheritedDns["nameserver-policy"] === "object"
+    ? inheritedDns["nameserver-policy"]
+    : {};
+  const claudePolicyKeys = [...claudeSuffixes, ...claudeExactDomains].map(domain => String(domain).toLowerCase());
+  const policyKeyOverlapsClaude = (key) => {
+    const normalized = String(key || "").toLowerCase().replace(/^\+\./, "");
+    if (!normalized || normalized.includes(":") || normalized.includes("/")) return false;
+    return claudePolicyKeys.some(domain => {
+      const candidate = domain.replace(/^\+\./, "");
+      return normalized === candidate || normalized.endsWith(`.${candidate}`) || candidate.endsWith(`.${normalized}`);
+    });
+  };
+  const compatibleInheritedPolicy = Object.fromEntries(
+    Object.entries(inheritedPolicy).filter(([key]) => !policyKeyOverlapsClaude(key))
+  );
+
+  // 本地自定义 DOMAIN / DOMAIN-SUFFIX 必须和流量规则使用同一目标组解析。
+  // 其他规则类型（IP-CIDR、PROCESS 等）无法仅凭域名生成 DNS policy，因此不自动转换。
+  const customDnsPolicy = {};
+  for (const entry of LOCAL_CUSTOM_RULES) {
+    const parts = String(entry).split(",").map(part => part.trim());
+    const [kind, domain, target] = parts;
+    if (!domain || !target || !["DOMAIN", "DOMAIN-SUFFIX"].includes(kind)) continue;
+    const policyKey = kind === "DOMAIN-SUFFIX" ? `+.${domain}` : domain;
+    customDnsPolicy[policyKey] = target === "DIRECT" ? directChinaDns : dnsForGroup(target);
+  }
 
   config.dns = {
     ...inheritedDns,
@@ -907,20 +955,29 @@ function main(config, profileName) {
     "enhanced-mode": inheritedDns["enhanced-mode"] || "fake-ip",
     "fake-ip-range": inheritedDns["fake-ip-range"] || "198.18.0.1/16",
     "fake-ip-filter-mode": inheritedDns["fake-ip-filter-mode"] || "blacklist",
-    "default-nameserver": inheritedDefaultNS.length > 0
-      ? inheritedDefaultNS
-      : ["223.5.5.5", "223.6.6.6", "119.29.29.29", "system"],
+    // 避免校园网拦截 UDP/53、DoT/853，或系统 TUN 占位 DNS 导致启动解析失败。
+    // 这里只解析节点 DNS 服务自身的域名；不承载网站查询。
+    "default-nameserver": directChinaDns,
     // 订阅自带的节点 DNS 优先；没有时才用国内 DoH，绝不用校园 DNS 解析节点。
-    "proxy-server-nameserver": inheritedProxyServerNS.length > 0
+    "proxy-server-nameserver": campusReachableProxyNS.length > 0
+      ? campusReachableProxyNS
+      : inheritedProxyServerNS.length > 0
       ? inheritedProxyServerNS
       : directChinaDns,
-    // 不沿用订阅中未绑定代理的 nameserver；默认查询和 Claude 都经链式节点 DoH。
-    // 仅 geosite:cn 用国内 DoH #DIRECT。Claude / 校园 policy 放后面覆盖。
-    "nameserver": secureProxyDns,
+    // 明确覆盖订阅中的普通/直连/fallback DNS，失败也不回退国内或系统 DNS。
+    // 官方节点 DNS 不改，不写死历史节点入口 IP。
+    "nameserver": ordinaryDns,
+    "direct-nameserver": ordinaryDns,
+    "direct-nameserver-follow-policy": true,
+    "fallback": [],
     "nameserver-policy": {
-      ...inheritedPolicy,
+      ...compatibleInheritedPolicy,
+      // 国内域名只走直连国内加密 DNS；更具体的 Claude/业务域名策略随后覆盖。
       "geosite:cn": directChinaDns,
+      ...serviceDnsPolicy,
+      ...domesticServiceDnsPolicy,
       ...claudeNameserverPolicy,
+      ...customDnsPolicy,
       ...campusPolicy
     },
     "fake-ip-filter": unique([
@@ -956,9 +1013,7 @@ function main(config, profileName) {
       "dns.alidns.com",
       "doh.pub",
       "dns.google",
-      "cloudflare-dns.com",
-      "www.gstatic.com",
-      "gstatic.com"
+      "cloudflare-dns.com"
     ]).filter(item => {
       const value = String(item);
       const isStun = /(^|\.)stun\./i.test(value);

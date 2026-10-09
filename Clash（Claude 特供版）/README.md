@@ -1,22 +1,43 @@
-# Clash：共用手动链式入口
+# Clash（Claude 特供版）
 
-所有 ISP 共用一个 `📡 链式入口` select 组。该组只收录机场，不含 ISP 或 DIRECT；手动选择后不自动切换。公开文件不内置节点、订阅、密钥或待填字段。
+这是 Clash Verge Rev 的统一扩展脚本基线；仓库中的两个 Clash Verge 脚本都按同一套分流、链式和 DNS 逻辑维护。
 
-## 设置
+ChatGPT / Claude / Grok / 国内 AI / 国外 AI 的**域名分流**走远端 `Rules/*.list`。
+脚本里只保留规则集做不到的部分：UDP AND REJECT、进程名、nameserver-policy、校园认证。Microsoft 分类规则进入同一个微软服务组；测试站点只用于人工验收，不进入正式规则。浏览器 WebRTC STUN 域名在 `reject.list`（含 stun1-4.l.google.com）；Clash 另拒 UDP 19302/19305。
+Stripe / Proton Mail / SimpleLogin / Sift / Datadog / Persona 已写入 `Rules/claude.list`；coffee 测试站点不进入正式规则。
 
-1. 在私有配置或首页添加机场和真实 ISP；真实 ISP 节点名含 `ISP`，大小写不限。不要给普通机场使用 ISP 标识。
-2. 在 `📡 链式入口` 选择机场。入口没有机场时拒绝连接。
-3. 脚本自动把每个 ISP 的 `dialer-proxy` 设为 `📡 链式入口`。
-4. 在 `🔗 链式节点` 选择美国 ISP；Claude 也可直接选择实际 ISP。网站规则选择实际 ISP 或链式节点，不能选择机场入口组。
+## 这份脚本怎么跑
 
-实际流量：本机 → 📡 链式入口所选机场 → 🔗 链式节点所选 ISP → 网站。Claude 若单独选择 ISP，使用它自己的出口选择，但共用同一机场入口。
+Clash Verge 会**先跑全局 `Script.js`，再跑配置自己的扩展脚本**。
 
-缺少或无法连接 ISP 时，链式业务不使用机场或 DIRECT 兜底。入口为 select，不包含自动检测地址、interval、timeout 或 tolerance；其他地区组的测速保留。
+- 如果全局脚本已经生成了 `🧠 Claude`（`RULE-SET,Claude` 或旧的 `DOMAIN-SUFFIX,anthropic.com`）：本文件只补 UDP / Proton 进程 / DNS，不再插域名分流。
+- 如果全局脚本是空模板：本文件会完整增强，域名仍走 RULE-SET。
 
-## DNS 与平台差异
+## 本机 Clash Verge
 
-Clash/CMFA 默认 Cloudflare、Google DoH 经过链式节点组；国内 DNS 与节点 bootstrap 保留原设置。Shadowrocket 保留公共 bootstrap/直连 DNS和代理域名远端解析；私有版指定 DoH 仍绑定实际 ISP，切换 ISP 时需同步指定名称。
+链式代理正在用的 `profiles/Script.js` 以桌面目录的 `Clash Verge Rev 链式代理.js` 为准。改完后需要**重新生成配置**，规则页才会收成 RuleSet，而不是几十条 DomainSuffix。
 
-Shadowrocket 设置 `close-if-proxy-chain-missing=true`，但首次“代理通过”绑定仍需手动完成。Clash/CMFA 使用 dialer-proxy。运行中旧连接可能继续使用旧路径，应用后需重新建立连接。
+`🧠 Claude` 选择 ISP 落地出口；链路实际为“前置机场 → ISP 落地节点”。`📡 链式入口` 选择前置机场。
 
-三端统一的是入口名称、select 类型和机场 → ISP 的流量路径。手机系统与 DNS 功能仍存在平台差异。已进行静态检查，手机实际链路需设备验证。
+Claude 只显示已由脚本设置 `dialer-proxy=📡 链式入口` 的 ISP 出口；普通名称含“链式”的节点仍保留在 `🔗 链式节点`，不会被误当成 Claude 的 ISP 落地。
+
+链式 DNS 防泄漏边界：
+
+- 默认 `nameserver` 仍是 `1.1.1.1` / `8.8.8.8` `#🔗 链式节点`，且 `respect-rules: false`。Claude 和境外业务不会回落到本地/国内 DNS；泄漏测试站点不由脚本专门分流。
+- 只有 `geosite:cn` 走 `223.5.5.5` / `1.12.12.12` `#DIRECT`，用来修国内站直连卡顿。不要改成全局国内 DNS，也不要把自定义网站或测试站点塞进国内 DoH。
+- 上述 DoH（含校园 `udp://` / `dhcp://`）附加 `disable-qtype-64=true&disable-qtype-65=true`，丢掉 SVCB/HTTPS 记录，避免 Claude 从 DNS 学到 h3/ECH。这是 nameserver URL 片段，不要写成 `dns.disable-qtype-65`。YepFast `proxy-server-nameserver` 不改。
+
+`🔗 链式节点` 是 ISP 选择器。配置和脚本都**不自带**落地 ISP。需要时在 Clash Verge 的 Merge / 额外节点里自己加 SOCKS，**原名必须带 `ISP`**。脚本会改成 `🔗🇺🇸 美国 怀俄明州 夏延市 [ISP]` 这种格式，并设置 `dialer-proxy=📡 链式入口`；实际链路是“前置机场 → ISP 落地节点 → 目标网站”。不要打 ISP:80。
+
+## 文件
+
+- `Clash Verge Rev 链式代理.js`
+
+
+## 本轮行为说明
+
+- 初次连接需要校园认证的 Wi-Fi 时，建议先关闭 TUN，完成认证后再开启；脚本中的 Captive Portal 规则只是 TUN 开启时的兜底。
+- 自定义网站规则位于 Clash 脚本顶部的“本地自定义分流区”；加入完整规则字符串后即可指定目标节点，不会上传到 GitHub。DOMAIN / DOMAIN-SUFFIX 会自动同步同一目标的 DNS policy，IP-CIDR、PROCESS 等规则不会自动生成 DNS policy。
+- 订阅继承的 `nameserver-policy` 会继续保留；只有与 Claude 专用域名直接重叠的继承项会被脚本剔除，节点 DNS、校园 DNS 和其他订阅解析策略不受影响。
+- 国内 AI 使用 `🇨🇳 国内 AI`，国外 AI 使用 `🌍 国外 AI`；国外 AI 不包含香港、DIRECT、手动机场或链式节点。
+- Netflix、网易云音乐、DeepSeek 独立组和泄漏测试站点不再作为正式分流。

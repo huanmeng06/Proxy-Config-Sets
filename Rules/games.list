@@ -1,4 +1,13 @@
 # Shared remote rule set
+# Epic Games Launcher / Store / account / download endpoints
+DOMAIN,accounts.epicgames.com
+DOMAIN,launcher.epicgames.com
+DOMAIN,store.epicgames.com
+DOMAIN,www.epicgames.com
+DOMAIN,epicgamescdn.com
+DOMAIN,lightswitch-public-service-prod06.ol.epicgames.com
+DOMAIN,epicgames-public-service-prod03.ol.epicgames.com
+DOMAIN,epicgames-website-prod07.ol.epicgames.com
 # Sources: huanmeng06/Proxy-Config-Sets rules + ACL4SSR Clash rules
 
 DOMAIN-SUFFIX,epicgames.com
