@@ -61,9 +61,7 @@ DOMAIN-SUFFIX,silomails.com
 DOMAIN-SUFFIX,slmails.com
 DOMAIN-SUFFIX,dralias.com
 
-# coffee fingerprint + Persona ID check
-DOMAIN-SUFFIX,ip.net.coffee
-DOMAIN-SUFFIX,net.coffee
+# Persona ID check
 DOMAIN-SUFFIX,withpersona.com
 DOMAIN-SUFFIX,persona.com
 

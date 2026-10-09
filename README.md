@@ -29,23 +29,24 @@ https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/R
 当前公共规则位于 `Rules/`：
 
 ```text
-ads.list                 ai.list
-app-clean.list           apple.list
-bahamut.list             bilibili.list
-chatgpt.list             claude.list
-deepseek.list            direct.list
+ads.list                 ai-domestic.list
+ai-foreign.list          app-clean.list
+apple.list               bahamut.list
+bilibili.list            chatgpt.list
+claude.list              custom.list
 domestic-media.list      games.list
 gemini.list              github.list
 global-media.list        google-fcm.list
-grok.list                leak.list
-microsoft.list           microsoft-bing.list
+grok.list                microsoft-bing.list
 microsoft-drive.list     microsoft-store.list
-netease-music.list       netflix.list
-proxy.list               reject.list
-telegram.list            youtube.list
+microsoft.list            proxy.list
+reject.list              telegram.list
+youtube.list             direct.list
 ```
 
-`claude.list` 现在包含 Anthropic 核心域，以及必须同出口的 Stripe / Proton Mail / SimpleLogin / Sift / Datadog / coffee / Persona。日常 v3 脚本只引用 RULE-SET，更新 list 后会自动吃到这些域（日常 Claude 组不是 US-only）。`chatgpt.list` 含 `codexradar.com`。不要把 `protonvpn.com` 写进 Claude。 微软商店 / 泄漏测试 / 硬 REJECT 分别在 `microsoft-store.list`、`leak.list`、`reject.list`。`deepl.com` / `ping0.cc` / `tjcn.org` 仍写在客户端内联直连。UDP AND、进程名、校园认证仍写在客户端。
+兼容说明：仓库仍保留旧版 `ai.list`、`deepseek.list`、`netflix.list`、`netease-music.list`、`leak.list`，仅供历史特供配置读取；它们不在当前 `manifest/rules.json`，也不会进入当前生成的三端配置。
+
+`claude.list` 现在包含 Anthropic 核心域，以及必须同出口的 Stripe / Proton Mail / SimpleLogin / Sift / Datadog / Persona；coffee 测试站点不进入正式分流。日常 v3 脚本只引用 RULE-SET，更新 list 后会自动吃到这些域（日常 Claude 组不是 US-only）。`chatgpt.list` 含 `codexradar.com`。不要把 `protonvpn.com` 写进 Claude。 微软商店规则仍保留在 `microsoft-store.list`，但用户可见策略统一为 `Ⓜ️ 微软服务`；测试站点不进入正式规则，硬 REJECT 使用 `reject.list`。`deepl.com` / `ping0.cc` / `tjcn.org` 仍写在客户端内联直连。UDP AND、进程名、校园认证仍写在客户端。
 
 公共规则建议只使用三端兼容格式：
 
@@ -63,6 +64,10 @@ IP-CIDR6 / IP6-CIDR / PROCESS-NAME / URL-REGEX / RULE-SET / FINAL / MATCH / SCRI
 ```
 
 ## 怎么维护
+
+### 自定义网站
+
+将 `DOMAIN` / `DOMAIN-SUFFIX` / `DOMAIN-KEYWORD` 写入 `Rules/custom.list`，三端会将它们送入 `🛠 自定义网站`；Clash 中可在该组内选择地区、手动节点、链式节点或 `DIRECT`。
 
 ### 只新增一条规则
 
@@ -180,7 +185,7 @@ Clash Verge Rev/Clash Verge Rev Global Extend Script v3.js
 
 ## DNS 防泄露
 
-三端使用各自原生能力实现同一目标，不直接复制彼此的字段：
+三端使用各自原生能力实现同一目标，不直接复制彼此的字段。自定义网站统一维护在 `Rules/custom.list`：
 
 - Clash Verge Rev：`fake-ip`、TUN DNS 劫持、国内直连 DoH、境外代理 DoH，并关闭 IPv6。
 - Quantumult X：`no-system`、`no-ipv6` 与 IP 形式的 DoH 端点。

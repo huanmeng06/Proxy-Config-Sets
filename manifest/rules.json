@@ -100,26 +100,39 @@
           ]
         },
         {
-          "id": "deepseek",
-          "tag": "DeepSeek",
-          "file": "deepseek.list",
+          "id": "ai-domestic",
+          "tag": "DomesticAI",
+          "file": "ai-domestic.list",
           "policy": {
-            "quantumultX": "🐋 DeepSeek",
-            "shadowrocket": "🐋 DeepSeek"
+            "quantumultX": "🇨🇳 国内 AI",
+            "shadowrocket": "🇨🇳 国内 AI"
           },
           "clashProviders": [
-            "DeepSeek"
+            "DomesticAI"
           ]
         },
         {
-          "id": "ai",
-          "file": "ai.list",
+          "id": "ai-foreign",
+          "tag": "ForeignAI",
+          "file": "ai-foreign.list",
           "policy": {
-            "quantumultX": "💬 AI平台",
-            "shadowrocket": "💬 AI平台"
+            "quantumultX": "🌍 国外 AI",
+            "shadowrocket": "🌍 国外 AI"
           },
           "clashProviders": [
-            "AI"
+            "ForeignAI"
+          ]
+        },
+        {
+          "id": "custom",
+          "tag": "Custom",
+          "file": "custom.list",
+          "policy": {
+            "quantumultX": "🛠 自定义网站",
+            "shadowrocket": "🛠 自定义网站"
+          },
+          "clashProviders": [
+            "Custom"
           ]
         },
         {
@@ -154,8 +167,8 @@
           "id": "microsoft-store",
           "file": "microsoft-store.list",
           "policy": {
-            "quantumultX": "Ⓜ️ 微软商店",
-            "shadowrocket": "Ⓜ️ 微软商店"
+            "quantumultX": "Ⓜ️ 微软服务",
+            "shadowrocket": "Ⓜ️ 微软服务"
           },
           "clashProviders": [
             "MicrosoftStore"
@@ -176,8 +189,8 @@
           "id": "microsoft-bing",
           "file": "microsoft-bing.list",
           "policy": {
-            "quantumultX": "Ⓜ️ 微软Bing",
-            "shadowrocket": "Ⓜ️ 微软BING"
+            "quantumultX": "Ⓜ️ 微软服务",
+            "shadowrocket": "Ⓜ️ 微软服务"
           },
           "clashProviders": [
             "Bing"
@@ -198,8 +211,8 @@
           "id": "microsoft-drive",
           "file": "microsoft-drive.list",
           "policy": {
-            "quantumultX": "Ⓜ️ 微软云盘",
-            "shadowrocket": "Ⓜ️ 微软云盘"
+            "quantumultX": "Ⓜ️ 微软服务",
+            "shadowrocket": "Ⓜ️ 微软服务"
           },
           "clashProviders": [
             "OneDrive"
@@ -255,28 +268,6 @@
           ]
         },
         {
-          "id": "netease-music",
-          "file": "netease-music.list",
-          "policy": {
-            "quantumultX": "🎶 网易音乐",
-            "shadowrocket": "🎶 网易音乐"
-          },
-          "clashProviders": [
-            "NetEaseMusic"
-          ]
-        },
-        {
-          "id": "netflix",
-          "file": "netflix.list",
-          "policy": {
-            "quantumultX": "🎥 奈飞视频",
-            "shadowrocket": "🎥 奈飞视频"
-          },
-          "clashProviders": [
-            "Netflix"
-          ]
-        },
-        {
           "id": "youtube",
           "file": "youtube.list",
           "policy": {
@@ -320,26 +311,13 @@
       "name": "Broad Match",
       "rules": [
         {
-          "id": "leak",
-          "file": "leak.list",
-          "policy": {
-            "quantumultX": "🚀 节点选择",
-            "shadowrocket": "🚀 节点选择"
-          },
-          "clashProviders": [
-            "Leak"
-          ]
-        },
-        {
           "id": "direct",
           "file": "direct.list",
           "policy": {
-            "quantumultX": "🎯 全球直连",
-            "shadowrocket": "🎯 全球直连"
+            "quantumultX": "direct",
+            "shadowrocket": "DIRECT"
           },
-          "clashProviders": [
-            "DirectGroup"
-          ]
+          "clashProviders": []
         },
         {
           "id": "proxy",

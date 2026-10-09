@@ -1,0 +1,64 @@
+# Shared remote rule set
+# Domestic AI services and their official API / platform endpoints.
+# Keep provider-specific rules here; ChatGPT, Claude, Gemini and Grok stay separate.
+
+# DeepSeek
+DOMAIN-SUFFIX,deepseek.com
+DOMAIN-SUFFIX,deepseeksvc.com
+DOMAIN,api.deepseek.com
+DOMAIN,platform.deepseek.com
+
+# Kimi / Moonshot
+DOMAIN-SUFFIX,kimi.com
+DOMAIN-SUFFIX,kimi.ai
+DOMAIN,platform.kimi.ai
+DOMAIN,api.moonshot.cn
+DOMAIN,api.moonshot.ai
+DOMAIN-SUFFIX,moonshot.cn
+DOMAIN-SUFFIX,moonshot.ai
+
+# Qwen / Alibaba Model Studio
+DOMAIN-SUFFIX,qwen.ai
+DOMAIN-SUFFIX,qianwen.com
+DOMAIN,dashscope.aliyuncs.com
+DOMAIN-SUFFIX,dashscope.aliyuncs.com
+
+# Doubao / Volcengine Ark
+DOMAIN-SUFFIX,doubao.com
+DOMAIN-SUFFIX,volcengine.com
+DOMAIN-SUFFIX,volces.com
+DOMAIN,ark.cn-beijing.volces.com
+
+# Baidu ERNIE / Qianfan
+DOMAIN,yiyan.baidu.com
+DOMAIN,ernie.baidu.com
+DOMAIN,wenxin.baidu.com
+DOMAIN-SUFFIX,qianfan.com
+DOMAIN,qianfan.baidubce.com
+
+# Zhipu / ChatGLM
+DOMAIN-SUFFIX,chatglm.cn
+DOMAIN-SUFFIX,bigmodel.cn
+
+# MiniMax / Hailuo
+DOMAIN-SUFFIX,minimaxi.com
+DOMAIN-SUFFIX,minimax.io
+
+# Tencent Yuanbao / Hunyuan
+DOMAIN,yuanbao.tencent.com
+DOMAIN,hunyuan.tencent.com
+DOMAIN,api.hunyuan.cloud.tencent.com
+
+# iFlytek Spark
+DOMAIN-SUFFIX,sparkdesk.cn
+DOMAIN-SUFFIX,xfyun.cn
+
+# Baichuan / Tiangong
+DOMAIN-SUFFIX,baichuan-ai.com
+DOMAIN-SUFFIX,baichuan-inc.com
+DOMAIN-SUFFIX,tiangong.cn
+
+# Model hosting / inference platforms commonly used by domestic AI clients
+DOMAIN-SUFFIX,modelscope.cn
+DOMAIN-SUFFIX,siliconflow.cn
+DOMAIN-SUFFIX,infini-ai.com
