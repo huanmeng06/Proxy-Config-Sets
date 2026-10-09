@@ -1,0 +1,1478 @@
+---
+mixed-port: 7897
+allow-lan: true
+bind-address: "*"
+mode: rule
+log-level: info
+external-controller: 127.0.0.1:9090
+unified-delay: true
+dns:
+  enable: true
+  use-hosts: true
+  use-system-hosts: true
+  fake-ip-range: 198.18.0.1/15
+  fake-ip-filter:
+  - "*.lan"
+  - "*.localdomain"
+  - "*.example"
+  - "*.invalid"
+  - "*.localhost"
+  - "*.test"
+  - "*.local"
+  - "*.home.arpa"
+  - time.*.com
+  - time.*.gov
+  - time.*.edu.cn
+  - time.*.apple.com
+  - time1.*.com
+  - time2.*.com
+  - time3.*.com
+  - time4.*.com
+  - time5.*.com
+  - time6.*.com
+  - time7.*.com
+  - ntp.*.com
+  - ntp1.*.com
+  - ntp2.*.com
+  - ntp3.*.com
+  - ntp4.*.com
+  - ntp5.*.com
+  - ntp6.*.com
+  - ntp7.*.com
+  - "*.time.edu.cn"
+  - "*.ntp.org.cn"
+  - "+.pool.ntp.org"
+  - time1.cloud.tencent.com
+  - swscan.apple.com
+  - mesu.apple.com
+  - music.163.com
+  - "*.music.163.com"
+  - "*.126.net"
+  - musicapi.taihe.com
+  - music.taihe.com
+  - songsearch.kugou.com
+  - trackercdn.kugou.com
+  - "*.kuwo.cn"
+  - api-jooxtt.sanook.com
+  - api.joox.com
+  - y.qq.com
+  - "*.y.qq.com"
+  - streamoc.music.tc.qq.com
+  - mobileoc.music.tc.qq.com
+  - isure.stream.qqmusic.qq.com
+  - dl.stream.qqmusic.qq.com
+  - aqqmusic.tc.qq.com
+  - amobile.music.tc.qq.com
+  - localhost.ptlogin2.qq.com
+  - "*.msftconnecttest.com"
+  - "*.msftncsi.com"
+  - "*.xiami.com"
+  - "*.music.migu.cn"
+  - music.migu.cn
+  - "+.wotgame.cn"
+  - "+.wggames.cn"
+  - "+.wowsgame.cn"
+  - "+.wargaming.net"
+  - "*.*.*.srv.nintendo.net"
+  - "*.*.stun.playstation.net"
+  - xbox.*.*.microsoft.com
+  - "*.*.xboxlive.com"
+  - "*.ipv6.microsoft.com"
+  - teredo.*.*.*
+  - teredo.*.*
+  - speedtest.cros.wr.pvp.net
+  - "+.jjvip8.com"
+  - www.douyu.com
+  - activityapi.huya.com
+  - activityapi.huya.com.w.cdngslb.com
+  - www.bilibili.com
+  - api.bilibili.com
+  - a.w.bilicdn1.com
+  - captive.apple.com
+  - netctscan.apple.com
+  - detectportal.firefox.com
+  - connectivitycheck.gstatic.com
+  - dns.msftncsi.com
+  - neverssl.com
+  - arubanetworks.com
+  - "*.arubanetworks.com"
+  - arubanetworks.cc
+  - "*.arubanetworks.cc"
+  - bnbu.edu.cn
+  - "*.bnbu.edu.cn"
+  - uic.edu.cn
+  - "*.uic.edu.cn"
+  - msftconnecttest.com
+  - time-ios.apple.com
+  - ntp.*.org
+  - pool.ntp.org
+  - "+.srv.nintendo.net"
+  - "+.igwf.netease.com"
+  - stun.qq.com
+  - dns.alidns.com
+  - doh.pub
+  - dns.google
+  - cloudflare-dns.com
+  default-nameserver:
+  - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+  - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+  nameserver:
+  - "https://1.1.1.1/dns-query#\U0001F41F 漏网之鱼&disable-qtype-64=true&disable-qtype-65=true"
+  - "https://8.8.8.8/dns-query#\U0001F41F 漏网之鱼&disable-qtype-64=true&disable-qtype-65=true"
+  proxy-server-nameserver:
+  - https://223.5.5.5/dns-query
+  - https://1.12.12.12/dns-query
+  ipv6: false
+  prefer-h3: false
+  respect-rules: false
+  enhanced-mode: fake-ip
+  fake-ip-filter-mode: blacklist
+  direct-nameserver:
+  - "https://1.1.1.1/dns-query#\U0001F41F 漏网之鱼&disable-qtype-64=true&disable-qtype-65=true"
+  - "https://8.8.8.8/dns-query#\U0001F41F 漏网之鱼&disable-qtype-64=true&disable-qtype-65=true"
+  direct-nameserver-follow-policy: true
+  fallback: []
+  nameserver-policy:
+    geosite:cn:
+    - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    geosite:gfw:
+    - "https://1.1.1.1/dns-query#\U0001F41F 漏网之鱼&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F41F 漏网之鱼&disable-qtype-64=true&disable-qtype-65=true"
+    github.com:
+    - "https://1.1.1.1/dns-query#\U0001F419 GITHUB&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F419 GITHUB&disable-qtype-64=true&disable-qtype-65=true"
+    "+.github.com":
+    - "https://1.1.1.1/dns-query#\U0001F419 GITHUB&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F419 GITHUB&disable-qtype-64=true&disable-qtype-65=true"
+    "+.githubusercontent.com":
+    - "https://1.1.1.1/dns-query#\U0001F419 GITHUB&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F419 GITHUB&disable-qtype-64=true&disable-qtype-65=true"
+    "+.githubassets.com":
+    - "https://1.1.1.1/dns-query#\U0001F419 GITHUB&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F419 GITHUB&disable-qtype-64=true&disable-qtype-65=true"
+    raw.githubusercontent.com:
+    - "https://1.1.1.1/dns-query#\U0001F419 GITHUB&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F419 GITHUB&disable-qtype-64=true&disable-qtype-65=true"
+    telegram.org:
+    - "https://1.1.1.1/dns-query#\U0001F4F2 电报消息&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F4F2 电报消息&disable-qtype-64=true&disable-qtype-65=true"
+    "+.telegram.org":
+    - "https://1.1.1.1/dns-query#\U0001F4F2 电报消息&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F4F2 电报消息&disable-qtype-64=true&disable-qtype-65=true"
+    t.me:
+    - "https://1.1.1.1/dns-query#\U0001F4F2 电报消息&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F4F2 电报消息&disable-qtype-64=true&disable-qtype-65=true"
+    telegram.me:
+    - "https://1.1.1.1/dns-query#\U0001F4F2 电报消息&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F4F2 电报消息&disable-qtype-64=true&disable-qtype-65=true"
+    chatgpt.com:
+    - "https://1.1.1.1/dns-query#\U0001F916 ChatGPT&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F916 ChatGPT&disable-qtype-64=true&disable-qtype-65=true"
+    "+.chatgpt.com":
+    - "https://1.1.1.1/dns-query#\U0001F916 ChatGPT&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F916 ChatGPT&disable-qtype-64=true&disable-qtype-65=true"
+    "+.openai.com":
+    - "https://1.1.1.1/dns-query#\U0001F916 ChatGPT&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F916 ChatGPT&disable-qtype-64=true&disable-qtype-65=true"
+    "+.oaiusercontent.com":
+    - "https://1.1.1.1/dns-query#\U0001F916 ChatGPT&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F916 ChatGPT&disable-qtype-64=true&disable-qtype-65=true"
+    "+.anthropic.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.claude.ai":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.claude.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.clau.de":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.claudemcpclient.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.claudemcpcontent.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.claudeusercontent.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.sentry.io":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.statsigapi.net":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.intercom.io":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.intercomcdn.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.stripe.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.stripecdn.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.stripe.network":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.link.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.hcaptcha.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.proton.me":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.protonmail.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.protonmail.ch":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.pm.me":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.protonweb.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.protonstatus.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.protontech.ch":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.simplelogin.io":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.simplelogin.co":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.simplelogin.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.simplelogin.fr":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.slmail.me":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.passmail.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.passmail.net":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.passinbox.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.passfwd.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.aleeas.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.silomails.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.slmails.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.dralias.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.sift.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.siftcience.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.withpersona.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.persona.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    servd-anthropic-website.b-cdn.net:
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    anthropic.com.cdn.cloudflare.net:
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    anthropic.auth0.com:
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    anthropic-com.ghost.io:
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    browser-intake-us5-datadoghq.com:
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    cdn.usefathom.com:
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    gemini.google.com:
+    - https://1.1.1.1/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
+    "+.gemini.google.com":
+    - https://1.1.1.1/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
+    ai.google.dev:
+    - https://1.1.1.1/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
+    "+.generativelanguage.googleapis.com":
+    - https://1.1.1.1/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
+    x.ai:
+    - https://1.1.1.1/dns-query#✖️ Grok&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✖️ Grok&disable-qtype-64=true&disable-qtype-65=true
+    "+.x.ai":
+    - https://1.1.1.1/dns-query#✖️ Grok&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✖️ Grok&disable-qtype-64=true&disable-qtype-65=true
+    x.com:
+    - https://1.1.1.1/dns-query#✖️ Grok&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✖️ Grok&disable-qtype-64=true&disable-qtype-65=true
+    "+.x.com":
+    - https://1.1.1.1/dns-query#✖️ Grok&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✖️ Grok&disable-qtype-64=true&disable-qtype-65=true
+    "+.twitter.com":
+    - https://1.1.1.1/dns-query#✖️ Grok&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✖️ Grok&disable-qtype-64=true&disable-qtype-65=true
+    deepseek.com:
+    - "https://1.1.1.1/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    "+.deepseek.com":
+    - "https://1.1.1.1/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    deepseeksvc.com:
+    - "https://1.1.1.1/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    "+.deepseeksvc.com":
+    - "https://1.1.1.1/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    kimi.com:
+    - "https://1.1.1.1/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    "+.kimi.com":
+    - "https://1.1.1.1/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    platform.kimi.ai:
+    - "https://1.1.1.1/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    qwen.ai:
+    - "https://1.1.1.1/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    "+.qwen.ai":
+    - "https://1.1.1.1/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    yuanbao.tencent.com:
+    - "https://1.1.1.1/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    "+.yuanbao.tencent.com":
+    - "https://1.1.1.1/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    bigmodel.cn:
+    - "https://1.1.1.1/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    "+.bigmodel.cn":
+    - "https://1.1.1.1/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F1E8\U0001F1F3 国内 AI&disable-qtype-64=true&disable-qtype-65=true"
+    perplexity.ai:
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    "+.perplexity.ai":
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    mistral.ai:
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    "+.mistral.ai":
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    cursor.com:
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    "+.cursor.com":
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    cursor.sh:
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    "+.cursor.sh":
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    api.groq.com:
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    api.together.xyz:
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外 AI&disable-qtype-64=true&disable-qtype-65=true"
+    fcm.googleapis.com:
+    - "https://1.1.1.1/dns-query#\U0001F4E2 谷歌FCM&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F4E2 谷歌FCM&disable-qtype-64=true&disable-qtype-65=true"
+    "+.googleapis.com":
+    - "https://1.1.1.1/dns-query#\U0001F4E2 谷歌FCM&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F4E2 谷歌FCM&disable-qtype-64=true&disable-qtype-65=true"
+    "+.gstatic.com":
+    - "https://1.1.1.1/dns-query#\U0001F4E2 谷歌FCM&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F4E2 谷歌FCM&disable-qtype-64=true&disable-qtype-65=true"
+    youtube.com:
+    - "https://1.1.1.1/dns-query#\U0001F4F9 油管视频&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F4F9 油管视频&disable-qtype-64=true&disable-qtype-65=true"
+    "+.youtube.com":
+    - "https://1.1.1.1/dns-query#\U0001F4F9 油管视频&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F4F9 油管视频&disable-qtype-64=true&disable-qtype-65=true"
+    youtu.be:
+    - "https://1.1.1.1/dns-query#\U0001F4F9 油管视频&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F4F9 油管视频&disable-qtype-64=true&disable-qtype-65=true"
+    "+.googlevideo.com":
+    - "https://1.1.1.1/dns-query#\U0001F4F9 油管视频&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F4F9 油管视频&disable-qtype-64=true&disable-qtype-65=true"
+    "+.ytimg.com":
+    - "https://1.1.1.1/dns-query#\U0001F4F9 油管视频&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F4F9 油管视频&disable-qtype-64=true&disable-qtype-65=true"
+    "+.ggpht.com":
+    - "https://1.1.1.1/dns-query#\U0001F4F9 油管视频&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F4F9 油管视频&disable-qtype-64=true&disable-qtype-65=true"
+    bahamut.com.tw:
+    - "https://1.1.1.1/dns-query#\U0001F4FA 巴哈姆特&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F4FA 巴哈姆特&disable-qtype-64=true&disable-qtype-65=true"
+    "+.bahamut.com.tw":
+    - "https://1.1.1.1/dns-query#\U0001F4FA 巴哈姆特&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F4FA 巴哈姆特&disable-qtype-64=true&disable-qtype-65=true"
+    spotify.com:
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外媒体&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外媒体&disable-qtype-64=true&disable-qtype-65=true"
+    "+.spotify.com":
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外媒体&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外媒体&disable-qtype-64=true&disable-qtype-65=true"
+    twitch.tv:
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外媒体&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外媒体&disable-qtype-64=true&disable-qtype-65=true"
+    "+.twitch.tv":
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外媒体&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外媒体&disable-qtype-64=true&disable-qtype-65=true"
+    soundcloud.com:
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外媒体&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外媒体&disable-qtype-64=true&disable-qtype-65=true"
+    "+.soundcloud.com":
+    - "https://1.1.1.1/dns-query#\U0001F30D 国外媒体&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F30D 国外媒体&disable-qtype-64=true&disable-qtype-65=true"
+    microsoft.com:
+    - https://1.1.1.1/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    "+.microsoft.com":
+    - https://1.1.1.1/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    "+.microsoftstore.com":
+    - https://1.1.1.1/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    bing.com:
+    - https://1.1.1.1/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    "+.bing.com":
+    - https://1.1.1.1/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    onedrive.com:
+    - https://1.1.1.1/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    "+.onedrive.com":
+    - https://1.1.1.1/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    live.com:
+    - https://1.1.1.1/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    "+.live.com":
+    - https://1.1.1.1/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    "+.office.com":
+    - https://1.1.1.1/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    "+.office365.com":
+    - https://1.1.1.1/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#Ⓜ️ 微软服务&disable-qtype-64=true&disable-qtype-65=true
+    apple.com:
+    - "https://1.1.1.1/dns-query#\U0001F34E 苹果服务&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F34E 苹果服务&disable-qtype-64=true&disable-qtype-65=true"
+    "+.apple.com":
+    - "https://1.1.1.1/dns-query#\U0001F34E 苹果服务&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F34E 苹果服务&disable-qtype-64=true&disable-qtype-65=true"
+    "+.icloud.com":
+    - "https://1.1.1.1/dns-query#\U0001F34E 苹果服务&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F34E 苹果服务&disable-qtype-64=true&disable-qtype-65=true"
+    steampowered.com:
+    - "https://1.1.1.1/dns-query#\U0001F3AE 游戏平台&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F3AE 游戏平台&disable-qtype-64=true&disable-qtype-65=true"
+    "+.steampowered.com":
+    - "https://1.1.1.1/dns-query#\U0001F3AE 游戏平台&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F3AE 游戏平台&disable-qtype-64=true&disable-qtype-65=true"
+    epicgames.com:
+    - "https://1.1.1.1/dns-query#\U0001F3AE 游戏平台&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F3AE 游戏平台&disable-qtype-64=true&disable-qtype-65=true"
+    "+.epicgames.com":
+    - "https://1.1.1.1/dns-query#\U0001F3AE 游戏平台&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F3AE 游戏平台&disable-qtype-64=true&disable-qtype-65=true"
+    bilibili.com:
+    - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    "+.bilibili.com":
+    - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    "+.bilivideo.com":
+    - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    "+.hdslb.com":
+    - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    "+.datadoghq.com":
+    - "https://1.1.1.1/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#\U0001F9E0 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    "+.deepl.com":
+    - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    "+.ping0.cc":
+    - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    "+.tjcn.org":
+    - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    captive.apple.com:
+    - dhcp://en0#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    netctscan.apple.com:
+    - dhcp://en0#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    detectportal.firefox.com:
+    - dhcp://en0#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    connectivitycheck.gstatic.com:
+    - dhcp://en0#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    dns.msftncsi.com:
+    - dhcp://en0#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    neverssl.com:
+    - dhcp://en0#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    "+.arubanetworks.com":
+    - dhcp://en0#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    "+.arubanetworks.cc":
+    - dhcp://en0#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    "+.bnbu.edu.cn":
+    - dhcp://en0#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    "+.uic.edu.cn":
+    - dhcp://en0#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    "+.msftconnecttest.com":
+    - dhcp://en0#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    geosite:private:
+    - dhcp://en0#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+proxies: []
+proxy-groups:
+- name: "\U0001F680 节点选择"
+  type: select
+  proxies:
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F1F2\U0001F1FE 马来西亚节点"
+  - "\U0001F1EE\U0001F1E9 印尼节点"
+  - "\U0001F1EE\U0001F1F3 印度节点"
+  - "\U0001F1F5\U0001F1ED 菲律宾节点"
+  - "\U0001F1F9\U0001F1ED 泰国节点"
+  - "\U0001F1FB\U0001F1F3 越南节点"
+  - "\U0001F1EC\U0001F1E7 英国节点"
+  - "\U0001F1E9\U0001F1EA 德国节点"
+  - "\U0001F1E7\U0001F1F7 巴西节点"
+  - "\U0001F1F9\U0001F1F7 土耳其节点"
+  - "\U0001F1F3\U0001F1EC 尼日利亚节点"
+  - "\U0001F1E6\U0001F1FA 澳洲节点"
+  - "⏬ 下载专用"
+  - "\U0001F680 手动切换"
+  - "\U0001F517 链式节点"
+- name: "\U0001F680 手动切换"
+  type: select
+  proxies:
+  - REJECT
+- name: "\U0001F4E1 链式入口"
+  type: select
+  proxies:
+  - REJECT
+- name: "\U0001F517 链式节点"
+  type: select
+  proxies:
+  - REJECT
+- name: "\U0001F4F2 电报消息"
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F1F2\U0001F1FE 马来西亚节点"
+  - "\U0001F1EE\U0001F1E9 印尼节点"
+  - "\U0001F1EE\U0001F1F3 印度节点"
+  - "\U0001F1F5\U0001F1ED 菲律宾节点"
+  - "\U0001F1F9\U0001F1ED 泰国节点"
+  - "\U0001F1FB\U0001F1F3 越南节点"
+  - "\U0001F1EC\U0001F1E7 英国节点"
+  - "\U0001F1E9\U0001F1EA 德国节点"
+  - "\U0001F1E7\U0001F1F7 巴西节点"
+  - "\U0001F1F9\U0001F1F7 土耳其节点"
+  - "\U0001F1F3\U0001F1EC 尼日利亚节点"
+  - "\U0001F1E6\U0001F1FA 澳洲节点"
+  - "⏬ 下载专用"
+  - "\U0001F680 手动切换"
+  - "\U0001F517 链式节点"
+- name: "\U0001F419 GITHUB"
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F680 手动切换"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "⏬ 下载专用"
+  - "\U0001F517 链式节点"
+- name: "\U0001F916 ChatGPT"
+  type: select
+  proxies:
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F680 手动切换"
+  - "\U0001F517 链式节点"
+- name: "\U0001F9E0 Claude"
+  type: select
+  proxies:
+  - REJECT
+- name: "✨ Gemini"
+  type: select
+  proxies:
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F680 手动切换"
+  - "\U0001F517 链式节点"
+- name: "✖️ Grok"
+  type: select
+  proxies:
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F680 手动切换"
+  - "\U0001F517 链式节点"
+- name: "\U0001F1E8\U0001F1F3 国内 AI"
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F1F2\U0001F1FE 马来西亚节点"
+  - "\U0001F1EE\U0001F1E9 印尼节点"
+  - "\U0001F1EE\U0001F1F3 印度节点"
+  - "\U0001F1F5\U0001F1ED 菲律宾节点"
+  - "\U0001F1F9\U0001F1ED 泰国节点"
+  - "\U0001F1FB\U0001F1F3 越南节点"
+  - "\U0001F1EC\U0001F1E7 英国节点"
+  - "\U0001F1E9\U0001F1EA 德国节点"
+  - "\U0001F1E7\U0001F1F7 巴西节点"
+  - "\U0001F1F9\U0001F1F7 土耳其节点"
+  - "\U0001F1F3\U0001F1EC 尼日利亚节点"
+  - "\U0001F1E6\U0001F1FA 澳洲节点"
+- name: "\U0001F30D 国外 AI"
+  type: select
+  proxies:
+  - "\U0001F517 链式节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F1F2\U0001F1FE 马来西亚节点"
+  - "\U0001F1EE\U0001F1E9 印尼节点"
+  - "\U0001F1EE\U0001F1F3 印度节点"
+  - "\U0001F1F5\U0001F1ED 菲律宾节点"
+  - "\U0001F1F9\U0001F1ED 泰国节点"
+  - "\U0001F1FB\U0001F1F3 越南节点"
+  - "\U0001F1EC\U0001F1E7 英国节点"
+  - "\U0001F1E9\U0001F1EA 德国节点"
+  - "\U0001F1E7\U0001F1F7 巴西节点"
+  - "\U0001F1F9\U0001F1F7 土耳其节点"
+  - "\U0001F1F3\U0001F1EC 尼日利亚节点"
+  - "\U0001F1E6\U0001F1FA 澳洲节点"
+- name: "\U0001F4F9 油管视频"
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F1F2\U0001F1FE 马来西亚节点"
+  - "\U0001F1EE\U0001F1E9 印尼节点"
+  - "\U0001F1EE\U0001F1F3 印度节点"
+  - "\U0001F1F5\U0001F1ED 菲律宾节点"
+  - "\U0001F1F9\U0001F1ED 泰国节点"
+  - "\U0001F1FB\U0001F1F3 越南节点"
+  - "\U0001F1EC\U0001F1E7 英国节点"
+  - "\U0001F1E9\U0001F1EA 德国节点"
+  - "\U0001F1E7\U0001F1F7 巴西节点"
+  - "\U0001F1F9\U0001F1F7 土耳其节点"
+  - "\U0001F1F3\U0001F1EC 尼日利亚节点"
+  - "\U0001F1E6\U0001F1FA 澳洲节点"
+  - "⏬ 下载专用"
+  - "\U0001F680 手动切换"
+  - "\U0001F517 链式节点"
+- name: "\U0001F4FA 巴哈姆特"
+  type: select
+  proxies:
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F680 节点选择"
+  - "\U0001F680 手动切换"
+  - DIRECT
+- name: "\U0001F4FA 哔哩哔哩"
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+- name: "\U0001F30D 国外媒体"
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F1F2\U0001F1FE 马来西亚节点"
+  - "\U0001F1EE\U0001F1E9 印尼节点"
+  - "\U0001F1EE\U0001F1F3 印度节点"
+  - "\U0001F1F5\U0001F1ED 菲律宾节点"
+  - "\U0001F1F9\U0001F1ED 泰国节点"
+  - "\U0001F1FB\U0001F1F3 越南节点"
+  - "\U0001F1EC\U0001F1E7 英国节点"
+  - "\U0001F1E9\U0001F1EA 德国节点"
+  - "\U0001F1E7\U0001F1F7 巴西节点"
+  - "\U0001F1F9\U0001F1F7 土耳其节点"
+  - "\U0001F1F3\U0001F1EC 尼日利亚节点"
+  - "\U0001F1E6\U0001F1FA 澳洲节点"
+  - "⏬ 下载专用"
+  - "\U0001F680 手动切换"
+  - "\U0001F517 链式节点"
+- name: "\U0001F30F 国内媒体"
+  type: select
+  proxies:
+  - DIRECT
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F680 手动切换"
+  - "\U0001F517 链式节点"
+- name: "\U0001F4E2 谷歌FCM"
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F680 手动切换"
+  - "\U0001F517 链式节点"
+- name: Ⓜ️ 微软服务
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F680 手动切换"
+  - "\U0001F517 链式节点"
+- name: "\U0001F34E 苹果服务"
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F680 手动切换"
+  - "\U0001F517 链式节点"
+- name: "\U0001F3AE 游戏平台"
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F680 手动切换"
+  - "\U0001F517 链式节点"
+- name: "\U0001F6D1 广告拦截"
+  type: select
+  proxies:
+  - REJECT
+  - DIRECT
+- name: "\U0001F343 应用净化"
+  type: select
+  proxies:
+  - REJECT
+  - DIRECT
+- name: "\U0001F41F 漏网之鱼"
+  type: select
+  proxies:
+  - "\U0001F680 节点选择"
+  - "\U0001F680 手动切换"
+  - "\U0001F517 链式节点"
+  - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
+  - "\U0001F1F8\U0001F1EC 狮城节点"
+  - "\U0001F1EF\U0001F1F5 日本节点"
+  - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  - "\U0001F1E8\U0001F1F3 台湾节点"
+  - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F1F0\U0001F1F7 韩国节点"
+  - "\U0001F1F2\U0001F1FE 马来西亚节点"
+  - "\U0001F1EE\U0001F1E9 印尼节点"
+  - "\U0001F1EE\U0001F1F3 印度节点"
+  - "\U0001F1F5\U0001F1ED 菲律宾节点"
+  - "\U0001F1F9\U0001F1ED 泰国节点"
+  - "\U0001F1FB\U0001F1F3 越南节点"
+  - "\U0001F1EC\U0001F1E7 英国节点"
+  - "\U0001F1E9\U0001F1EA 德国节点"
+  - "\U0001F1E7\U0001F1F7 巴西节点"
+  - "\U0001F1F9\U0001F1F7 土耳其节点"
+  - "\U0001F1F3\U0001F1EC 尼日利亚节点"
+  - "\U0001F1E6\U0001F1FA 澳洲节点"
+  - "⏬ 下载专用"
+  - DIRECT
+- name: "\U0001F1ED\U0001F1F0 香港节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1F8\U0001F1EC 狮城节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1EF\U0001F1F5 日本节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1E8\U0001F1F3 台湾节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1FA\U0001F1F8 美国节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1F0\U0001F1F7 韩国节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1F2\U0001F1FE 马来西亚节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1EE\U0001F1E9 印尼节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1EE\U0001F1F3 印度节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1F5\U0001F1ED 菲律宾节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1F9\U0001F1ED 泰国节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1FB\U0001F1F3 越南节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1EC\U0001F1E7 英国节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1E9\U0001F1EA 德国节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1E7\U0001F1F7 巴西节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1F9\U0001F1F7 土耳其节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1F3\U0001F1EC 尼日利亚节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "\U0001F1E6\U0001F1FA 澳洲节点"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 3600
+  tolerance: 50
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+- name: "⏬ 下载专用"
+  type: url-test
+  url: http://cp.cloudflare.com/generate_204
+  interval: 600
+  tolerance: 100
+  lazy: true
+  timeout: 3000
+  expected-status: 204
+  max-failed-times: 3
+  proxies:
+  - REJECT
+rules:
+- IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
+- IP-CIDR,100.64.0.0/10,DIRECT,no-resolve
+- IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
+- IP-CIDR,169.254.0.0/16,DIRECT,no-resolve
+- IP-CIDR,172.16.0.0/12,DIRECT,no-resolve
+- IP-CIDR,192.168.0.0/16,DIRECT,no-resolve
+- PROCESS-NAME,captiveagent,DIRECT
+- PROCESS-NAME,Captive Network Assistant,DIRECT
+- PROCESS-NAME,WebSheet,DIRECT
+- AND,((NETWORK,udp),(DST-PORT,19302)),REJECT
+- AND,((NETWORK,udp),(DST-PORT,19305)),REJECT
+- AND,((DOMAIN-SUFFIX,anthropic.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,claude.ai),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,claude.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,clau.de),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,claudemcpclient.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,claudemcpcontent.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,claudeusercontent.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,sentry.io),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,statsigapi.net),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,intercom.io),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,intercomcdn.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,stripe.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,stripecdn.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,stripe.network),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,link.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,hcaptcha.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,proton.me),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,protonmail.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,protonmail.ch),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,pm.me),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,protonweb.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,protonstatus.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,protontech.ch),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,simplelogin.io),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,simplelogin.co),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,simplelogin.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,simplelogin.fr),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,slmail.me),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,passmail.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,passmail.net),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,passinbox.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,passfwd.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,aleeas.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,silomails.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,slmails.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,dralias.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,sift.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,siftcience.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,withpersona.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-SUFFIX,persona.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN,servd-anthropic-website.b-cdn.net),(NETWORK,udp)),REJECT
+- AND,((DOMAIN,anthropic.com.cdn.cloudflare.net),(NETWORK,udp)),REJECT
+- AND,((DOMAIN,anthropic.auth0.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN,anthropic-com.ghost.io),(NETWORK,udp)),REJECT
+- AND,((DOMAIN,browser-intake-us5-datadoghq.com),(NETWORK,udp)),REJECT
+- AND,((DOMAIN,cdn.usefathom.com),(NETWORK,udp)),REJECT
+- AND,((GEOSITE,anthropic),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-KEYWORD,sift),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-KEYWORD,datadoghq),(NETWORK,udp)),REJECT
+- AND,((DOMAIN-KEYWORD,datadog),(NETWORK,udp)),REJECT
+- "PROCESS-PATH-REGEX,(?i)/Claude\\.app/,\U0001F9E0 Claude"
+- "PROCESS-PATH-REGEX,(?i)/ChatGPT\\.app/,\U0001F916 ChatGPT"
+- "PROCESS-NAME,Claude,\U0001F9E0 Claude"
+- "PROCESS-NAME,Claude Helper,\U0001F9E0 Claude"
+- "PROCESS-NAME,Claude Helper (GPU),\U0001F9E0 Claude"
+- "PROCESS-NAME,Claude Helper (Plugin),\U0001F9E0 Claude"
+- "PROCESS-NAME,Claude Helper (Renderer),\U0001F9E0 Claude"
+- "PROCESS-NAME,claude,\U0001F9E0 Claude"
+- "PROCESS-NAME,Claude Code,\U0001F9E0 Claude"
+- "PROCESS-NAME,Proton Mail,\U0001F9E0 Claude"
+- "PROCESS-NAME,Proton Mail Bridge,\U0001F9E0 Claude"
+- "PROCESS-NAME,ChatGPT,\U0001F916 ChatGPT"
+- "PROCESS-NAME,ChatGPT Helper,\U0001F916 ChatGPT"
+- "PROCESS-NAME,ChatGPT Helper (GPU),\U0001F916 ChatGPT"
+- "PROCESS-NAME,ChatGPT Helper (Plugin),\U0001F916 ChatGPT"
+- "PROCESS-NAME,ChatGPT Helper (Renderer),\U0001F916 ChatGPT"
+- "PROCESS-NAME,Codex,\U0001F916 ChatGPT"
+- "PROCESS-NAME,codex,\U0001F916 ChatGPT"
+- "RULE-SET,ChatGPT,\U0001F916 ChatGPT"
+- "GEOSITE,anthropic,\U0001F9E0 Claude"
+- "RULE-SET,Claude,\U0001F9E0 Claude"
+- DOMAIN-SUFFIX,deepl.com,DIRECT
+- DOMAIN-SUFFIX,ping0.cc,DIRECT
+- DOMAIN-SUFFIX,tjcn.org,DIRECT
+- DOMAIN,captive.apple.com,DIRECT
+- DOMAIN,netctscan.apple.com,DIRECT
+- DOMAIN,detectportal.firefox.com,DIRECT
+- DOMAIN,connectivitycheck.gstatic.com,DIRECT
+- DOMAIN,dns.msftncsi.com,DIRECT
+- DOMAIN,neverssl.com,DIRECT
+- DOMAIN-SUFFIX,arubanetworks.com,DIRECT
+- DOMAIN-SUFFIX,arubanetworks.cc,DIRECT
+- DOMAIN-SUFFIX,bnbu.edu.cn,DIRECT
+- DOMAIN-SUFFIX,uic.edu.cn,DIRECT
+- DOMAIN-SUFFIX,msftconnecttest.com,DIRECT
+- RULE-SET,Reject,REJECT
+- "RULE-SET,BanAD,\U0001F6D1 广告拦截"
+- "RULE-SET,BanProgramAD,\U0001F343 应用净化"
+- "RULE-SET,GoogleFCM,\U0001F4E2 谷歌FCM"
+- RULE-SET,MicrosoftStore,Ⓜ️ 微软服务
+- RULE-SET,Bing,Ⓜ️ 微软服务
+- RULE-SET,OneDrive,Ⓜ️ 微软服务
+- RULE-SET,Microsoft,Ⓜ️ 微软服务
+- "RULE-SET,Apple,\U0001F34E 苹果服务"
+- "RULE-SET,Telegram,\U0001F4F2 电报消息"
+- "RULE-SET,GitHub,\U0001F419 GITHUB"
+- RULE-SET,Gemini,✨ Gemini
+- RULE-SET,Grok,✖️ Grok
+- "RULE-SET,DomesticAI,\U0001F1E8\U0001F1F3 国内 AI"
+- "RULE-SET,ForeignAI,\U0001F30D 国外 AI"
+- "RULE-SET,Games,\U0001F3AE 游戏平台"
+- "RULE-SET,YouTube,\U0001F4F9 油管视频"
+- "RULE-SET,Bahamut,\U0001F4FA 巴哈姆特"
+- "RULE-SET,BilibiliHMT,\U0001F4FA 哔哩哔哩"
+- "RULE-SET,ChinaMedia,\U0001F30F 国内媒体"
+- "RULE-SET,ProxyMedia,\U0001F30D 国外媒体"
+- "RULE-SET,ProxyGFWlist,\U0001F680 节点选择"
+- GEOIP,CN,DIRECT
+- "MATCH,\U0001F41F 漏网之鱼"
+tcp-concurrent: true
+keep-alive-idle: 30
+keep-alive-interval: 30
+disable-keep-alive: false
+find-process-mode: always
+profile:
+  store-selected: true
+  store-fake-ip: true
+rule-providers:
+  BanAD:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/BanAD.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/ads.list
+    interval: 86400
+  BanProgramAD:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/BanProgramAD.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/app-clean.list
+    interval: 86400
+  Reject:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/Reject.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/reject.list
+    interval: 86400
+  ChatGPT:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/ChatGPT.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/chatgpt.list
+    interval: 86400
+  Claude:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/Claude.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/claude.list
+    interval: 86400
+  Gemini:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/Gemini.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/gemini.list
+    interval: 86400
+  Grok:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/Grok.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/grok.list
+    interval: 86400
+  DomesticAI:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/DomesticAI.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/ai-domestic.list
+    interval: 86400
+  ForeignAI:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/ForeignAI.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/ai-foreign.list
+    interval: 86400
+  GitHub:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/GitHub.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/github.list
+    interval: 86400
+  GoogleFCM:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/GoogleFCM.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/google-fcm.list
+    interval: 86400
+  MicrosoftStore:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/MicrosoftStore.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft-store.list
+    interval: 86400
+  Apple:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/Apple.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/apple.list
+    interval: 86400
+  Bing:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/Bing.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft-bing.list
+    interval: 86400
+  Microsoft:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/Microsoft.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft.list
+    interval: 86400
+  OneDrive:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/OneDrive.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/microsoft-drive.list
+    interval: 86400
+  ProxyMedia:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/ProxyMedia.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/global-media.list
+    interval: 86400
+  ChinaMedia:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/ChinaMedia.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/domestic-media.list
+    interval: 86400
+  BilibiliHMT:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/BilibiliHMT.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/bilibili.list
+    interval: 86400
+  Bahamut:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/Bahamut.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/bahamut.list
+    interval: 86400
+  YouTube:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/YouTube.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/youtube.list
+    interval: 86400
+  Telegram:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/Telegram.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/telegram.list
+    interval: 86400
+  Games:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/Games.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/games.list
+    interval: 86400
+  ProxyGFWlist:
+    type: http
+    behavior: classical
+    format: text
+    path: "./rulesets/Proxy-Config-Sets/ProxyGFWlist.list"
+    url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/proxy.list
+    interval: 86400
+ipv6: false
+tun:
+  auto-route: true
+  auto-detect-interface: true
+  strict-route: false
+  ipv6: false
+  dns-hijack:
+  - any:53
+  - tcp://any:53
+  route-exclude-address:
+  - 10.0.0.0/8
+  - 100.64.0.0/10
+  - 169.254.0.0/16
+  - 172.16.0.0/12
+  - 192.168.0.0/16
+  - 224.0.0.0/4
+sniffer:
+  enable: true
+  force-dns-mapping: true
+  parse-pure-ip: true
+  override-destination: false
+  sniff:
+    HTTP:
+      ports:
+      - 80
+      - 8080
+      override-destination: false
+    TLS:
+      ports:
+      - 443
+      - 8443
+    QUIC:
+      ports: []
+  skip-domain:
+  - Mijia Cloud
+  - dlg.io.mi.com
+  - "+.apple.com"
+  - "+.gstatic.com"
+  - www.gstatic.com
