@@ -10,9 +10,9 @@
 // Campus DNS is only used for captive portal / school / private domains.
 // Ordinary DNS follows 🐟 漏网之鱼; Claude DNS follows the selected ISP exit.
 // Claude DoH drops TYPE64/SVCB and TYPE65/HTTPS (disable-qtype-64/65 fragment).
-// Airport entry is the first hop; ISP nodes are the second hop. 🔗 链式节点 and 🧠 Claude select ISP exits only; missing ISP means REJECT.
+// Airport entry is the first hop; explicit 链式 nodes and ISP exits form 🔗 链式节点. ISP entries are always listed last; no chain group means no chain entry group.
 // Do not ship or inject any landing SOCKS. If Clash extra proxies has a name containing ISP,
-// rewrite it to 🔗🇺🇸 美国 … [ISP] and bind every ISP to the shared airport entry.
+// rewrite it to 🔗🇺🇸 美国 … [ISP] and list ISP entries after explicit 链式 nodes.
 // Domain/UDP/fingerprint follow the dedicated routing policy.
 // Do not send proxy-server-nameserver through the chain.
 
@@ -245,6 +245,10 @@ function main(config, profileName) {
     return /ISP/i.test(n);
   };
   const isLandingIspProxy = (proxy) => Boolean(proxy) && isLandingIspName(proxy.name);
+  const isExplicitChainProxy = (proxy) => {
+    if (!proxy || isLandingIspProxy(proxy)) return false;
+    return /链式/.test(String(proxy.name || ""));
+  };
   const isGeneratedViaClone = (proxy) => Boolean(proxy) && isGeneratedViaName(proxy.name);
 
   const formatLandingIspName = (raw) => {
@@ -319,8 +323,9 @@ function main(config, profileName) {
   });
 
 
-  // 地区组 / 手动切换只用机场节点，不要把落地 ISP 算进去。
-  const subscriptionProxies = config.proxies.filter(proxy => !isLandingIspProxy(proxy));
+  // 地区组 / 手动切换只用普通机场节点；ISP 与显式链式节点只进入链式组。
+  const explicitChainProxies = config.proxies.filter(isExplicitChainProxy);
+  const subscriptionProxies = config.proxies.filter(proxy => !isLandingIspProxy(proxy) && !isExplicitChainProxy(proxy));
   const proxies = subscriptionProxies.map(p => p.name);
 
   function getProxiesByRegex(regexStr) {
@@ -469,9 +474,11 @@ function main(config, profileName) {
   // 策略组：先放常用服务组，再追加动态地区组。
   const allProxies = proxies.length > 0 ? proxies : ["DIRECT"];
   const proxyGroups = [];
+  const hasChainGroup = config.proxies.some(proxy => isExplicitChainProxy(proxy) || isLandingIspProxy(proxy));
+  const chainChoice = hasChainGroup ? [GROUP.front] : [];
   const pushSelectGroup = (name, choices) => {
     // 已包含链式节点的组统一排序：节点选择之后、地区节点之前。
-    let orderedChoices = choices;
+    let orderedChoices = choices.filter(choice => choice !== GROUP.front || hasChainGroup);
     if (choices.includes(GROUP.front)) {
       orderedChoices = choices.filter(choice => choice !== GROUP.front);
       const nodeIndex = orderedChoices.indexOf(GROUP.node);
@@ -486,21 +493,26 @@ function main(config, profileName) {
   const foreignAiRegionChoices = regionOnlyChoices.filter(name => !name.includes("香港"));
 
   // 国外默认组不允许 DIRECT，避免业务走代理而 DNS 却回到校园网。
-  const foreignChoices = [...availableRegionGroupNames, GROUP.manual, GROUP.front];
+  const foreignChoices = [...availableRegionGroupNames, GROUP.manual, ...chainChoice];
   pushSelectGroup(GROUP.node, foreignChoices);
 
   pushSelectGroup(GROUP.manual, allProxies);
 
-  // 所有 ISP 共用一个手动机场入口；业务组只能选择真实 ISP 出口。
+  // 只有显式“链式”节点或 ISP 节点存在时，才生成链式组和链式前置组。
+  const chainExitNames = [
+    ...explicitChainProxies.map(proxy => proxy.name),
+    ...landingIsps.map(isp => isp.name)
+  ];
   const CHAIN_ENTRY = "📡 链式入口";
   const airportNames = subscriptionProxies.map(node => node.name);
-  proxyGroups.push(createSelectGroup(CHAIN_ENTRY, airportNames.length ? airportNames : ["REJECT"]));
-  landingIsps.forEach(isp => { isp["dialer-proxy"] = CHAIN_ENTRY; });
-  proxyGroups.push(createSelectGroup(GROUP.front,
-    landingIsps.length ? landingIsps.map(isp => isp.name) : ["REJECT"]));
+  if (hasChainGroup) {
+    proxyGroups.push(createSelectGroup(CHAIN_ENTRY, airportNames.length ? airportNames : ["REJECT"]));
+    landingIsps.forEach(isp => { isp["dialer-proxy"] = CHAIN_ENTRY; });
+    proxyGroups.push(createSelectGroup(GROUP.front, chainExitNames));
+  }
 
-  const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, GROUP.front];
-  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, GROUP.front]);
+  const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, ...chainChoice];
+  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, ...(hasChainGroup ? [GROUP.front] : [])]);
   const isAvailableChoice = (name) => builtInChoices.has(name) || availableRegionGroupNames.includes(name);
 
   const getSafeChoices = (preferred) => {
@@ -520,7 +532,7 @@ function main(config, profileName) {
     "🇺🇸 美国节点",
     "🇨🇳 台湾节点",
     GROUP.download,
-    GROUP.front
+    ...chainChoice
   ]);
   pushSelectGroup(GROUP.github, githubChoices);
 
@@ -535,20 +547,18 @@ function main(config, profileName) {
     "🇨🇳 台湾节点",
     "🏠🇨🇳 台湾家宽",
     GROUP.manual,
-    GROUP.front
+    ...chainChoice
   ]);
   pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
   // Claude 直接选择 ISP 对应的出口组；未配置 ISP 时使用链式节点兜底。
-  const claudeChoices = landingIsps.length > 0
-    ? [...proxyGroups.find(group => group.name === GROUP.front).proxies]
-    : [GROUP.front];
+  const claudeChoices = hasChainGroup ? chainExitNames : ["REJECT"];
   pushSelectGroup(GROUP.claude, claudeChoices);
   pushSelectGroup(GROUP.gemini, usFirstAiChoices);
   pushSelectGroup(GROUP.grok, usFirstAiChoices);
 
   // 国内外 AI 组紧跟 Grok，便于在 UI 中连续切换 AI 服务。
   const domesticAiChoices = ["DIRECT", ...regionOnlyChoices];
-  const foreignAiChoices = [GROUP.front, ...foreignAiRegionChoices];
+  const foreignAiChoices = [...chainChoice, ...foreignAiRegionChoices];
   proxyGroups.push(createSelectGroup(GROUP.domesticAi, domesticAiChoices));
   proxyGroups.push(createSelectGroup(GROUP.foreignAi, foreignAiChoices));
 
@@ -562,7 +572,7 @@ function main(config, profileName) {
 
   pushSelectGroup(
     GROUP.domesticMedia,
-    getSafeChoices(["DIRECT", "🇭🇰 香港节点", "🇨🇳 台湾节点", "🇸🇬 狮城节点", "🇯🇵 日本节点", GROUP.manual, GROUP.front])
+    getSafeChoices(["DIRECT", "🇭🇰 香港节点", "🇨🇳 台湾节点", "🇸🇬 狮城节点", "🇯🇵 日本节点", GROUP.manual, ...chainChoice])
   );
 
   const defaultServiceChoices = getSafeChoices([
@@ -574,7 +584,7 @@ function main(config, profileName) {
     "🇯🇵 日本节点",
     "🇰🇷 韩国节点",
     GROUP.manual,
-    GROUP.front
+    ...chainChoice
   ]);
 
   pushSelectGroup(GROUP.googleFcm, defaultServiceChoices);
@@ -587,7 +597,7 @@ function main(config, profileName) {
   proxyGroups.push(createSelectGroup(GROUP.fallback, [
     GROUP.node,
     GROUP.manual,
-    GROUP.front,
+    ...chainChoice,
     ...availableRegionGroupNames,
     "DIRECT"
   ]));
