@@ -488,11 +488,30 @@ function main(config, profileName) {
   const regionOnlyChoices = availableRegionGroupNames.filter(name => /(?:节点|家宽)$/.test(name));
   const foreignAiRegionChoices = regionOnlyChoices.filter(name => !name.includes("香港"));
 
+  // 默认节点只调整现有候选的顺序，不创建不存在的地区/家宽组。
+  const preferFirst = (choices, patterns) => {
+    const result = [...choices];
+    for (const pattern of patterns) {
+      const index = result.findIndex(choice => pattern.test(String(choice)));
+      if (index > 0) {
+        const [item] = result.splice(index, 1);
+        result.unshift(item);
+      }
+    }
+    return result;
+  };
+  const HK_NODE = "🇭🇰 香港节点";
+  const US_NODE = "🇺🇸 美国节点";
+  const HK_NODE_RE = /^🇭🇰 香港节点$/;
+  const US_NODE_RE = /^🇺🇸 美国节点$/;
+  const NEW_YORK_ISP = /(?:纽约|New\s*York).*ISP|ISP.*(?:纽约|New\s*York)/i;
+  const HK_CHAIN_ENTRY = /香港\s*0?1.*(?:链式入口|链式)|(?:链式入口|链式).*香港\s*0?1/i;
+
   // 国外默认组不允许 DIRECT，避免业务走代理而 DNS 却回到校园网。
   const foreignChoices = [...availableRegionGroupNames, GROUP.manual, ...chainChoice];
-  pushSelectGroup(GROUP.node, foreignChoices);
+  pushSelectGroup(GROUP.node, preferFirst(foreignChoices, [HK_NODE_RE]));
 
-  pushSelectGroup(GROUP.manual, allProxies);
+  pushSelectGroup(GROUP.manual, preferFirst(allProxies, [HK_CHAIN_ENTRY, /香港\s*0?1/i]));
 
   // 保留原有的“全球直连”策略组：它是可切换的 DIRECT 包装组，
   // 与 mihomo 内置的 DIRECT 出站不是同一个名称。
@@ -506,9 +525,9 @@ function main(config, profileName) {
   const CHAIN_ENTRY = "📡 链式入口";
   const airportNames = subscriptionProxies.map(node => node.name);
   if (hasChainGroup) {
-    proxyGroups.push(createSelectGroup(CHAIN_ENTRY, airportNames.length ? airportNames : ["REJECT"]));
+    proxyGroups.push(createSelectGroup(CHAIN_ENTRY, preferFirst(airportNames, [HK_CHAIN_ENTRY, /香港\s*0?1/i])));
     landingIsps.forEach(isp => { isp["dialer-proxy"] = CHAIN_ENTRY; });
-    proxyGroups.push(createSelectGroup(GROUP.front, chainExitNames));
+    proxyGroups.push(createSelectGroup(GROUP.front, preferFirst(chainExitNames, [NEW_YORK_ISP])));
   }
 
   const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, GROUP.direct, ...chainChoice];
@@ -521,7 +540,7 @@ function main(config, profileName) {
   };
 
   // 常用服务组保持在 UI 前半段，方便日常切换。
-  pushSelectGroup(GROUP.telegram, commonChoices);
+  pushSelectGroup(GROUP.telegram, getSafeChoices([HK_NODE, GROUP.node, GROUP.manual, GROUP.direct, ...availableRegionGroupNames, ...chainChoice]));
 
   const githubChoices = getSafeChoices([
     GROUP.node,
@@ -534,10 +553,10 @@ function main(config, profileName) {
     GROUP.download,
     ...chainChoice
   ]);
-  pushSelectGroup(GROUP.github, githubChoices);
+  pushSelectGroup(GROUP.github, preferFirst(githubChoices, [HK_NODE_RE]));
 
   // ChatGPT / Claude / Gemini / Grok 各自独立选择，顺序固定为美国、新加坡、日本、台湾。
-  const usFirstAiChoices = getSafeChoices([
+  const usFirstAiChoices = preferFirst(getSafeChoices([
     "🇺🇸 美国节点",
     "🏠🇺🇸 美国家宽",
     "🇸🇬 狮城节点",
@@ -548,11 +567,13 @@ function main(config, profileName) {
     "🏠🇨🇳 台湾家宽",
     GROUP.manual,
     ...chainChoice
-  ]);
+  ]), [US_NODE_RE]);
   pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
   // Claude 只能选择真正设置了 dialer-proxy 的 ISP 落地出口；普通“链式”节点
   // 仍可供手动链式组使用，但不作为 Claude 的出口候选。
-  const claudeChoices = landingIsps.length > 0 ? landingIsps.map(isp => isp.name) : ["REJECT"];
+  const claudeChoices = landingIsps.length > 0
+    ? preferFirst(landingIsps.map(isp => isp.name), [NEW_YORK_ISP])
+    : ["REJECT"];
   pushSelectGroup(GROUP.claude, claudeChoices);
   pushSelectGroup(GROUP.gemini, usFirstAiChoices);
   pushSelectGroup(GROUP.grok, usFirstAiChoices);
@@ -563,13 +584,13 @@ function main(config, profileName) {
   proxyGroups.push(createSelectGroup(GROUP.domesticAi, domesticAiChoices));
   proxyGroups.push(createSelectGroup(GROUP.foreignAi, foreignAiChoices.length > 0 ? foreignAiChoices : ["REJECT"]));
 
-  pushSelectGroup(GROUP.youtube, commonChoices);
+  pushSelectGroup(GROUP.youtube, getSafeChoices([HK_NODE, GROUP.node, GROUP.manual, GROUP.direct, ...availableRegionGroupNames, ...chainChoice]));
 
   pushSelectGroup(GROUP.bahamut, getSafeChoices(["🇨🇳 台湾节点", GROUP.node, GROUP.manual, GROUP.direct]));
 
   pushSelectGroup(GROUP.bilibili, getSafeChoices([GROUP.direct, "🇨🇳 台湾节点", "🇭🇰 香港节点"]));
 
-  pushSelectGroup(GROUP.globalMedia, commonChoices);
+  pushSelectGroup(GROUP.globalMedia, getSafeChoices([US_NODE, GROUP.node, GROUP.manual, GROUP.direct, ...availableRegionGroupNames, ...chainChoice]));
 
   pushSelectGroup(
     GROUP.domesticMedia,
@@ -577,8 +598,8 @@ function main(config, profileName) {
   );
 
   const defaultServiceChoices = getSafeChoices([
-    GROUP.direct,
-    "🚀 节点选择",
+    HK_NODE,
+    GROUP.node,
     "🇺🇸 美国节点",
     "🇭🇰 香港节点",
     "🇨🇳 台湾节点",
@@ -597,9 +618,9 @@ function main(config, profileName) {
   pushSelectGroup(GROUP.ads, ["REJECT", "DIRECT"]);
   pushSelectGroup(GROUP.appClean, ["REJECT", "DIRECT"]);
   proxyGroups.push(createSelectGroup(GROUP.fallback, [
+    ...chainChoice,
     GROUP.node,
     GROUP.manual,
-    ...chainChoice,
     ...availableRegionGroupNames,
     GROUP.direct
   ]));
@@ -765,6 +786,11 @@ function main(config, profileName) {
     `PROCESS-NAME,captiveagent,DIRECT`,
     `PROCESS-NAME,Captive Network Assistant,DIRECT`,
     `PROCESS-NAME,WebSheet,DIRECT`,
+
+    // 微信无法区分主程序与小程序；按用户要求，微信及其 Helper 全部直连。
+    `PROCESS-NAME,WeChat,DIRECT`,
+    `PROCESS-NAME,WeChat Helper,DIRECT`,
+    `PROCESS-PATH-REGEX,(?i)/WeChat\\.app/,DIRECT`,
 
     // Browser WebRTC STUN. Google uses stun/stun1-4.l.google.com:19302/19305.
     // Domain names live in reject.list; these ports catch IP-literal STUN after DNS.

@@ -1,4 +1,3 @@
-# Generated from active Clash Script.js; mobile adaptations documented in README.
 ---
 mode: rule
 mixed-port: 7897
@@ -898,8 +897,8 @@ proxy-groups:
 - name: "\U0001F680 节点选择"
   type: select
   proxies:
-  - "\U0001F517 链式节点"
   - "\U0001F1ED\U0001F1F0 香港节点"
+  - "\U0001F517 链式节点"
   - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
   - "\U0001F1E8\U0001F1F3 台湾节点"
   - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
@@ -1018,8 +1017,8 @@ proxy-groups:
 - name: "\U0001F517 链式节点"
   type: select
   proxies:
-  - "\U0001F517\U0001F1FA\U0001F1F8 美国 夏延 [ISP]"
   - "\U0001F517\U0001F1FA\U0001F1F8 美国 纽约 [ISP]"
+  - "\U0001F517\U0001F1FA\U0001F1F8 美国 夏延 [ISP]"
 - name: "\U0001F3AF 全球直连"
   type: select
   proxies:
@@ -1028,9 +1027,9 @@ proxy-groups:
 - name: "\U0001F4F2 电报消息"
   type: select
   proxies:
+  - "\U0001F1ED\U0001F1F0 香港节点"
   - "\U0001F680 节点选择"
   - "\U0001F517 链式节点"
-  - "\U0001F1ED\U0001F1F0 香港节点"
   - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
   - "\U0001F1E8\U0001F1F3 台湾节点"
   - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
@@ -1057,10 +1056,10 @@ proxy-groups:
 - name: "\U0001F419 GITHUB"
   type: select
   proxies:
+  - "\U0001F1ED\U0001F1F0 香港节点"
   - "\U0001F680 节点选择"
   - "\U0001F517 链式节点"
   - "\U0001F680 手动切换"
-  - "\U0001F1ED\U0001F1F0 香港节点"
   - "\U0001F1F8\U0001F1EC 狮城节点"
   - "\U0001F1EF\U0001F1F5 日本节点"
   - "\U0001F1FA\U0001F1F8 美国节点"
@@ -1081,8 +1080,8 @@ proxy-groups:
 - name: "\U0001F916 ChatGPT"
   type: select
   proxies:
-  - "\U0001F517 链式节点"
   - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F517 链式节点"
   - "\U0001F1EF\U0001F1F5 日本节点"
   - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
   - "\U0001F1F8\U0001F1EC 狮城节点"
@@ -1091,13 +1090,13 @@ proxy-groups:
 - name: "\U0001F9E0 Claude"
   type: select
   proxies:
-  - "\U0001F517\U0001F1FA\U0001F1F8 美国 夏延 [ISP]"
   - "\U0001F517\U0001F1FA\U0001F1F8 美国 纽约 [ISP]"
+  - "\U0001F517\U0001F1FA\U0001F1F8 美国 夏延 [ISP]"
 - name: "✨ Gemini"
   type: select
   proxies:
-  - "\U0001F517 链式节点"
   - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F517 链式节点"
   - "\U0001F1EF\U0001F1F5 日本节点"
   - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
   - "\U0001F1F8\U0001F1EC 狮城节点"
@@ -1106,8 +1105,8 @@ proxy-groups:
 - name: "✖️ Grok"
   type: select
   proxies:
-  - "\U0001F517 链式节点"
   - "\U0001F1FA\U0001F1F8 美国节点"
+  - "\U0001F517 链式节点"
   - "\U0001F1EF\U0001F1F5 日本节点"
   - "\U0001F3E0\U0001F1EF\U0001F1F5 日本家宽"
   - "\U0001F1F8\U0001F1EC 狮城节点"
@@ -1127,9 +1126,9 @@ proxy-groups:
 - name: "\U0001F4F9 油管视频"
   type: select
   proxies:
+  - "\U0001F1ED\U0001F1F0 香港节点"
   - "\U0001F680 节点选择"
   - "\U0001F517 链式节点"
-  - "\U0001F1ED\U0001F1F0 香港节点"
   - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
   - "\U0001F1E8\U0001F1F3 台湾节点"
   - "\U0001F3E0\U0001F1E8\U0001F1F3 台湾家宽"
@@ -1198,6 +1197,7 @@ proxy-groups:
 - name: "\U0001F30D 国外媒体"
   type: select
   proxies:
+  - "\U0001F1FA\U0001F1F8 美国节点"
   - "\U0001F680 节点选择"
   - "\U0001F517 链式节点"
   - "\U0001F1ED\U0001F1F0 香港节点"
@@ -1216,7 +1216,6 @@ proxy-groups:
   - "\U0001F1FB\U0001F1F3 越南节点"
   - "\U0001F1EC\U0001F1E7 英国节点"
   - "\U0001F1E9\U0001F1EA 德国节点"
-  - "\U0001F1FA\U0001F1F8 美国节点"
   - "\U0001F1E7\U0001F1F7 巴西节点"
   - "\U0001F1F9\U0001F1F7 土耳其节点"
   - "\U0001F1F3\U0001F1EC 尼日利亚节点"
@@ -1237,11 +1236,11 @@ proxy-groups:
 - name: "\U0001F4E2 谷歌FCM"
   type: select
   proxies:
+  - "\U0001F1ED\U0001F1F0 香港节点"
   - DIRECT
   - "\U0001F680 节点选择"
   - "\U0001F517 链式节点"
   - "\U0001F1FA\U0001F1F8 美国节点"
-  - "\U0001F1ED\U0001F1F0 香港节点"
   - "\U0001F1E8\U0001F1F3 台湾节点"
   - "\U0001F1F8\U0001F1EC 狮城节点"
   - "\U0001F1EF\U0001F1F5 日本节点"
@@ -1250,9 +1249,9 @@ proxy-groups:
 - name: Ⓜ️ 微软商店
   type: select
   proxies:
+  - "\U0001F1ED\U0001F1F0 香港节点"
   - "\U0001F680 节点选择"
   - "\U0001F517 链式节点"
-  - "\U0001F1ED\U0001F1F0 香港节点"
   - "\U0001F1EF\U0001F1F5 日本节点"
   - "\U0001F1F8\U0001F1EC 狮城节点"
   - "\U0001F1E8\U0001F1F3 台湾节点"
@@ -1262,11 +1261,11 @@ proxy-groups:
 - name: Ⓜ️ 微软Bing
   type: select
   proxies:
+  - "\U0001F1ED\U0001F1F0 香港节点"
   - DIRECT
   - "\U0001F680 节点选择"
   - "\U0001F517 链式节点"
   - "\U0001F1FA\U0001F1F8 美国节点"
-  - "\U0001F1ED\U0001F1F0 香港节点"
   - "\U0001F1E8\U0001F1F3 台湾节点"
   - "\U0001F1F8\U0001F1EC 狮城节点"
   - "\U0001F1EF\U0001F1F5 日本节点"
@@ -1275,11 +1274,11 @@ proxy-groups:
 - name: Ⓜ️ 微软云盘
   type: select
   proxies:
+  - "\U0001F1ED\U0001F1F0 香港节点"
   - DIRECT
   - "\U0001F680 节点选择"
   - "\U0001F517 链式节点"
   - "\U0001F1FA\U0001F1F8 美国节点"
-  - "\U0001F1ED\U0001F1F0 香港节点"
   - "\U0001F1E8\U0001F1F3 台湾节点"
   - "\U0001F1F8\U0001F1EC 狮城节点"
   - "\U0001F1EF\U0001F1F5 日本节点"
@@ -1288,11 +1287,11 @@ proxy-groups:
 - name: Ⓜ️ 微软服务
   type: select
   proxies:
+  - "\U0001F1ED\U0001F1F0 香港节点"
   - DIRECT
   - "\U0001F680 节点选择"
   - "\U0001F517 链式节点"
   - "\U0001F1FA\U0001F1F8 美国节点"
-  - "\U0001F1ED\U0001F1F0 香港节点"
   - "\U0001F1E8\U0001F1F3 台湾节点"
   - "\U0001F1F8\U0001F1EC 狮城节点"
   - "\U0001F1EF\U0001F1F5 日本节点"
@@ -1301,11 +1300,11 @@ proxy-groups:
 - name: "\U0001F34E 苹果服务"
   type: select
   proxies:
+  - "\U0001F1ED\U0001F1F0 香港节点"
   - DIRECT
   - "\U0001F680 节点选择"
   - "\U0001F517 链式节点"
   - "\U0001F1FA\U0001F1F8 美国节点"
-  - "\U0001F1ED\U0001F1F0 香港节点"
   - "\U0001F1E8\U0001F1F3 台湾节点"
   - "\U0001F1F8\U0001F1EC 狮城节点"
   - "\U0001F1EF\U0001F1F5 日本节点"
@@ -1314,11 +1313,11 @@ proxy-groups:
 - name: "\U0001F3AE 游戏平台"
   type: select
   proxies:
+  - "\U0001F1ED\U0001F1F0 香港节点"
   - DIRECT
   - "\U0001F680 节点选择"
   - "\U0001F517 链式节点"
   - "\U0001F1FA\U0001F1F8 美国节点"
-  - "\U0001F1ED\U0001F1F0 香港节点"
   - "\U0001F1E8\U0001F1F3 台湾节点"
   - "\U0001F1F8\U0001F1EC 狮城节点"
   - "\U0001F1EF\U0001F1F5 日本节点"
@@ -1342,8 +1341,8 @@ proxy-groups:
 - name: "\U0001F41F 漏网之鱼"
   type: select
   proxies:
-  - "\U0001F680 节点选择"
   - "\U0001F517 链式节点"
+  - "\U0001F680 节点选择"
   - DIRECT
   - "\U0001F1ED\U0001F1F0 香港节点"
   - "\U0001F3E0\U0001F1ED\U0001F1F0 香港家宽"
@@ -1800,6 +1799,11 @@ rule-providers:
     url: https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules/proxy.list
     interval: 86400
 rules:
+- DOMAIN-SUFFIX,weixin.qq.com,DIRECT
+- DOMAIN-SUFFIX,qq.com,DIRECT
+- DOMAIN-SUFFIX,wechat.com,DIRECT
+- DOMAIN-SUFFIX,luckincoffeecdn.com,DIRECT
+- DOMAIN-SUFFIX,luckincoffee.com,DIRECT
 - IP-CIDR,10.0.0.0/8,DIRECT,no-resolve
 - IP-CIDR,100.64.0.0/10,DIRECT,no-resolve
 - IP-CIDR,127.0.0.0/8,DIRECT,no-resolve
@@ -1821,6 +1825,7 @@ rules:
 - DOMAIN-SUFFIX,uic.edu.cn,DIRECT
 - DOMAIN-SUFFIX,msftconnecttest.com,DIRECT
 - PROCESS-NAME,com.android.captiveportallogin,DIRECT
+- PROCESS-NAME,com.tencent.mm,DIRECT
 - "PROCESS-NAME,com.anthropic.claude,\U0001F9E0 Claude"
 - "PROCESS-NAME,ch.protonmail.android,\U0001F9E0 Claude"
 - "PROCESS-NAME,com.openai.chatgpt,\U0001F916 ChatGPT"
