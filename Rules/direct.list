@@ -937,3 +937,6 @@ DOMAIN-KEYWORD,aria2
 
 # Capture-derived routing additions (2026-10-10)
 DOMAIN-SUFFIX,max-c.com
+
+# Xiaoheihe latency capture addition (2026-10-10)
+DOMAIN-SUFFIX,dutils.com
