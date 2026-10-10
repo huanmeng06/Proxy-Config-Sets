@@ -599,3 +599,13 @@ DOMAIN,eventfnt-us.dsp-api.moloco.com
 DOMAIN,sdkopmetrics-us.dsp-api.moloco.com
 DOMAIN,app-analytics-services.com
 DOMAIN,analytics.adjust.com
+
+# Capture-derived routing additions (2026-10-10)
+DOMAIN-KEYWORD,googleads
+DOMAIN-SUFFIX,applvn.com
+DOMAIN-SUFFIX,adsmoloco.com
+DOMAIN-SUFFIX,dsp-api.moloco.com
+DOMAIN-SUFFIX,doubleclick.net
+DOMAIN-SUFFIX,googleadservices.com
+DOMAIN-SUFFIX,googlesyndication.com
+DOMAIN-SUFFIX,app-ads-services.com
