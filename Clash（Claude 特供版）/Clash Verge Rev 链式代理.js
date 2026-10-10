@@ -791,6 +791,11 @@ function main(config, profileName) {
     `PROCESS-NAME,WeChat,DIRECT`,
     `PROCESS-NAME,WeChat Helper,DIRECT`,
     `PROCESS-PATH-REGEX,(?i)/WeChat\\.app/,DIRECT`,
+    `DOMAIN-SUFFIX,weixin.qq.com,DIRECT`,
+    `DOMAIN-SUFFIX,qq.com,DIRECT`,
+    `DOMAIN-SUFFIX,wechat.com,DIRECT`,
+    `DOMAIN-SUFFIX,luckincoffeecdn.com,DIRECT`,
+    `DOMAIN-SUFFIX,luckincoffee.com,DIRECT`,
 
     // Browser WebRTC STUN. Google uses stun/stun1-4.l.google.com:19302/19305.
     // Domain names live in reject.list; these ports catch IP-literal STUN after DNS.
