@@ -75,15 +75,16 @@ function main(config, profileName) {
   // 例如："DOMAIN-SUFFIX,example.com,🇺🇸 美国节点",
   const LOCAL_CUSTOM_RULES = [
     // 原有本地直连规则：继续放在这里，后续可直接增删或改目标策略组。
-    "DOMAIN-SUFFIX,deepl.com,DIRECT",
-    "DOMAIN-SUFFIX,ping0.cc,DIRECT",
-    "DOMAIN-SUFFIX,tjcn.org,DIRECT",
+    "DOMAIN-SUFFIX,deepl.com,🎯 全球直连",
+    "DOMAIN-SUFFIX,ping0.cc,🎯 全球直连",
+    "DOMAIN-SUFFIX,tjcn.org,🎯 全球直连",
     // "DOMAIN-SUFFIX,example.com,🇺🇸 美国节点",
   ];
 
   const GROUP = {
     node: "🚀 节点选择",
     manual: "🚀 手动切换",
+    direct: "🎯 全球直连",
     download: "⏬ 下载专用",
     telegram: "📲 电报消息",
     front: "🔗 链式节点",
@@ -493,6 +494,10 @@ function main(config, profileName) {
 
   pushSelectGroup(GROUP.manual, allProxies);
 
+  // 保留原有的“全球直连”策略组：它是可切换的 DIRECT 包装组，
+  // 与 mihomo 内置的 DIRECT 出站不是同一个名称。
+  pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node]);
+
   // 只有显式“链式”节点或 ISP 节点存在时，才生成链式组和链式前置组。
   const chainExitNames = [
     ...explicitChainProxies.map(proxy => proxy.name),
@@ -506,8 +511,8 @@ function main(config, profileName) {
     proxyGroups.push(createSelectGroup(GROUP.front, chainExitNames));
   }
 
-  const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, ...chainChoice];
-  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, ...(hasChainGroup ? [GROUP.front] : [])]);
+  const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, GROUP.direct, ...chainChoice];
+  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, GROUP.direct, ...(hasChainGroup ? [GROUP.front] : [])]);
   const isAvailableChoice = (name) => builtInChoices.has(name) || availableRegionGroupNames.includes(name);
 
   const getSafeChoices = (preferred) => {
@@ -553,25 +558,26 @@ function main(config, profileName) {
   pushSelectGroup(GROUP.grok, usFirstAiChoices);
 
   // 国内外 AI 组紧跟 Grok，便于在 UI 中连续切换 AI 服务。
-  const domesticAiChoices = ["DIRECT", ...regionOnlyChoices];
+  const domesticAiChoices = ["DIRECT", GROUP.direct, ...regionOnlyChoices];
   const foreignAiChoices = [...chainChoice, ...foreignAiRegionChoices];
   proxyGroups.push(createSelectGroup(GROUP.domesticAi, domesticAiChoices));
   proxyGroups.push(createSelectGroup(GROUP.foreignAi, foreignAiChoices.length > 0 ? foreignAiChoices : ["REJECT"]));
 
   pushSelectGroup(GROUP.youtube, commonChoices);
 
-  pushSelectGroup(GROUP.bahamut, getSafeChoices(["🇨🇳 台湾节点", GROUP.node, GROUP.manual, "DIRECT"]));
+  pushSelectGroup(GROUP.bahamut, getSafeChoices(["🇨🇳 台湾节点", GROUP.node, GROUP.manual, GROUP.direct]));
 
-  pushSelectGroup(GROUP.bilibili, getSafeChoices(["DIRECT", "🇨🇳 台湾节点", "🇭🇰 香港节点"]));
+  pushSelectGroup(GROUP.bilibili, getSafeChoices([GROUP.direct, "🇨🇳 台湾节点", "🇭🇰 香港节点"]));
 
   pushSelectGroup(GROUP.globalMedia, commonChoices);
 
   pushSelectGroup(
     GROUP.domesticMedia,
-    getSafeChoices(["DIRECT", "🇭🇰 香港节点", "🇨🇳 台湾节点", "🇸🇬 狮城节点", "🇯🇵 日本节点", GROUP.manual, ...chainChoice])
+    getSafeChoices([GROUP.direct, "🇭🇰 香港节点", "🇨🇳 台湾节点", "🇸🇬 狮城节点", "🇯🇵 日本节点", GROUP.manual, ...chainChoice])
   );
 
   const defaultServiceChoices = getSafeChoices([
+    GROUP.direct,
     "🚀 节点选择",
     "🇺🇸 美国节点",
     "🇭🇰 香港节点",
@@ -595,7 +601,7 @@ function main(config, profileName) {
     GROUP.manual,
     ...chainChoice,
     ...availableRegionGroupNames,
-    "DIRECT"
+    GROUP.direct
   ]));
 
   // 动态地区组放在后面，主服务入口更集中。
@@ -649,7 +655,8 @@ function main(config, profileName) {
     "YouTube": `${RULES_BASE}/youtube.list`,
     "Telegram": `${RULES_BASE}/telegram.list`,
     "Games": `${RULES_BASE}/games.list`,
-    "ProxyGFWlist": `${RULES_BASE}/proxy.list`
+    "ProxyGFWlist": `${RULES_BASE}/proxy.list`,
+    "DirectGroup": `${RULES_BASE}/direct.list`
     // END GENERATED RULE PROVIDERS
   };
 
@@ -788,6 +795,9 @@ function main(config, profileName) {
     ...CAPTIVE_PORTAL_EXACT.map(domain => `DOMAIN,${domain},DIRECT`),
     ...CAPTIVE_PORTAL_SUFFIXES.map(domain => `DOMAIN-SUFFIX,${domain},DIRECT`),
 
+    // 原有 DirectGroup 规则恢复：命中仓库中的 direct.list 后进入可切换的全球直连组。
+    `RULE-SET,DirectGroup,${GROUP.direct}`,
+
     // 商店 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名、校园认证仍本地。
     `RULE-SET,Reject,REJECT`,
     // `DOMAIN,codex-reset.com,REJECT`,
@@ -814,7 +824,7 @@ function main(config, profileName) {
     `RULE-SET,ChinaMedia,${GROUP.domesticMedia}`,
     `RULE-SET,ProxyMedia,${GROUP.globalMedia}`,
     `RULE-SET,ProxyGFWlist,${GROUP.node}`,
-    `GEOIP,CN,DIRECT`,
+    `GEOIP,CN,${GROUP.direct}`,
     `MATCH,${GROUP.fallback}`
   ];
 
