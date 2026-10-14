@@ -708,6 +708,12 @@ function main(config, profileName) {
     "claudeusercontent.com",
     "sentry.io",
     "statsigapi.net",
+    "statsig.com",
+    "featureassets.org",
+    "prodregistryv2.org",
+    "datadoghq.com",
+    "datadoghq.eu",
+    "ddog-gov.com",
     "intercom.io",
     "intercomcdn.com",
     // Stripe checkout geolocates currency from this IP. Keep it on Claude's US exit.
@@ -739,7 +745,7 @@ function main(config, profileName) {
     "dralias.com",
     // Sift fraud SDK suffix; wide sift/datadog keywords live in claude.list.
     "sift.com",
-    "siftcience.com",
+    "siftscience.com",
     // Persona shares Claude US exit. Coffee test sites stay outside business routing.
     "withpersona.com",
     "persona.com"
@@ -750,6 +756,9 @@ function main(config, profileName) {
     "anthropic.auth0.com",
     "anthropic-com.ghost.io",
     "browser-intake-us5-datadoghq.com",
+    "browser-intake-us3-datadoghq.com",
+    "browser-intake-ap1-datadoghq.com",
+    "browser-intake-datadoghq.com",
     "cdn.usefathom.com"
   ];
   const claudeProcessNames = [
@@ -810,6 +819,8 @@ function main(config, profileName) {
     `AND,((DOMAIN-KEYWORD,sift),(NETWORK,udp)),REJECT`,
     `AND,((DOMAIN-KEYWORD,datadoghq),(NETWORK,udp)),REJECT`,
     `AND,((DOMAIN-KEYWORD,datadog),(NETWORK,udp)),REJECT`,
+    `AND,((PROCESS-PATH-REGEX,(?i)/Claude\\.app/),(NETWORK,udp)),REJECT`,
+    ...claudeProcessNames.map(name => `AND,((PROCESS-NAME,${name}),(NETWORK,udp)),REJECT`),
     `PROCESS-PATH-REGEX,(?i)/Claude\\.app/,${GROUP.claude}`,
     `PROCESS-PATH-REGEX,(?i)/ChatGPT\\.app/,${GROUP.chatgpt}`,
     ...claudeProcessNames.map(name => `PROCESS-NAME,${name},${GROUP.claude}`),
@@ -819,6 +830,7 @@ function main(config, profileName) {
     `RULE-SET,ChatGPT,${GROUP.chatgpt}`,
     `GEOSITE,anthropic,${GROUP.claude}`,
     `RULE-SET,Claude,${GROUP.claude}`,
+    `IP-CIDR,160.79.104.0/21,${GROUP.claude},no-resolve`,
     ...LOCAL_CUSTOM_RULES,
 
     // 认证域名放在业务进程/专用域名规则之后：Claude 请求认证探测域名时，
