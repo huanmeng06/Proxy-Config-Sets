@@ -701,6 +701,7 @@ function main(config, profileName) {
   const claudeSuffixes = [
     "anthropic.com",
     "claude.ai",
+    "claude.app",
     "claude.com",
     "clau.de",
     "claudemcpclient.com",
