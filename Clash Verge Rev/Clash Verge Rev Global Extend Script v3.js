@@ -7,7 +7,6 @@
 
 // Clash Verge Rev global extend script.
 // Keep YepFast proxy-server-nameserver intact so node delay stays close to the official app.
-// Campus DNS is only used for captive portal / school / private domains.
 // Ordinary DNS follows 🐟 漏网之鱼; Claude DNS follows the selected ISP exit.
 // Claude DoH drops TYPE64/SVCB and TYPE65/HTTPS (disable-qtype-64/65 fragment).
 // Airport entry is the first hop; explicit 链式 nodes and ISP exits form 🔗 链式节点. ISP entries are always listed last; no chain group means no chain entry group.
@@ -26,50 +25,6 @@ function main(config, profileName) {
   const INTERVAL = 3600;
   const TOLERANCE = 50;
   const RULES_BASE = "https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/Rules";
-  // macOS + 校园网 TUN 兼容参数。
-  // Wi-Fi 在绝大多数 Mac 上是 en0；如你的机器不同，只改这一行。
-  const WIFI_INTERFACE = "en0";
-  // 校园网只影响认证页/校内域名的 nameserver-policy，不再覆盖节点 DNS。
-  // 节点域名必须继续走订阅自带的 proxy-server-nameserver，否则延迟会明显变高。
-
-  // 默认留空：优先让 mihomo 通过 DHCP 读取校园网 DNS。
-  // 如果 dhcp://en0 在你的 macOS 上取值异常，可把
-  // `ipconfig getpacket en0` 输出中的 domain_name_server IP 填到这里。
-  // 例如：const CAMPUS_DNS_IPS = ["10.x.x.x", "10.y.y.y"];
-  const CAMPUS_DNS_IPS = [];
-
-  // Clash Verge 开 TUN 时会把系统 DNS 写成 114.114.114.114 作为 fake-ip 劫持占位，这是客户端行为，不是路由器下发。
-  // 114 / 1.1.1.1 这类手动 DNS 会让 captive.apple.com 从代理“成功”，校园网/星巴克认证页就不弹了。
-  // 系统 Wi-Fi DNS 必须保持空/DHCP。连未认证 Wi-Fi 前先关 TUN，认证完成后再开。
-  const CAPTIVE_PORTAL_EXACT = [
-    "captive.apple.com",
-    "netctscan.apple.com",
-    "detectportal.firefox.com",
-    "connectivitycheck.gstatic.com",
-    "dns.msftncsi.com",
-    "neverssl.com"
-  ];
-  const CAPTIVE_PORTAL_SUFFIXES = [
-    "arubanetworks.com",
-    "arubanetworks.cc",
-    "bnbu.edu.cn",
-    "uic.edu.cn",
-    "msftconnecttest.com"
-  ];
-
-  const LAN_ROUTE_EXCLUDES = [
-    "10.0.0.0/8",
-    "100.64.0.0/10",
-    "169.254.0.0/16",
-    "172.16.0.0/12",
-    "192.168.0.0/16",
-    "224.0.0.0/4"
-  ];
-
-  const getCampusDnsServers = () =>
-    CAMPUS_DNS_IPS.length > 0
-      ? CAMPUS_DNS_IPS.map(ip => `udp://${ip}#DIRECT`)
-      : [`dhcp://${WIFI_INTERFACE}`];
   // ===== 本地自定义分流区：只在这里添加网站规则，不需要改 Rules/ 或同步到 GitHub =====
   // 格式：DOMAIN-SUFFIX,example.com,目标策略组；目标可以是地区组、手动组、链式组或 DIRECT。
   // 例如："DOMAIN-SUFFIX,example.com,🇺🇸 美国节点",
@@ -487,7 +442,7 @@ function main(config, profileName) {
   const regionOnlyChoices = availableRegionGroupNames.filter(name => /(?:节点|家宽)$/.test(name));
   const foreignAiRegionChoices = regionOnlyChoices.filter(name => !name.includes("香港"));
 
-  // 国外默认组不允许 DIRECT，避免业务走代理而 DNS 却回到校园网。
+  // 国外默认组不允许 DIRECT，避免业务走代理而 DNS 却回到本地网络。
   const foreignChoices = [...availableRegionGroupNames, GROUP.manual, ...chainChoice];
   pushSelectGroup(GROUP.node, foreignChoices);
 
@@ -764,9 +719,6 @@ function main(config, profileName) {
     `IP-CIDR,169.254.0.0/16,DIRECT,no-resolve`,
     `IP-CIDR,172.16.0.0/12,DIRECT,no-resolve`,
     `IP-CIDR,192.168.0.0/16,DIRECT,no-resolve`,
-    `PROCESS-NAME,captiveagent,DIRECT`,
-    `PROCESS-NAME,Captive Network Assistant,DIRECT`,
-    `PROCESS-NAME,WebSheet,DIRECT`,
 
     // Browser WebRTC STUN. Google uses stun/stun1-4.l.google.com:19302/19305.
     // Domain names live in reject.list; these ports catch IP-literal STUN after DNS.
@@ -795,12 +747,7 @@ function main(config, profileName) {
     `IP-CIDR,160.79.104.0/21,${GROUP.claude},no-resolve`,
     ...LOCAL_CUSTOM_RULES,
 
-    // 认证域名放在业务进程/专用域名规则之后：Claude 请求认证探测域名时，
-    // 仍先按 Claude 进程识别；系统认证进程在上方继续保持 DIRECT。
-    ...CAPTIVE_PORTAL_EXACT.map(domain => `DOMAIN,${domain},DIRECT`),
-    ...CAPTIVE_PORTAL_SUFFIXES.map(domain => `DOMAIN-SUFFIX,${domain},DIRECT`),
-
-    // 商店 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名、校园认证仍本地。
+    // 商店 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名仍本地。
     `RULE-SET,Reject,REJECT`,
     // `DOMAIN,codex-reset.com,REJECT`,
     `RULE-SET,BanAD,${GROUP.ads}`,
@@ -832,33 +779,27 @@ function main(config, profileName) {
 
   // 保留订阅专用节点 DNS；这些 DNS 服务自身的域名用 IP 地址 DoH 启动解析。
   // 普通 DNS 经机场加密解析，只有 Claude DNS 使用落地 ISP。
-  // 校园 DNS 只解析认证/内网域名；不强制 mixed/strict-route。
+  // TUN 堆栈和严格路由由应用设置管理，不再添加网段排除。
   config.ipv6 = false;
 
   const inheritedTun = { ...(config.tun || {}) };
   delete inheritedTun.stack;
-  const inheritedRouteExcludes = Array.isArray(inheritedTun["route-exclude-address"])
-    ? inheritedTun["route-exclude-address"]
-    : [];
 
   config.tun = {
     ...inheritedTun,
     "auto-route": inheritedTun["auto-route"] !== false,
     "auto-detect-interface": inheritedTun["auto-detect-interface"] !== false,
-    "strict-route": false,
+    "strict-route": inheritedTun["strict-route"] === true,
     "ipv6": false,
     "dns-hijack": unique([
       ...(Array.isArray(inheritedTun["dns-hijack"]) ? inheritedTun["dns-hijack"] : []),
       "any:53", "tcp://any:53"
     ]),
-    "route-exclude-address": unique([...inheritedRouteExcludes, ...LAN_ROUTE_EXCLUDES])
+    "route-exclude-address": []
   };
 
   const inheritedDns = config.dns || {};
-  const campusDnsServers = getCampusDnsServers().map((server) =>
-    withQtypeDrop(/#/.test(server) ? server : `${server}#DIRECT`)
-  );
-    // 普通查询跟随漏网之鱼当前出口；国内/校园 policy 在后面显式覆盖。
+  // 普通查询跟随漏网之鱼当前出口；国内和业务 policy 在后面显式覆盖。
   // Claude 与相关服务仍通过链式 DoH，与落地出口对齐。
   // 节点自身的域名解析仍使用独立 bootstrap DNS，避免代理建立前出现循环依赖。
   const dnsForGroup = (group) => [
@@ -871,10 +812,6 @@ function main(config, profileName) {
   ].map(withQtypeDrop);
   const asList = (value) => value == null ? [] : (Array.isArray(value) ? value : [value]);
   const inheritedProxyServerNS = unique(asList(inheritedDns["proxy-server-nameserver"]));
-  // 校园网诊断显示专用 HTTPS DNS/8443 会超时，而同一订阅的 TCP/8081 正常。
-  // 优先使用 TCP 上游，避免 mihomo 在两个上游之间选到失效的 HTTPS 解析器。
-  // 仅当订阅没有 TCP 上游时，才保留原始列表作为兼容回退。
-  const campusReachableProxyNS = inheritedProxyServerNS.filter(server => /^tcp:\/\//i.test(server));
   // 未分类国外域名跟随“漏网之鱼”当前选择；截图中选链式节点时，DNS 也走同一条链。
   const ordinaryDns = dnsForGroup(GROUP.fallback);
   const inheritedFakeIpFilter = Array.isArray(inheritedDns["fake-ip-filter"])
@@ -919,15 +856,8 @@ function main(config, profileName) {
     "bilibili.com", "+.bilibili.com", "+.bilivideo.com", "+.hdslb.com"
   ]) domesticServiceDnsPolicy[domain] = directChinaDns;
 
-  // 校园认证/内网必须走当前 Wi-Fi 的 DHCP DNS + DIRECT，不能进链式节点。
-  const campusPolicy = {
-    ...Object.fromEntries(CAPTIVE_PORTAL_EXACT.map(domain => [domain, campusDnsServers])),
-    ...Object.fromEntries(CAPTIVE_PORTAL_SUFFIXES.map(domain => [`+.${domain}`, campusDnsServers])),
-    "geosite:private": campusDnsServers
-  };
-
   // 只剔除会与 Claude 专用 policy 发生域名重叠的继承项；机场其余网站
-  // policy 全部保留，避免校园网或订阅的特殊解析策略被误删。
+  // policy 保留，避免影响订阅原有解析。
   const inheritedPolicy = inheritedDns["nameserver-policy"] && typeof inheritedDns["nameserver-policy"] === "object"
     ? inheritedDns["nameserver-policy"]
     : {};
@@ -967,13 +897,11 @@ function main(config, profileName) {
     "enhanced-mode": inheritedDns["enhanced-mode"] || "fake-ip",
     "fake-ip-range": inheritedDns["fake-ip-range"] || "198.18.0.1/16",
     "fake-ip-filter-mode": inheritedDns["fake-ip-filter-mode"] || "blacklist",
-    // 避免校园网拦截 UDP/53、DoT/853，或系统 TUN 占位 DNS 导致启动解析失败。
+    // 使用加密 DNS 启动解析，避免依赖系统 TUN 占位 DNS。
     // 这里只解析节点 DNS 服务自身的域名；不承载网站查询。
     "default-nameserver": directChinaDns,
-    // 订阅自带的节点 DNS 优先；没有时才用国内 DoH，绝不用校园 DNS 解析节点。
-    "proxy-server-nameserver": campusReachableProxyNS.length > 0
-      ? campusReachableProxyNS
-      : inheritedProxyServerNS.length > 0
+    // 完整保留订阅节点 DNS；缺省时使用国内 DoH 启动解析。
+    "proxy-server-nameserver": inheritedProxyServerNS.length > 0
       ? inheritedProxyServerNS
       : directChinaDns,
     // 明确覆盖订阅中的普通/直连/fallback DNS，失败也不回退国内或系统 DNS。
@@ -989,8 +917,7 @@ function main(config, profileName) {
       ...serviceDnsPolicy,
       ...domesticServiceDnsPolicy,
       ...claudeNameserverPolicy,
-      ...customDnsPolicy,
-      ...campusPolicy
+      ...customDnsPolicy
     },
     "fake-ip-filter": unique([
       ...inheritedFakeIpFilter,
@@ -1002,8 +929,6 @@ function main(config, profileName) {
       "*.test",
       "*.local",
       "*.home.arpa",
-      ...CAPTIVE_PORTAL_EXACT,
-      ...CAPTIVE_PORTAL_SUFFIXES.flatMap(domain => [domain, `*.${domain}`]),
       "time.*.com",
       "time.*.gov",
       "time.*.edu.cn",
