@@ -1,4 +1,7 @@
 # Shared remote rule set
+# DLS 26 API observed in proxy capture (2026-10-25).
+DOMAIN,dls7.cf.api.ftpub.net
+
 # Epic Games Launcher / Store / account / download endpoints
 DOMAIN,accounts.epicgames.com
 DOMAIN,launcher.epicgames.com
