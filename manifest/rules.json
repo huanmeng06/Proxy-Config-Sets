@@ -305,7 +305,9 @@
             "quantumultX": "direct",
             "shadowrocket": "DIRECT"
           },
-          "clashProviders": []
+          "clashProviders": [
+            "DirectGroup"
+          ]
         },
         {
           "id": "proxy",

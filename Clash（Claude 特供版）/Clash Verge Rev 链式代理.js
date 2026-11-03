@@ -436,7 +436,9 @@ function main(config, profileName) {
     // 已包含链式节点的组统一排序：节点选择之后、地区节点之前。
     // 调用方已经明确了每个组的顺序；这里仅在没有链式组时移除该选项，
     // 不再把它重新插回组首，避免无链式节点时产生幽灵引用。
-    const orderedChoices = choices.filter(choice => choice !== GROUP.front || hasChainGroup);
+    // 同一候选（例如 🇭🇰 香港节点）可能同时来自显式前缀和地区组列表，
+    // 统一去重后再写入，避免 UI 里出现两个同名候选。
+    const orderedChoices = unique(choices.filter(choice => choice !== GROUP.front || hasChainGroup));
     proxyGroups.push(createSelectGroup(name, orderedChoices));
   };
 
@@ -490,7 +492,7 @@ function main(config, profileName) {
   const isAvailableChoice = (name) => builtInChoices.has(name) || availableRegionGroupNames.includes(name);
 
   const getSafeChoices = (preferred) => {
-    const safe = preferred.filter(isAvailableChoice);
+    const safe = unique(preferred.filter(isAvailableChoice));
     return safe.length > 0 ? safe : ["DIRECT"];
   };
 
@@ -552,16 +554,18 @@ function main(config, profileName) {
     getSafeChoices([GROUP.direct, "🇭🇰 香港节点", "🇨🇳 台湾节点", "🇸🇬 狮城节点", "🇯🇵 日本节点", GROUP.manual, ...chainChoice])
   );
 
+  // 谷歌FCM / 微软服务 / 苹果服务 / 游戏平台：白名单直连（🎯 全球直连）与代理候选并列，
+  // 香港节点只保留一份，避免同一候选重复出现。
   const defaultServiceChoices = getSafeChoices([
     HK_NODE,
     GROUP.node,
     "🇺🇸 美国节点",
-    "🇭🇰 香港节点",
     "🇨🇳 台湾节点",
     "🇸🇬 狮城节点",
     "🇯🇵 日本节点",
     "🇰🇷 韩国节点",
     GROUP.manual,
+    GROUP.direct,
     ...chainChoice
   ]);
 
@@ -583,7 +587,17 @@ function main(config, profileName) {
   // 动态地区组放在后面，主服务入口更集中。
   proxyGroups.push(...regionGroups);
 
-  config["proxy-groups"] = proxyGroups;
+  // 兜底去重：同名分组只保留第一个，组内重复候选只保留一次。
+  const seenGroupNames = new Set();
+  const finalProxyGroups = [];
+  for (const group of proxyGroups) {
+    if (!group || typeof group.name !== "string" || seenGroupNames.has(group.name)) continue;
+    seenGroupNames.add(group.name);
+    group.proxies = unique(group.proxies);
+    finalProxyGroups.push(group);
+  }
+
+  config["proxy-groups"] = finalProxyGroups;
   config["unified-delay"] = true;
   config["tcp-concurrent"] = true;
   config["keep-alive-idle"] = 30;
@@ -631,8 +645,8 @@ function main(config, profileName) {
     "YouTube": `${RULES_BASE}/youtube.list`,
     "Telegram": `${RULES_BASE}/telegram.list`,
     "Games": `${RULES_BASE}/games.list`,
-    "ProxyGFWlist": `${RULES_BASE}/proxy.list`,
-    "DirectGroup": `${RULES_BASE}/direct.list`
+    "DirectGroup": `${RULES_BASE}/direct.list`,
+    "ProxyGFWlist": `${RULES_BASE}/proxy.list`
     // END GENERATED RULE PROVIDERS
   };
 

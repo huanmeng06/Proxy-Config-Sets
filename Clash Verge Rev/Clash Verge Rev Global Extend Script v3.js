@@ -39,6 +39,7 @@ function main(config, profileName) {
   const GROUP = {
     node: "🚀 节点选择",
     manual: "🚀 手动切换",
+    direct: "🎯 全球直连",
     download: "⏬ 下载专用",
     telegram: "📲 电报消息",
     front: "🔗 链式节点",
@@ -435,7 +436,9 @@ function main(config, profileName) {
     // 已包含链式节点的组统一排序：节点选择之后、地区节点之前。
     // 调用方已经明确了每个组的顺序；这里仅在没有链式组时移除该选项，
     // 不再把它重新插回组首，避免无链式节点时产生幽灵引用。
-    const orderedChoices = choices.filter(choice => choice !== GROUP.front || hasChainGroup);
+    // 同一候选（例如 🇭🇰 香港节点）可能同时来自显式前缀和地区组列表，
+    // 统一去重后再写入，避免 UI 里出现两个同名候选。
+    const orderedChoices = unique(choices.filter(choice => choice !== GROUP.front || hasChainGroup));
     proxyGroups.push(createSelectGroup(name, orderedChoices));
   };
 
@@ -447,6 +450,10 @@ function main(config, profileName) {
   pushSelectGroup(GROUP.node, foreignChoices);
 
   pushSelectGroup(GROUP.manual, allProxies);
+
+  // 🎯 全球直连：可切换的 DIRECT 包装组（默认 DIRECT），
+  // 与 mihomo 内置 DIRECT 出站同名但可手动切到 🚀 节点选择。
+  pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node]);
 
   // 只有显式“链式”节点或 ISP 节点存在时，才生成链式组和链式前置组。
   const chainExitNames = [
@@ -461,12 +468,12 @@ function main(config, profileName) {
     proxyGroups.push(createSelectGroup(GROUP.front, chainExitNames));
   }
 
-  const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, ...chainChoice];
-  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, ...(hasChainGroup ? [GROUP.front] : [])]);
+  const commonChoices = [GROUP.node, ...availableRegionGroupNames, GROUP.manual, GROUP.direct, ...chainChoice];
+  const builtInChoices = new Set(["DIRECT", GROUP.node, GROUP.manual, GROUP.direct, ...(hasChainGroup ? [GROUP.front] : [])]);
   const isAvailableChoice = (name) => builtInChoices.has(name) || availableRegionGroupNames.includes(name);
 
   const getSafeChoices = (preferred) => {
-    const safe = preferred.filter(isAvailableChoice);
+    const safe = unique(preferred.filter(isAvailableChoice));
     return safe.length > 0 ? safe : ["DIRECT"];
   };
 
@@ -508,24 +515,25 @@ function main(config, profileName) {
   pushSelectGroup(GROUP.grok, usFirstAiChoices);
 
   // 国内外 AI 组紧跟 Grok，便于在 UI 中连续切换 AI 服务。
-  const domesticAiChoices = ["DIRECT", ...regionOnlyChoices];
+  const domesticAiChoices = [GROUP.direct, ...regionOnlyChoices];
   const foreignAiChoices = [...chainChoice, ...foreignAiRegionChoices];
   proxyGroups.push(createSelectGroup(GROUP.domesticAi, domesticAiChoices));
   proxyGroups.push(createSelectGroup(GROUP.foreignAi, foreignAiChoices.length > 0 ? foreignAiChoices : ["REJECT"]));
 
   pushSelectGroup(GROUP.youtube, commonChoices);
 
-  pushSelectGroup(GROUP.bahamut, getSafeChoices(["🇨🇳 台湾节点", GROUP.node, GROUP.manual, "DIRECT"]));
+  pushSelectGroup(GROUP.bahamut, getSafeChoices(["🇨🇳 台湾节点", GROUP.node, GROUP.manual, GROUP.direct]));
 
-  pushSelectGroup(GROUP.bilibili, getSafeChoices(["DIRECT", "🇨🇳 台湾节点", "🇭🇰 香港节点"]));
+  pushSelectGroup(GROUP.bilibili, getSafeChoices([GROUP.direct, "🇨🇳 台湾节点", "🇭🇰 香港节点"]));
 
   pushSelectGroup(GROUP.globalMedia, commonChoices);
 
   pushSelectGroup(
     GROUP.domesticMedia,
-    getSafeChoices(["DIRECT", "🇭🇰 香港节点", "🇨🇳 台湾节点", "🇸🇬 狮城节点", "🇯🇵 日本节点", GROUP.manual, ...chainChoice])
+    getSafeChoices([GROUP.direct, "🇭🇰 香港节点", "🇨🇳 台湾节点", "🇸🇬 狮城节点", "🇯🇵 日本节点", GROUP.manual, ...chainChoice])
   );
 
+  // 谷歌FCM / 微软服务 / 苹果服务 / 游戏平台：白名单直连（🎯 全球直连）与代理候选并列。
   const defaultServiceChoices = getSafeChoices([
     "🚀 节点选择",
     "🇺🇸 美国节点",
@@ -535,6 +543,7 @@ function main(config, profileName) {
     "🇯🇵 日本节点",
     "🇰🇷 韩国节点",
     GROUP.manual,
+    GROUP.direct,
     ...chainChoice
   ]);
 
@@ -550,13 +559,23 @@ function main(config, profileName) {
     GROUP.manual,
     ...chainChoice,
     ...availableRegionGroupNames,
-    "DIRECT"
+    GROUP.direct
   ]));
 
   // 动态地区组放在后面，主服务入口更集中。
   proxyGroups.push(...regionGroups);
 
-  config["proxy-groups"] = proxyGroups;
+  // 兜底去重：同名分组只保留第一个，组内重复候选只保留一次。
+  const seenGroupNames = new Set();
+  const finalProxyGroups = [];
+  for (const group of proxyGroups) {
+    if (!group || typeof group.name !== "string" || seenGroupNames.has(group.name)) continue;
+    seenGroupNames.add(group.name);
+    group.proxies = unique(group.proxies);
+    finalProxyGroups.push(group);
+  }
+
+  config["proxy-groups"] = finalProxyGroups;
   config["unified-delay"] = true;
   config["tcp-concurrent"] = true;
   config["keep-alive-idle"] = 30;
@@ -604,6 +623,7 @@ function main(config, profileName) {
     "YouTube": `${RULES_BASE}/youtube.list`,
     "Telegram": `${RULES_BASE}/telegram.list`,
     "Games": `${RULES_BASE}/games.list`,
+    "DirectGroup": `${RULES_BASE}/direct.list`,
     "ProxyGFWlist": `${RULES_BASE}/proxy.list`
     // END GENERATED RULE PROVIDERS
   };
@@ -747,6 +767,9 @@ function main(config, profileName) {
     `IP-CIDR,160.79.104.0/21,${GROUP.claude},no-resolve`,
     ...LOCAL_CUSTOM_RULES,
 
+    // direct.list 命中后进入可切换的 🎯 全球直连（默认 DIRECT，可手动切到 🚀 节点选择）。
+    `RULE-SET,DirectGroup,${GROUP.direct}`,
+
     // 商店 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名仍本地。
     `RULE-SET,Reject,REJECT`,
     // `DOMAIN,codex-reset.com,REJECT`,
@@ -773,7 +796,7 @@ function main(config, profileName) {
     `RULE-SET,ChinaMedia,${GROUP.domesticMedia}`,
     `RULE-SET,ProxyMedia,${GROUP.globalMedia}`,
     `RULE-SET,ProxyGFWlist,${GROUP.node}`,
-    `GEOIP,CN,DIRECT`,
+    `GEOIP,CN,${GROUP.direct}`,
     `MATCH,${GROUP.fallback}`
   ];
 
