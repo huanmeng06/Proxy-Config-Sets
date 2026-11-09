@@ -461,8 +461,11 @@ function main(config, profileName) {
   ];
   const CHAIN_ENTRY = "📡 链式入口";
   const airportNames = subscriptionProxies.map(node => node.name);
-  // 五个非 Claude AI 组直接枚举机场订阅节点，支持在 30+ 节点中逐一自选。
-  const airportAiChoices = airportNames.length > 0 ? airportNames : ["REJECT"];
+  // 五个非 Claude AI 组只枚举可用于 AI 的机场节点：排除香港与低倍率/下载节点。
+  const airportAiNames = subscriptionProxies
+    .map(node => node.name)
+    .filter(name => !/(香港|Hong Kong|\bHK\b|🇭🇰)/i.test(name) && !isDownloadNode(name));
+  const airportAiChoices = airportAiNames.length > 0 ? airportAiNames : ["REJECT"];
   if (hasChainGroup) {
     proxyGroups.push(createSelectGroup(CHAIN_ENTRY, airportNames.length ? airportNames : ["REJECT"]));
     landingIsps.forEach(isp => { isp["dialer-proxy"] = CHAIN_ENTRY; });
