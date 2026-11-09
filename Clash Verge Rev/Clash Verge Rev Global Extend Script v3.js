@@ -443,7 +443,6 @@ function main(config, profileName) {
   };
 
   const regionOnlyChoices = availableRegionGroupNames.filter(name => /(?:节点|家宽)$/.test(name));
-  const foreignAiRegionChoices = regionOnlyChoices.filter(name => !name.includes("香港"));
 
   // 国外默认组不允许 DIRECT，避免业务走代理而 DNS 却回到本地网络。
   const foreignChoices = [...availableRegionGroupNames, GROUP.manual, ...chainChoice];
@@ -462,6 +461,8 @@ function main(config, profileName) {
   ];
   const CHAIN_ENTRY = "📡 链式入口";
   const airportNames = subscriptionProxies.map(node => node.name);
+  // 五个非 Claude AI 组直接枚举机场订阅节点，支持在 30+ 节点中逐一自选。
+  const airportAiChoices = airportNames.length > 0 ? airportNames : ["REJECT"];
   if (hasChainGroup) {
     proxyGroups.push(createSelectGroup(CHAIN_ENTRY, airportNames.length ? airportNames : ["REJECT"]));
     landingIsps.forEach(isp => { isp["dialer-proxy"] = CHAIN_ENTRY; });
@@ -493,32 +494,18 @@ function main(config, profileName) {
   ]);
   pushSelectGroup(GROUP.github, githubChoices);
 
-  // ChatGPT / Claude / Gemini / Grok 各自独立选择，顺序固定为美国、新加坡、日本、台湾。
-  const usFirstAiChoices = getSafeChoices([
-    "🇺🇸 美国节点",
-    "🏠🇺🇸 美国家宽",
-    "🇸🇬 狮城节点",
-    "🏠🇸🇬 狮城家宽",
-    "🇯🇵 日本节点",
-    "🏠🇯🇵 日本家宽",
-    "🇨🇳 台湾节点",
-    "🏠🇨🇳 台湾家宽",
-    GROUP.manual,
-    ...chainChoice
-  ]);
-  pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
+  // 五个非 Claude AI 组直接使用机场节点；Claude 继续保留 ISP 专用出口。
+  pushSelectGroup(GROUP.chatgpt, airportAiChoices);
   // Claude 只能选择真正设置了 dialer-proxy 的 ISP 落地出口；普通“链式”节点
   // 仍可供手动链式组使用，但不作为 Claude 的出口候选。
   const claudeChoices = landingIsps.length > 0 ? landingIsps.map(isp => isp.name) : ["REJECT"];
   pushSelectGroup(GROUP.claude, claudeChoices);
-  pushSelectGroup(GROUP.gemini, usFirstAiChoices);
-  pushSelectGroup(GROUP.grok, usFirstAiChoices);
+  pushSelectGroup(GROUP.gemini, airportAiChoices);
+  pushSelectGroup(GROUP.grok, airportAiChoices);
 
   // 国内外 AI 组紧跟 Grok，便于在 UI 中连续切换 AI 服务。
-  const domesticAiChoices = [GROUP.direct, ...regionOnlyChoices];
-  const foreignAiChoices = [...chainChoice, ...foreignAiRegionChoices];
-  proxyGroups.push(createSelectGroup(GROUP.domesticAi, domesticAiChoices));
-  proxyGroups.push(createSelectGroup(GROUP.foreignAi, foreignAiChoices.length > 0 ? foreignAiChoices : ["REJECT"]));
+  proxyGroups.push(createSelectGroup(GROUP.domesticAi, airportAiChoices));
+  proxyGroups.push(createSelectGroup(GROUP.foreignAi, airportAiChoices));
 
   pushSelectGroup(GROUP.youtube, commonChoices);
 

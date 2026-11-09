@@ -699,14 +699,10 @@ proxy-groups:
 - name: "🤖 ChatGPT"
   type: select
   proxies:
-  - "🇺🇸 美国节点"
-  - "🇸🇬 狮城节点"
-  - "🇯🇵 日本节点"
-  - "🏠🇯🇵 日本家宽"
-  - "🇨🇳 台湾节点"
-  - "🏠🇨🇳 台湾家宽"
-  - "🚀 手动切换"
-  - "🔗 链式节点"
+  - REJECT
+  include-all-proxies: true
+  filter: "(?i)^(?!.*ISP)(?!.*(链式|Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"
+  empty-fallback: REJECT
 - name: "🧠 Claude"
   type: select
   proxies:
@@ -719,74 +715,31 @@ proxy-groups:
 - name: "✨ Gemini"
   type: select
   proxies:
-  - "🇺🇸 美国节点"
-  - "🇸🇬 狮城节点"
-  - "🇯🇵 日本节点"
-  - "🏠🇯🇵 日本家宽"
-  - "🇨🇳 台湾节点"
-  - "🏠🇨🇳 台湾家宽"
-  - "🚀 手动切换"
-  - "🔗 链式节点"
+  - REJECT
+  include-all-proxies: true
+  filter: "(?i)^(?!.*ISP)(?!.*(链式|Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"
+  empty-fallback: REJECT
 - name: "✖️ Grok"
   type: select
   proxies:
-  - "🇺🇸 美国节点"
-  - "🇸🇬 狮城节点"
-  - "🇯🇵 日本节点"
-  - "🏠🇯🇵 日本家宽"
-  - "🇨🇳 台湾节点"
-  - "🏠🇨🇳 台湾家宽"
-  - "🚀 手动切换"
-  - "🔗 链式节点"
+  - REJECT
+  include-all-proxies: true
+  filter: "(?i)^(?!.*ISP)(?!.*(链式|Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"
+  empty-fallback: REJECT
 - name: "🇨🇳 国内 AI"
   type: select
   proxies:
-  - DIRECT
-  - "🎯 全球直连"
-  - "🇭🇰 香港节点"
-  - "🏠🇭🇰 香港家宽"
-  - "🇸🇬 狮城节点"
-  - "🇯🇵 日本节点"
-  - "🏠🇯🇵 日本家宽"
-  - "🇨🇳 台湾节点"
-  - "🏠🇨🇳 台湾家宽"
-  - "🇺🇸 美国节点"
-  - "🇰🇷 韩国节点"
-  - "🇲🇾 马来西亚节点"
-  - "🇮🇩 印尼节点"
-  - "🇮🇳 印度节点"
-  - "🇵🇭 菲律宾节点"
-  - "🇹🇭 泰国节点"
-  - "🇻🇳 越南节点"
-  - "🇬🇧 英国节点"
-  - "🇩🇪 德国节点"
-  - "🇧🇷 巴西节点"
-  - "🇹🇷 土耳其节点"
-  - "🇳🇬 尼日利亚节点"
-  - "🇦🇺 澳洲节点"
+  - REJECT
+  include-all-proxies: true
+  filter: "(?i)^(?!.*ISP)(?!.*(链式|Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"
+  empty-fallback: REJECT
 - name: "🌍 国外 AI"
   type: select
   proxies:
-  - "🔗 链式节点"
-  - "🇸🇬 狮城节点"
-  - "🇯🇵 日本节点"
-  - "🏠🇯🇵 日本家宽"
-  - "🇨🇳 台湾节点"
-  - "🏠🇨🇳 台湾家宽"
-  - "🇺🇸 美国节点"
-  - "🇰🇷 韩国节点"
-  - "🇲🇾 马来西亚节点"
-  - "🇮🇩 印尼节点"
-  - "🇮🇳 印度节点"
-  - "🇵🇭 菲律宾节点"
-  - "🇹🇭 泰国节点"
-  - "🇻🇳 越南节点"
-  - "🇬🇧 英国节点"
-  - "🇩🇪 德国节点"
-  - "🇧🇷 巴西节点"
-  - "🇹🇷 土耳其节点"
-  - "🇳🇬 尼日利亚节点"
-  - "🇦🇺 澳洲节点"
+  - REJECT
+  include-all-proxies: true
+  filter: "(?i)^(?!.*ISP)(?!.*(链式|Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"
+  empty-fallback: REJECT
 - name: "📹 油管视频"
   type: select
   proxies:
