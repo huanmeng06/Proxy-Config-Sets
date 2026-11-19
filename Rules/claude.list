@@ -10,6 +10,7 @@ DOMAIN-KEYWORD,claude
 DOMAIN-SUFFIX,anthropic.com
 DOMAIN-SUFFIX,claude.ai
 DOMAIN-SUFFIX,claude.com
+DOMAIN-SUFFIX,claude.app
 DOMAIN-SUFFIX,clau.de
 DOMAIN-SUFFIX,claudemcpclient.com
 DOMAIN-SUFFIX,claudemcpcontent.com
@@ -29,8 +30,11 @@ DOMAIN,cdn.usefathom.com
 DOMAIN-KEYWORD,datadoghq
 DOMAIN-KEYWORD,datadog
 DOMAIN-SUFFIX,sift.com
-DOMAIN-SUFFIX,siftcience.com
+DOMAIN-SUFFIX,siftscience.com
 DOMAIN-KEYWORD,sift
+
+# Google FCM token endpoint only; other FCM traffic keeps its own policy.
+DOMAIN,fcmtoken.googleapis.com
 
 # Stripe checkout (geolocates currency from this IP)
 DOMAIN-SUFFIX,stripe.com
@@ -69,3 +73,6 @@ DOMAIN-SUFFIX,persona.com
 IP-CIDR,160.79.104.0/21,no-resolve
 IP-CIDR6,2607:6bc0::/32,no-resolve
 IP-ASN,399358,no-resolve
+
+# Requested Google Cloud global range; not dedicated to Claude.
+IP-CIDR,34.8.0.0/16,no-resolve

@@ -472,7 +472,8 @@ function main(config, profileName) {
 
   // 保留原有的“全球直连”策略组：它是可切换的 DIRECT 包装组，
   // 与 mihomo 内置的 DIRECT 出站不是同一个名称。
-  pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node]);
+  // 回退只用普通机场节点，避免全球直连经链式节点回到链式入口。
+  pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.manual]);
 
   // 只有显式“链式”节点或 ISP 节点存在时，才生成链式组和链式前置组。
   const chainExitNames = [
@@ -482,7 +483,7 @@ function main(config, profileName) {
   const CHAIN_ENTRY = "📡 链式入口";
   const airportNames = subscriptionProxies.map(node => node.name);
   if (hasChainGroup) {
-    proxyGroups.push(createSelectGroup(CHAIN_ENTRY, preferFirst(airportNames, [HK_CHAIN_ENTRY, /香港\s*0?1/i])));
+    proxyGroups.push(createSelectGroup(CHAIN_ENTRY, [...(airportNames.length ? preferFirst(airportNames, [HK_CHAIN_ENTRY, /香港\s*0?1/i]) : ["REJECT"]), GROUP.direct]));
     landingIsps.forEach(isp => { isp["dialer-proxy"] = CHAIN_ENTRY; });
     proxyGroups.push(createSelectGroup(GROUP.front, preferFirst(chainExitNames, [NEW_YORK_ISP])));
   }
@@ -536,7 +537,7 @@ function main(config, profileName) {
   pushSelectGroup(GROUP.grok, usFirstAiChoices);
 
   // 国内外 AI 组紧跟 Grok，便于在 UI 中连续切换 AI 服务。
-  const domesticAiChoices = ["DIRECT", GROUP.direct, ...regionOnlyChoices];
+  const domesticAiChoices = [GROUP.direct, "DIRECT", ...airportNames];
   const foreignAiChoices = [...chainChoice, ...foreignAiRegionChoices];
   proxyGroups.push(createSelectGroup(GROUP.domesticAi, domesticAiChoices));
   proxyGroups.push(createSelectGroup(GROUP.foreignAi, foreignAiChoices.length > 0 ? foreignAiChoices : ["REJECT"]));
@@ -762,7 +763,6 @@ function main(config, profileName) {
     `IP-CIDR,169.254.0.0/16,DIRECT,no-resolve`,
     `IP-CIDR,172.16.0.0/12,DIRECT,no-resolve`,
     `IP-CIDR,192.168.0.0/16,DIRECT,no-resolve`,
-
     // 微信无法区分主程序与小程序；按用户要求，微信及其 Helper 全部直连。
     `PROCESS-NAME,WeChat,DIRECT`,
     `PROCESS-NAME,WeChat Helper,DIRECT`,

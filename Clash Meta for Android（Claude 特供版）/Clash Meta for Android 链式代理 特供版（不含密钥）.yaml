@@ -630,18 +630,19 @@ proxy-groups:
   type: select
   proxies:
   - REJECT
-  filter: "(?i)^(?!.*ISP)(?!.*(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"
+  filter: "(?i)^(?!.*(ISP|链式))(?!.*(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"
   include-all: true
   empty-fallback: REJECT
 - name: "🎯 全球直连"
   type: select
   proxies:
   - DIRECT
-  - "🚀 节点选择"
+  - "🚀 手动切换"
 - name: "📡 链式入口"
   type: select
   proxies:
   - REJECT
+  - "🎯 全球直连"
   filter: "(?i)^(?!.*ISP)(?!.*(Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"
   include-all: true
   empty-fallback: REJECT
@@ -729,6 +730,7 @@ proxy-groups:
 - name: "🇨🇳 国内 AI"
   type: select
   proxies:
+  - "🎯 全球直连"
   - REJECT
   include-all-proxies: true
   filter: "(?i)^(?!.*ISP)(?!.*(链式|Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"

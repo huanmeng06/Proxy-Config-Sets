@@ -451,8 +451,9 @@ function main(config, profileName) {
   pushSelectGroup(GROUP.manual, allProxies);
 
   // 🎯 全球直连：可切换的 DIRECT 包装组（默认 DIRECT），
-  // 与 mihomo 内置 DIRECT 出站同名但可手动切到 🚀 节点选择。
-  pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.node]);
+  // 与 mihomo 内置 DIRECT 出站不同，也可手动切到 🚀 手动切换。
+  // 回退只用普通机场节点，避免全球直连经链式节点回到链式入口。
+  pushSelectGroup(GROUP.direct, ["DIRECT", GROUP.manual]);
 
   // 只有显式“链式”节点或 ISP 节点存在时，才生成链式组和链式前置组。
   const chainExitNames = [
@@ -461,13 +462,13 @@ function main(config, profileName) {
   ];
   const CHAIN_ENTRY = "📡 链式入口";
   const airportNames = subscriptionProxies.map(node => node.name);
-  // 五个非 Claude AI 组只枚举可用于 AI 的机场节点：排除香港与低倍率/下载节点。
+  // 非 Claude AI 组的机场候选仅枚举可用于 AI 的机场节点：排除香港与低倍率/下载节点。
   const airportAiNames = subscriptionProxies
     .map(node => node.name)
     .filter(name => !/(香港|Hong Kong|\bHK\b|🇭🇰)/i.test(name) && !isDownloadNode(name));
   const airportAiChoices = airportAiNames.length > 0 ? airportAiNames : ["REJECT"];
   if (hasChainGroup) {
-    proxyGroups.push(createSelectGroup(CHAIN_ENTRY, airportNames.length ? airportNames : ["REJECT"]));
+    proxyGroups.push(createSelectGroup(CHAIN_ENTRY, [...(airportNames.length ? airportNames : ["REJECT"]), GROUP.direct]));
     landingIsps.forEach(isp => { isp["dialer-proxy"] = CHAIN_ENTRY; });
     proxyGroups.push(createSelectGroup(GROUP.front, chainExitNames));
   }
@@ -497,7 +498,7 @@ function main(config, profileName) {
   ]);
   pushSelectGroup(GROUP.github, githubChoices);
 
-  // 五个非 Claude AI 组直接使用机场节点；Claude 继续保留 ISP 专用出口。
+  // Claude 保留 ISP 专用出口；国内 AI 枚举所有机场节点，另可选全球直连。
   pushSelectGroup(GROUP.chatgpt, airportAiChoices);
   // Claude 只能选择真正设置了 dialer-proxy 的 ISP 落地出口；普通“链式”节点
   // 仍可供手动链式组使用，但不作为 Claude 的出口候选。
@@ -507,7 +508,7 @@ function main(config, profileName) {
   pushSelectGroup(GROUP.grok, airportAiChoices);
 
   // 国内外 AI 组紧跟 Grok，便于在 UI 中连续切换 AI 服务。
-  proxyGroups.push(createSelectGroup(GROUP.domesticAi, airportAiChoices));
+  proxyGroups.push(createSelectGroup(GROUP.domesticAi, unique([GROUP.direct, ...airportAiNames, ...airportNames])));
   proxyGroups.push(createSelectGroup(GROUP.foreignAi, airportAiChoices));
 
   pushSelectGroup(GROUP.youtube, commonChoices);
@@ -729,7 +730,6 @@ function main(config, profileName) {
     `IP-CIDR,169.254.0.0/16,DIRECT,no-resolve`,
     `IP-CIDR,172.16.0.0/12,DIRECT,no-resolve`,
     `IP-CIDR,192.168.0.0/16,DIRECT,no-resolve`,
-
     // Browser WebRTC STUN. Google uses stun/stun1-4.l.google.com:19302/19305.
     // Domain names live in reject.list; these ports catch IP-literal STUN after DNS.
     // Do not reject UDP 3478 (Discord / Telegram / games).
@@ -757,7 +757,7 @@ function main(config, profileName) {
     `IP-CIDR,160.79.104.0/21,${GROUP.claude},no-resolve`,
     ...LOCAL_CUSTOM_RULES,
 
-    // direct.list 命中后进入可切换的 🎯 全球直连（默认 DIRECT，可手动切到 🚀 节点选择）。
+    // direct.list 命中后进入可切换的 🎯 全球直连（默认 DIRECT，可手动切到 🚀 手动切换）。
     `RULE-SET,DirectGroup,${GROUP.direct}`,
 
     // 商店 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名仍本地。
