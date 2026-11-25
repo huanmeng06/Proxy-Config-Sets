@@ -48,6 +48,8 @@ RULE-SET,https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/hea
 
 规则文件只保留规则本体，不带最终策略组；策略由 `RULE-SET` 行最后一列指定。
 
+共享规则先匹配 ChatGPT / Claude，再匹配广告和净化；哔哩哔哩、巴哈姆特、油管先于通用媒体。`direct.list` 和 `proxy.list` 排在共享规则末尾；生成区外的本地例外保留。
+
 ## 第三方国内兜底
 
 直接引用 blackmatrix7 ChinaMax 作为国内兜底，顺序在 `proxy.list` 之后、`GEOIP,CN` 之前，命中进 `🎯 全球直连`。如果 ChinaMax 不可用，流量回到原有的 GEOIP 和最终兜底规则。

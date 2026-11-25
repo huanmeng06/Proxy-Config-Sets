@@ -585,6 +585,10 @@ dns:
     cdn.usefathom.com:
     - "https://1.1.1.1/dns-query#🧠 Claude&disable-qtype-64=true&disable-qtype-65=true"
     - "https://8.8.8.8/dns-query#🧠 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    # 国内 DNS 兜底放在明确的业务策略之后。
+    "rule-set:ChinaMaxDomain":
+    - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
+    - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
 disable-keep-alive: false
 tun:
   auto-detect-interface: true
@@ -1491,36 +1495,37 @@ rules:
 - "PROCESS-NAME,com.anthropic.claude,🧠 Claude"
 - "PROCESS-NAME,ch.protonmail.android,🧠 Claude"
 - "PROCESS-NAME,com.openai.chatgpt,🤖 ChatGPT"
-- "RULE-SET,ChatGPT,🤖 ChatGPT"
-- "GEOSITE,anthropic,🧠 Claude"
-- "RULE-SET,Claude,🧠 Claude"
-- "IP-CIDR,160.79.104.0/21,🧠 Claude,no-resolve"
 - "DOMAIN-SUFFIX,deepl.com,🎯 全球直连"
 - "DOMAIN-SUFFIX,ping0.cc,🎯 全球直连"
 - "DOMAIN-SUFFIX,tjcn.org,🎯 全球直连"
 - "DOMAIN-SUFFIX,iproyal.cn,🎯 全球直连"
-- "RULE-SET,DirectGroup,🎯 全球直连"
-- RULE-SET,Reject,REJECT
+# ChatGPT / Claude 有意放在共享规则最前，优先命中专用组。
+- "RULE-SET,ChatGPT,🤖 ChatGPT"
+- "GEOSITE,anthropic,🧠 Claude"
+- "RULE-SET,Claude,🧠 Claude"
+- "IP-CIDR,160.79.104.0/21,🧠 Claude,no-resolve"
 - "RULE-SET,BanAD,🛑 广告拦截"
 - "RULE-SET,BanProgramAD,🍃 应用净化"
+- RULE-SET,Reject,REJECT
+- RULE-SET,Gemini,✨ Gemini
+- RULE-SET,Grok,✖️ Grok
+- "RULE-SET,DomesticAI,🇨🇳 国内 AI"
+- "RULE-SET,ForeignAI,🌍 国外 AI"
+- "RULE-SET,GitHub,🐙 GITHUB"
 - "RULE-SET,GoogleFCM,📢 谷歌FCM"
 - RULE-SET,MicrosoftStore,Ⓜ️ 微软服务
 - RULE-SET,Bing,Ⓜ️ 微软服务
 - RULE-SET,OneDrive,Ⓜ️ 微软服务
 - RULE-SET,Microsoft,Ⓜ️ 微软服务
 - "RULE-SET,Apple,🍎 苹果服务"
-- "RULE-SET,Telegram,📲 电报消息"
-- "RULE-SET,GitHub,🐙 GITHUB"
-- RULE-SET,Gemini,✨ Gemini
-- RULE-SET,Grok,✖️ Grok
-- "RULE-SET,DomesticAI,🇨🇳 国内 AI"
-- "RULE-SET,ForeignAI,🌍 国外 AI"
-- "RULE-SET,Games,🎮 游戏平台"
-- "RULE-SET,YouTube,📹 油管视频"
-- "RULE-SET,Bahamut,📺 巴哈姆特"
 - "RULE-SET,BilibiliHMT,📺 哔哩哔哩"
-- "RULE-SET,ChinaMedia,🌏 国内媒体"
+- "RULE-SET,Bahamut,📺 巴哈姆特"
+- "RULE-SET,YouTube,📹 油管视频"
 - "RULE-SET,ProxyMedia,🌍 国外媒体"
+- "RULE-SET,ChinaMedia,🌏 国内媒体"
+- "RULE-SET,Telegram,📲 电报消息"
+- "RULE-SET,Games,🎮 游戏平台"
+- "RULE-SET,DirectGroup,🎯 全球直连"
 - "RULE-SET,ProxyGFWlist,🚀 节点选择"
 - "RULE-SET,ChinaMax,🎯 全球直连"
 - "RULE-SET,ChinaMaxDomain,🎯 全球直连"

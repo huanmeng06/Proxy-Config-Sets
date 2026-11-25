@@ -11,6 +11,35 @@
   },
   "sections": [
     {
+      "name": "ChatGPT / Claude",
+      "rules": [
+        {
+          "id": "chatgpt",
+          "tag": "ChatGPT",
+          "file": "chatgpt.list",
+          "policy": {
+            "quantumultX": "🤖 ChatGPT",
+            "shadowrocket": "🤖 ChatGPT"
+          },
+          "clashProviders": [
+            "ChatGPT"
+          ]
+        },
+        {
+          "id": "claude",
+          "tag": "Claude",
+          "file": "claude.list",
+          "policy": {
+            "quantumultX": "🧠 Claude",
+            "shadowrocket": "🧠 Claude"
+          },
+          "clashProviders": [
+            "Claude"
+          ]
+        }
+      ]
+    },
+    {
       "name": "Ads / Cleanup",
       "rules": [
         {
@@ -51,30 +80,6 @@
     {
       "name": "Dev / AI",
       "rules": [
-        {
-          "id": "chatgpt",
-          "tag": "ChatGPT",
-          "file": "chatgpt.list",
-          "policy": {
-            "quantumultX": "🤖 ChatGPT",
-            "shadowrocket": "🤖 ChatGPT"
-          },
-          "clashProviders": [
-            "ChatGPT"
-          ]
-        },
-        {
-          "id": "claude",
-          "tag": "Claude",
-          "file": "claude.list",
-          "policy": {
-            "quantumultX": "🧠 Claude",
-            "shadowrocket": "🧠 Claude"
-          },
-          "clashProviders": [
-            "Claude"
-          ]
-        },
         {
           "id": "gemini",
           "tag": "Gemini",
@@ -149,7 +154,7 @@
       ]
     },
     {
-      "name": "Apple / Microsoft",
+      "name": "Microsoft / Apple",
       "rules": [
         {
           "id": "microsoft-store",
@@ -160,17 +165,6 @@
           },
           "clashProviders": [
             "MicrosoftStore"
-          ]
-        },
-        {
-          "id": "apple",
-          "file": "apple.list",
-          "policy": {
-            "quantumultX": "🍎 苹果服务",
-            "shadowrocket": "🍎 苹果服务"
-          },
-          "clashProviders": [
-            "Apple"
           ]
         },
         {
@@ -185,6 +179,17 @@
           ]
         },
         {
+          "id": "microsoft-drive",
+          "file": "microsoft-drive.list",
+          "policy": {
+            "quantumultX": "Ⓜ️ 微软服务",
+            "shadowrocket": "Ⓜ️ 微软服务"
+          },
+          "clashProviders": [
+            "OneDrive"
+          ]
+        },
+        {
           "id": "microsoft",
           "file": "microsoft.list",
           "policy": {
@@ -196,14 +201,14 @@
           ]
         },
         {
-          "id": "microsoft-drive",
-          "file": "microsoft-drive.list",
+          "id": "apple",
+          "file": "apple.list",
           "policy": {
-            "quantumultX": "Ⓜ️ 微软服务",
-            "shadowrocket": "Ⓜ️ 微软服务"
+            "quantumultX": "🍎 苹果服务",
+            "shadowrocket": "🍎 苹果服务"
           },
           "clashProviders": [
-            "OneDrive"
+            "Apple"
           ]
         }
       ]
@@ -211,28 +216,6 @@
     {
       "name": "Media",
       "rules": [
-        {
-          "id": "global-media",
-          "file": "global-media.list",
-          "policy": {
-            "quantumultX": "🌍 国外媒体",
-            "shadowrocket": "🌍 国外媒体"
-          },
-          "clashProviders": [
-            "ProxyMedia"
-          ]
-        },
-        {
-          "id": "domestic-media",
-          "file": "domestic-media.list",
-          "policy": {
-            "quantumultX": "🌏 国内媒体",
-            "shadowrocket": "🌏 国内媒体"
-          },
-          "clashProviders": [
-            "ChinaMedia"
-          ]
-        },
         {
           "id": "bilibili",
           "file": "bilibili.list",
@@ -264,6 +247,28 @@
           },
           "clashProviders": [
             "YouTube"
+          ]
+        },
+        {
+          "id": "global-media",
+          "file": "global-media.list",
+          "policy": {
+            "quantumultX": "🌍 国外媒体",
+            "shadowrocket": "🌍 国外媒体"
+          },
+          "clashProviders": [
+            "ProxyMedia"
+          ]
+        },
+        {
+          "id": "domestic-media",
+          "file": "domestic-media.list",
+          "policy": {
+            "quantumultX": "🌏 国内媒体",
+            "shadowrocket": "🌏 国内媒体"
+          },
+          "clashProviders": [
+            "ChinaMedia"
           ]
         }
       ]
