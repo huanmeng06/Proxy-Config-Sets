@@ -48,6 +48,10 @@ RULE-SET,https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/hea
 
 规则文件只保留规则本体，不带最终策略组；策略由 `RULE-SET` 行最后一列指定。
 
+## 第三方国内兜底
+
+直接引用 blackmatrix7 ChinaMax 作为国内兜底，顺序在 `proxy.list` 之后、`GEOIP,CN` 之前，命中进 `🎯 全球直连`。如果 ChinaMax 不可用，流量回到原有的 GEOIP 和最终兜底规则。
+
 ## 本地保留
 
 以下内容保留在主配置中：

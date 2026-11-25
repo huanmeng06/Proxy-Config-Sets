@@ -17,6 +17,10 @@
 
 TUN 排除网段为空，不再生成校园 DHCP DNS、认证页规则或旧域名清理逻辑。Claude 继续使用手动 ISP 出口和专用代理 DNS。
 
+## 第三方国内兜底
+
+直接引用 blackmatrix7 ChinaMax 作为国内兜底，顺序在 `proxy.list` 之后、`GEOIP,CN` 之前，命中进 `🎯 全球直连`。如果 ChinaMax 不可用，流量回到原有的 GEOIP 和最终兜底规则。
+
 ## 迁移文件
 
 - 无密钥公开配置：`Clash Meta for Android.yaml`。
