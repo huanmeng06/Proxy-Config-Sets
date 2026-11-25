@@ -48,6 +48,8 @@ direct.list
 
 `claude.list` 现在包含 Anthropic 核心域，以及必须同出口的 Stripe / Proton Mail / SimpleLogin / Sift / Datadog / Persona；coffee 测试站点不进入正式分流。Clash 脚本通过 RULE-SET 分流这些域。`chatgpt.list` 含 `codexradar.com`。不要把 `protonvpn.com` 写进 Claude。 微软商店规则仍保留在 `microsoft-store.list`，但用户可见策略统一为 `Ⓜ️ 微软服务`；测试站点不进入正式规则，硬 REJECT 使用 `reject.list`。`deepl.com` / `ping0.cc` / `tjcn.org` 仍写在客户端内联直连。UDP AND、进程名、校园认证仍写在客户端。
 
+`✨ Google AI`（原 Gemini 策略组）让 Gemini、Antigravity、Jules、Google Labs 和 Google 共用登录域名走同一出口；Gmail、YouTube、Play 登录也会使用该组。Antigravity 的 CLI 下载仍走 `🚀 节点选择`。改名后各客户端不会保留该组的手动选择，导入或更新配置后请重新选一次节点。`gemini.list` 订阅地址和 `Gemini.png` 图标不变。
+
 公共规则建议只使用四端兼容格式：
 
 ```text
