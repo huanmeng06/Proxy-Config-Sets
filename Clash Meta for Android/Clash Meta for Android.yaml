@@ -229,9 +229,6 @@ dns:
     geosite:cn:
     - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
     - https://1.12.12.12/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
-    geosite:gfw:
-    - "https://1.1.1.1/dns-query#🐟 漏网之鱼&disable-qtype-64=true&disable-qtype-65=true"
-    - "https://8.8.8.8/dns-query#🐟 漏网之鱼&disable-qtype-64=true&disable-qtype-65=true"
     github.com:
     - "https://1.1.1.1/dns-query#🐙 GITHUB&disable-qtype-64=true&disable-qtype-65=true"
     - "https://8.8.8.8/dns-query#🐙 GITHUB&disable-qtype-64=true&disable-qtype-65=true"
@@ -652,6 +649,11 @@ dns:
     cdn.usefathom.com:
     - "https://1.1.1.1/dns-query#🧠 Claude&disable-qtype-64=true&disable-qtype-65=true"
     - "https://8.8.8.8/dns-query#🧠 Claude&disable-qtype-64=true&disable-qtype-65=true"
+    # geosite / rule-set 会切断 mihomo 的域名批次并按顺序首个命中；
+    # gfw 收录 claude.ai、chatgpt.com 等，必须排在全部业务策略之后。
+    geosite:gfw:
+    - "https://1.1.1.1/dns-query#🐟 漏网之鱼&disable-qtype-64=true&disable-qtype-65=true"
+    - "https://8.8.8.8/dns-query#🐟 漏网之鱼&disable-qtype-64=true&disable-qtype-65=true"
     # 国内 DNS 兜底放在明确的业务策略之后。
     "rule-set:ChinaMaxDomain":
     - https://223.5.5.5/dns-query#DIRECT&disable-qtype-64=true&disable-qtype-65=true
@@ -770,6 +772,7 @@ proxy-groups:
   - REJECT
   include-all-proxies: true
   filter: "(?i)^(?!.*ISP)(?!.*(链式|Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"
+  exclude-filter: "(?i)(香港|\\bHK\\b|Hong Kong|HongKong|🇭🇰|深港|沪港|京港|下[载載]|download|省流|低倍率?|大流量|0\\.[0-9]+\\s*[x×]|\\.[0-9]+\\s*[x×]|0\\.[0-9]+\\s*倍)"
   empty-fallback: REJECT
 - name: "🧠 Claude"
   type: select
@@ -790,6 +793,7 @@ proxy-groups:
   - REJECT
   include-all-proxies: true
   filter: "(?i)^(?!.*ISP)(?!.*(链式|Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"
+  exclude-filter: "(?i)(香港|\\bHK\\b|Hong Kong|HongKong|🇭🇰|深港|沪港|京港|下[载載]|download|省流|低倍率?|大流量|0\\.[0-9]+\\s*[x×]|\\.[0-9]+\\s*[x×]|0\\.[0-9]+\\s*倍)"
   empty-fallback: REJECT
 - name: "🇨🇳 国内 AI"
   type: select
@@ -805,6 +809,7 @@ proxy-groups:
   - REJECT
   include-all-proxies: true
   filter: "(?i)^(?!.*ISP)(?!.*(链式|Data Left|Remain:|Traffic:|Expir|Reset|剩[余餘]流量|流量：|[到过過效]期|重置|分割线|官[网方]|获取|地址|群|更新)).+"
+  exclude-filter: "(?i)(香港|\\bHK\\b|Hong Kong|HongKong|🇭🇰|深港|沪港|京港|下[载載]|download|省流|低倍率?|大流量|0\\.[0-9]+\\s*[x×]|\\.[0-9]+\\s*[x×]|0\\.[0-9]+\\s*倍)"
   empty-fallback: REJECT
 - name: "📹 油管视频"
   type: select

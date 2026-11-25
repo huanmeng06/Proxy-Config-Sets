@@ -41,6 +41,6 @@ Claude 只显示已由脚本设置 `dialer-proxy=📡 链式入口` 的 ISP 出�
 - TUN 排除网段为空；不再生成校园网 DHCP DNS、认证页规则或旧域名清理逻辑。堆栈由客户端设置管理。
 - 自定义网站规则位于 Clash 脚本顶部的“本地自定义分流区”；加入完整规则字符串后即可指定目标节点，不会上传到 GitHub。DOMAIN / DOMAIN-SUFFIX 会自动同步同一目标的 DNS policy，IP-CIDR、PROCESS 等规则不会自动生成 DNS policy。
 - 订阅继承的 `nameserver-policy` 会继续保留；与 Claude 专用域名直接重叠的继承项会被脚本剔除；`rule-set:ChinaMaxDomain` 由脚本置于末尾作为兜底，节点 DNS 不变。
-- `🤖 ChatGPT` / `✨ Google AI` / `✖️ Grok` / `🌍 国外 AI` 直接列出机场节点（与 Shadowrocket、Quantumult X、CMFA 一致），排除香港和低倍率/下载节点；不再提供地区组、`🚀 手动切换` 或链式节点选项，节点失效时需手动切换。
+- `🤖 ChatGPT` / `✨ Google AI` / `✖️ Grok` / `🌍 国外 AI` 直接列出机场节点，排除香港和低倍率/下载节点（Shadowrocket、Quantumult X、CMFA 使用同一套节点名过滤）；不再提供地区组、`🚀 手动切换` 或链式节点选项，节点失效时需手动切换。
 - `🇨🇳 国内 AI` 可选 `🎯 全球直连`、`DIRECT` 和全部机场节点（含香港）。
 - Netflix、网易云音乐、DeepSeek 独立组和泄漏测试站点不再作为正式分流。

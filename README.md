@@ -50,6 +50,8 @@ direct.list
 
 `✨ Google AI`（原 Gemini 策略组）让 Gemini、Antigravity、Jules、Google Labs 和 Google 共用登录域名走同一出口；Gmail、YouTube、Play 登录也会使用该组。Antigravity 的 CLI 下载仍走 `🚀 节点选择`。改名后各客户端不会保留该组的手动选择，导入或更新配置后请重新选一次节点。`gemini.list` 订阅地址和 `Gemini.png` 图标不变。
 
+四端的 `🤖 ChatGPT`、`✨ Google AI`、`✖️ Grok`、`🌍 国外 AI` 都按节点名排除香港（含深港 / 沪港 / 京港专线）和低倍率 / 下载节点，避免 Google 等服务返回 location not supported。Clash 的 `nameserver-policy` 中 `geosite:gfw` 排在全部业务 DNS 策略之后，否则会抢走 claude.ai、chatgpt.com 等域名的专用 DNS。
+
 公共规则建议只使用四端兼容格式：
 
 ```text

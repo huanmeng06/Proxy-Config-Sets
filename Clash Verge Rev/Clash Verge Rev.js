@@ -901,7 +901,6 @@ function main(config, profileName) {
     "accounts.google.com", "oauth2.googleapis.com", "www.googleapis.com", "apis.google.com",
   ].map(domain => [domain, googleAiDns]));
   const dnsDomainsByGroup = {
-    [GROUP.fallback]: ["geosite:gfw"],
     [GROUP.github]: ["github.com", "+.github.com", "+.githubusercontent.com", "+.githubassets.com", "raw.githubusercontent.com"],
     [GROUP.telegram]: ["telegram.org", "+.telegram.org", "t.me", "telegram.me"],
     [GROUP.chatgpt]: ["chatgpt.com", "+.chatgpt.com", "+.openai.com", "+.oaiusercontent.com"],
@@ -928,7 +927,7 @@ function main(config, profileName) {
     "bilibili.com", "+.bilibili.com", "+.bilivideo.com", "+.hdslb.com"
   ]) domesticServiceDnsPolicy[domain] = directChinaDns;
 
-  // 保留订阅 policy，但移除与 Claude 重叠、与 Google AI 同名和由脚本统一置末的 ChinaMax 条目。
+  // 保留订阅 policy，但移除与 Claude 重叠、与 Google AI 同名，以及由脚本统一置末的 geosite:gfw / ChinaMax 条目。
   const inheritedPolicy = inheritedDns["nameserver-policy"] && typeof inheritedDns["nameserver-policy"] === "object"
     ? inheritedDns["nameserver-policy"]
     : {};
@@ -943,7 +942,7 @@ function main(config, profileName) {
   };
   const compatibleInheritedPolicy = Object.fromEntries(
     Object.entries(inheritedPolicy).filter(([key]) =>
-      key !== "rule-set:ChinaMaxDomain" && !policyKeyOverlapsClaude(key) && !Object.hasOwn(googleAiDnsPolicy, key.toLowerCase())
+      key !== "rule-set:ChinaMaxDomain" && key !== "geosite:gfw" && !policyKeyOverlapsClaude(key) && !Object.hasOwn(googleAiDnsPolicy, key.toLowerCase())
     )
   );
 
@@ -993,6 +992,9 @@ function main(config, profileName) {
       ...domesticServiceDnsPolicy,
       ...claudeNameserverPolicy,
       ...customDnsPolicy,
+      // geosite / rule-set 会切断 mihomo 的域名批次并按顺序首个命中；
+      // gfw 收录 claude.ai、chatgpt.com 等，必须排在全部业务/自定义策略之后。
+      "geosite:gfw": dnsForGroup(GROUP.fallback),
       // 只补国内 DNS 兜底，不抢先匹配明确的业务/自定义 DNS 策略。
       "rule-set:ChinaMaxDomain": directChinaDns
     },
