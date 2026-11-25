@@ -48,7 +48,7 @@ function main(config, profileName) {
     github: "🐙 GITHUB",
     chatgpt: "🤖 ChatGPT",
     claude: "🧠 Claude",
-    gemini: "✨ Gemini",
+    gemini: "✨ Google AI",
     grok: "✖️ Grok",
     youtube: "📹 油管视频",
     bahamut: "📺 巴哈姆特",
@@ -888,13 +888,23 @@ function main(config, profileName) {
     ["+.persona.com", claudeDns],
     ["+.datadoghq.com", claudeDns]
   ]);
+  const googleAiDns = dnsForGroup(GROUP.gemini);
+  const googleAiDnsPolicy = Object.fromEntries([
+    "gemini.google.com", "+.gemini.google.com", "ai.google.dev", "aistudio.google.com", "+.generativelanguage.googleapis.com",
+    "antigravity.google", "+.antigravity.google",
+    "antigravity.google.com", "+.antigravity.google.com",
+    "antigravity-unleash.goog", "+.antigravity-unleash.goog",
+    "antigravity-hub-auto-updater-974169037036.us-central1.run.app",
+    "cloudcode-pa.googleapis.com", "daily-cloudcode-pa.googleapis.com", "daily-cloudcode-pa.sandbox.googleapis.com",
+    "aicode.googleapis.com", "businessaicode.googleapis.com", "aiplatform.googleapis.com", "feedback-pa.googleapis.com",
+    "jules.google.com", "labs.google", "+.labs.google",
+    "accounts.google.com", "oauth2.googleapis.com", "www.googleapis.com", "apis.google.com",
+  ].map(domain => [domain, googleAiDns]));
   const dnsDomainsByGroup = {
-    [GROUP.fallback]: ["geosite:gfw"],
     [GROUP.github]: ["github.com", "+.github.com", "+.githubusercontent.com", "+.githubassets.com", "raw.githubusercontent.com"],
     [GROUP.telegram]: ["telegram.org", "+.telegram.org", "t.me", "telegram.me"],
     [GROUP.chatgpt]: ["chatgpt.com", "+.chatgpt.com", "+.openai.com", "+.oaiusercontent.com"],
     [GROUP.claude]: claudeSuffixes.map(domain => `+.${domain}`).concat(claudeExactDomains),
-    [GROUP.gemini]: ["gemini.google.com", "+.gemini.google.com", "ai.google.dev", "+.generativelanguage.googleapis.com"],
     [GROUP.grok]: ["x.ai", "+.x.ai", "x.com", "+.x.com", "+.twitter.com"],
     [GROUP.domesticAi]: ["deepseek.com", "+.deepseek.com", "deepseeksvc.com", "+.deepseeksvc.com", "kimi.com", "+.kimi.com", "platform.kimi.ai", "qwen.ai", "+.qwen.ai", "yuanbao.tencent.com", "+.yuanbao.tencent.com", "bigmodel.cn", "+.bigmodel.cn"],
     [GROUP.foreignAi]: ["perplexity.ai", "+.perplexity.ai", "mistral.ai", "+.mistral.ai", "cursor.com", "+.cursor.com", "cursor.sh", "+.cursor.sh", "api.groq.com", "api.together.xyz"],
@@ -917,7 +927,7 @@ function main(config, profileName) {
     "bilibili.com", "+.bilibili.com", "+.bilivideo.com", "+.hdslb.com"
   ]) domesticServiceDnsPolicy[domain] = directChinaDns;
 
-  // 保留订阅 policy，除与 Claude 专用策略重叠的条目，以及由脚本统一置末的 ChinaMax 兜底。
+  // 保留订阅 policy，但移除与 Claude 重叠、与 Google AI 同名，以及由脚本统一置末的 geosite:gfw / ChinaMax 条目。
   const inheritedPolicy = inheritedDns["nameserver-policy"] && typeof inheritedDns["nameserver-policy"] === "object"
     ? inheritedDns["nameserver-policy"]
     : {};
@@ -931,7 +941,9 @@ function main(config, profileName) {
     });
   };
   const compatibleInheritedPolicy = Object.fromEntries(
-    Object.entries(inheritedPolicy).filter(([key]) => key !== "rule-set:ChinaMaxDomain" && !policyKeyOverlapsClaude(key))
+    Object.entries(inheritedPolicy).filter(([key]) =>
+      key !== "rule-set:ChinaMaxDomain" && key !== "geosite:gfw" && !policyKeyOverlapsClaude(key) && !Object.hasOwn(googleAiDnsPolicy, key.toLowerCase())
+    )
   );
 
   // 本地自定义 DOMAIN / DOMAIN-SUFFIX 必须和流量规则使用同一目标组解析。
@@ -971,13 +983,18 @@ function main(config, profileName) {
     "direct-nameserver-follow-policy": true,
     "fallback": [],
     "nameserver-policy": {
+      // mihomo 按批次检查 DNS policy；Google AI 要先于 geosite 等宽泛匹配器。
+      ...googleAiDnsPolicy,
       ...compatibleInheritedPolicy,
-      // 国内域名只走直连国内加密 DNS；更具体的 Claude/业务域名策略随后覆盖。
+      // 其余国内域名走直连国内加密 DNS。
       "geosite:cn": directChinaDns,
       ...serviceDnsPolicy,
       ...domesticServiceDnsPolicy,
       ...claudeNameserverPolicy,
       ...customDnsPolicy,
+      // geosite / rule-set 会切断 mihomo 的域名批次并按顺序首个命中；
+      // gfw 收录 claude.ai、chatgpt.com 等，必须排在全部业务/自定义策略之后。
+      "geosite:gfw": dnsForGroup(GROUP.fallback),
       // 只补国内 DNS 兜底，不抢先匹配明确的业务/自定义 DNS 策略。
       "rule-set:ChinaMaxDomain": directChinaDns
     },

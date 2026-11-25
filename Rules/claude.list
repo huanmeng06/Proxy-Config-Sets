@@ -23,6 +23,9 @@ DOMAIN,anthropic-com.ghost.io
 # Telemetry / fraud SDK
 DOMAIN-SUFFIX,sentry.io
 DOMAIN-SUFFIX,statsigapi.net
+DOMAIN-SUFFIX,statsig.com
+DOMAIN-SUFFIX,featureassets.org
+DOMAIN-SUFFIX,prodregistryv2.org
 DOMAIN-SUFFIX,intercom.io
 DOMAIN-SUFFIX,intercomcdn.com
 DOMAIN,browser-intake-us5-datadoghq.com
