@@ -3,10 +3,9 @@ const path = require("path");
 
 const root = path.resolve(__dirname, "..");
 const manifestPath = path.join(root, "manifest", "rules.json");
-const qxConfigPath = path.join(root, "Quantumult X", "Quantumult X Config v2.conf");
-const shadowrocketConfigPath = path.join(root, "Shadowrocket", "Shadowrocket Config v2.conf");
-const clashScriptPath = path.join(root, "Clash Verge Rev", "Clash Verge Rev Global Extend Script v3.js");
-const clashSpecialScriptPath = path.join(root, "Clash（Claude 特供版）", "Clash Verge Rev 链式代理.js");
+const qxConfigPath = path.join(root, "Quantumult X", "Quantumult X.conf");
+const shadowrocketConfigPath = path.join(root, "Shadowrocket", "Shadowrocket.conf");
+const clashScriptPath = path.join(root, "Clash Verge Rev", "Clash Verge Rev.js");
 
 const manifest = JSON.parse(fs.readFileSync(manifestPath, "utf8"));
 
@@ -109,15 +108,13 @@ updateFile(shadowrocketConfigPath, (content) =>
   )
 );
 
-for (const clashFile of [clashScriptPath, clashSpecialScriptPath]) {
-  updateFile(clashFile, (content) =>
-    replaceBlock(
-      content,
-      "    // BEGIN GENERATED RULE PROVIDERS",
-      "    // END GENERATED RULE PROVIDERS",
-      buildClashProviderBlock()
-    )
-  );
-}
+updateFile(clashScriptPath, (content) =>
+  replaceBlock(
+    content,
+    "    // BEGIN GENERATED RULE PROVIDERS",
+    "    // END GENERATED RULE PROVIDERS",
+    buildClashProviderBlock()
+  )
+);
 
-console.log("Generated rule references for Quantumult X, Shadowrocket, and both Clash Verge Rev scripts.");
+console.log("Generated rule references for Quantumult X, Shadowrocket, and Clash Verge Rev.");

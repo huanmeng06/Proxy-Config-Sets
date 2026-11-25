@@ -649,13 +649,9 @@ proxy-groups:
   default-selected: REJECT
 - name: "🔗 链式节点"
   type: select
-  proxies:
-  - "🇺🇸 美国 纽约 [ISP]"
-  - REJECT
   filter: "(?i)ISP"
   include-all-proxies: true
   empty-fallback: REJECT
-  default-selected: "🇺🇸 美国 纽约 [ISP]"
 - name: "📲 电报消息"
   type: select
   proxies:
@@ -706,13 +702,9 @@ proxy-groups:
   empty-fallback: REJECT
 - name: "🧠 Claude"
   type: select
-  proxies:
-  - "🇺🇸 美国 纽约 [ISP]"
-  - REJECT
   filter: "(?i)ISP"
   include-all-proxies: true
   empty-fallback: REJECT
-  default-selected: "🇺🇸 美国 纽约 [ISP]"
 - name: "✨ Gemini"
   type: select
   proxies:

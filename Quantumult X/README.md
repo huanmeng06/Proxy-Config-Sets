@@ -4,8 +4,8 @@ Quantumult X 自用配置，共用远程分流规则位于仓库根目录 `Rules
 
 ## 文件
 
-- `Quantumult X Config v2.conf`：公开版 Quantumult X 主配置。
-- `Quantumult X Resource Parser v2.js`：订阅资源解析器。
+- `Quantumult X.conf`：公开版 Quantumult X 主配置，保留现有 Claude 策略。
+- `Quantumult X Resource Parser.js`：订阅资源解析器。
 
 ## DNS 防泄露
 

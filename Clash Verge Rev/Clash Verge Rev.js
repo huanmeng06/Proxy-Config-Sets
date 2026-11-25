@@ -442,9 +442,6 @@ function main(config, profileName) {
     proxyGroups.push(createSelectGroup(name, orderedChoices));
   };
 
-  const regionOnlyChoices = availableRegionGroupNames.filter(name => /(?:节点|家宽)$/.test(name));
-  const foreignAiRegionChoices = regionOnlyChoices.filter(name => !name.includes("香港"));
-
   // 默认节点只调整现有候选的顺序，不创建不存在的地区/家宽组。
   const preferFirst = (choices, patterns) => {
     const result = [...choices];
@@ -460,7 +457,6 @@ function main(config, profileName) {
   const HK_NODE = "🇭🇰 香港节点";
   const US_NODE = "🇺🇸 美国节点";
   const HK_NODE_RE = /^🇭🇰 香港节点$/;
-  const US_NODE_RE = /^🇺🇸 美国节点$/;
   const NEW_YORK_ISP = /(?:纽约|New\s*York).*ISP|ISP.*(?:纽约|New\s*York)/i;
   const HK_CHAIN_ENTRY = /香港\s*0?1.*(?:链式入口|链式)|(?:链式入口|链式).*香港\s*0?1/i;
 
@@ -482,6 +478,8 @@ function main(config, profileName) {
   ];
   const CHAIN_ENTRY = "📡 链式入口";
   const airportNames = subscriptionProxies.map(node => node.name);
+  const airportAiNames = airportNames.filter(name => !/(香港|Hong Kong|\bHK\b|🇭🇰)/i.test(name) && !isDownloadNode(name));
+  const airportAiChoices = airportAiNames.length > 0 ? airportAiNames : ["REJECT"];
   if (hasChainGroup) {
     proxyGroups.push(createSelectGroup(CHAIN_ENTRY, [...(airportNames.length ? preferFirst(airportNames, [HK_CHAIN_ENTRY, /香港\s*0?1/i]) : ["REJECT"]), GROUP.direct]));
     landingIsps.forEach(isp => { isp["dialer-proxy"] = CHAIN_ENTRY; });
@@ -513,34 +511,20 @@ function main(config, profileName) {
   ]);
   pushSelectGroup(GROUP.github, preferFirst(githubChoices, [HK_NODE_RE]));
 
-  // ChatGPT / Claude / Gemini / Grok 各自独立选择，顺序固定为美国、新加坡、日本、台湾。
-  const usFirstAiChoices = preferFirst(getSafeChoices([
-    "🇺🇸 美国节点",
-    "🏠🇺🇸 美国家宽",
-    "🇸🇬 狮城节点",
-    "🏠🇸🇬 狮城家宽",
-    "🇯🇵 日本节点",
-    "🏠🇯🇵 日本家宽",
-    "🇨🇳 台湾节点",
-    "🏠🇨🇳 台湾家宽",
-    GROUP.manual,
-    ...chainChoice
-  ]), [US_NODE_RE]);
-  pushSelectGroup(GROUP.chatgpt, usFirstAiChoices);
+  // 非 Claude AI 组的机场候选排除香港和低倍率/下载节点。
+  pushSelectGroup(GROUP.chatgpt, airportAiChoices);
   // Claude 只能选择真正设置了 dialer-proxy 的 ISP 落地出口；普通“链式”节点
   // 仍可供手动链式组使用，但不作为 Claude 的出口候选。
   const claudeChoices = landingIsps.length > 0
     ? preferFirst(landingIsps.map(isp => isp.name), [NEW_YORK_ISP])
     : ["REJECT"];
   pushSelectGroup(GROUP.claude, claudeChoices);
-  pushSelectGroup(GROUP.gemini, usFirstAiChoices);
-  pushSelectGroup(GROUP.grok, usFirstAiChoices);
+  pushSelectGroup(GROUP.gemini, airportAiChoices);
+  pushSelectGroup(GROUP.grok, airportAiChoices);
 
   // 国内外 AI 组紧跟 Grok，便于在 UI 中连续切换 AI 服务。
-  const domesticAiChoices = [GROUP.direct, "DIRECT", ...airportNames];
-  const foreignAiChoices = [...chainChoice, ...foreignAiRegionChoices];
-  proxyGroups.push(createSelectGroup(GROUP.domesticAi, domesticAiChoices));
-  proxyGroups.push(createSelectGroup(GROUP.foreignAi, foreignAiChoices.length > 0 ? foreignAiChoices : ["REJECT"]));
+  proxyGroups.push(createSelectGroup(GROUP.domesticAi, [GROUP.direct, "DIRECT", ...airportAiNames]));
+  proxyGroups.push(createSelectGroup(GROUP.foreignAi, airportAiChoices));
 
   pushSelectGroup(GROUP.youtube, getSafeChoices([HK_NODE, GROUP.node, GROUP.manual, GROUP.direct, ...availableRegionGroupNames, ...chainChoice]));
 
