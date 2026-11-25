@@ -80,8 +80,8 @@
           "tag": "Gemini",
           "file": "gemini.list",
           "policy": {
-            "quantumultX": "✨ Gemini",
-            "shadowrocket": "✨ Gemini"
+            "quantumultX": "✨ Google AI",
+            "shadowrocket": "✨ Google AI"
           },
           "clashProviders": [
             "Gemini"

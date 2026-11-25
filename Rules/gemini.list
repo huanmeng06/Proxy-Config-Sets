@@ -3,10 +3,7 @@
 
 DOMAIN,ai.google.dev
 DOMAIN,aistudio.google.com
-DOMAIN,bard.google.com
-DOMAIN,gemini.google.com
 DOMAIN,generativelanguage.googleapis.com
-DOMAIN,notebooklm.google.com
 DOMAIN-SUFFIX,bard.google.com
 DOMAIN-SUFFIX,gemini.google.com
 DOMAIN-SUFFIX,makersuite.google.com
@@ -16,8 +13,26 @@ DOMAIN-KEYWORD,colab
 DOMAIN-KEYWORD,developerprofiles
 DOMAIN-KEYWORD,generativelanguage
 DOMAIN,alkalimakersuite-pa.clients6.google.com
-DOMAIN,makersuite.google.com
 DOMAIN-SUFFIX,deepmind.com
 DOMAIN-SUFFIX,deepmind.google
 DOMAIN-SUFFIX,generativeai.google
 DOMAIN-SUFFIX,proactivebackend-pa.googleapis.com
+
+# Antigravity
+DOMAIN-SUFFIX,antigravity.google
+DOMAIN-SUFFIX,antigravity.google.com
+DOMAIN-SUFFIX,antigravity-unleash.goog
+DOMAIN,antigravity-hub-auto-updater-974169037036.us-central1.run.app
+DOMAIN,cloudcode-pa.googleapis.com
+DOMAIN,daily-cloudcode-pa.googleapis.com
+DOMAIN,daily-cloudcode-pa.sandbox.googleapis.com
+DOMAIN,aicode.googleapis.com
+DOMAIN,businessaicode.googleapis.com
+DOMAIN,aiplatform.googleapis.com
+DOMAIN,feedback-pa.googleapis.com
+
+# Google sign-in (same egress as Google AI)
+DOMAIN,accounts.google.com
+DOMAIN,oauth2.googleapis.com
+DOMAIN,www.googleapis.com
+DOMAIN,apis.google.com

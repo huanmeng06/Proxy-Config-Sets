@@ -193,17 +193,62 @@ dns:
     - "https://1.1.1.1/dns-query#🤖 ChatGPT&disable-qtype-64=true&disable-qtype-65=true"
     - "https://8.8.8.8/dns-query#🤖 ChatGPT&disable-qtype-64=true&disable-qtype-65=true"
     gemini.google.com:
-    - https://1.1.1.1/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
-    - https://8.8.8.8/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
     "+.gemini.google.com":
-    - https://1.1.1.1/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
-    - https://8.8.8.8/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
     ai.google.dev:
-    - https://1.1.1.1/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
-    - https://8.8.8.8/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
     "+.generativelanguage.googleapis.com":
-    - https://1.1.1.1/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
-    - https://8.8.8.8/dns-query#✨ Gemini&disable-qtype-64=true&disable-qtype-65=true
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    "+.antigravity.google":
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    "+.antigravity.google.com":
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    "+.antigravity-unleash.goog":
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    antigravity-hub-auto-updater-974169037036.us-central1.run.app:
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    cloudcode-pa.googleapis.com:
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    daily-cloudcode-pa.googleapis.com:
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    daily-cloudcode-pa.sandbox.googleapis.com:
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    aicode.googleapis.com:
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    businessaicode.googleapis.com:
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    aiplatform.googleapis.com:
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    feedback-pa.googleapis.com:
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    accounts.google.com:
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    oauth2.googleapis.com:
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    www.googleapis.com:
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    apis.google.com:
+    - https://1.1.1.1/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
+    - https://8.8.8.8/dns-query#✨ Google AI&disable-qtype-64=true&disable-qtype-65=true
     x.ai:
     - https://1.1.1.1/dns-query#✖️ Grok&disable-qtype-64=true&disable-qtype-65=true
     - https://8.8.8.8/dns-query#✖️ Grok&disable-qtype-64=true&disable-qtype-65=true
@@ -713,7 +758,7 @@ proxy-groups:
   include-all-proxies: true
   empty-fallback: REJECT
   default-selected: "🇺🇸 美国 纽约 [ISP]"
-- name: "✨ Gemini"
+- name: "✨ Google AI"
   type: select
   proxies:
   - REJECT
@@ -1498,7 +1543,7 @@ rules:
 - "RULE-SET,Apple,🍎 苹果服务"
 - "RULE-SET,Telegram,📲 电报消息"
 - "RULE-SET,GitHub,🐙 GITHUB"
-- RULE-SET,Gemini,✨ Gemini
+- RULE-SET,Gemini,✨ Google AI
 - RULE-SET,Grok,✖️ Grok
 - "RULE-SET,DomesticAI,🇨🇳 国内 AI"
 - "RULE-SET,ForeignAI,🌍 国外 AI"

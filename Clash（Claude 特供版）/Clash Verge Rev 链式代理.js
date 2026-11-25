@@ -48,7 +48,7 @@ function main(config, profileName) {
     github: "🐙 GITHUB",
     chatgpt: "🤖 ChatGPT",
     claude: "🧠 Claude",
-    gemini: "✨ Gemini",
+    gemini: "✨ Google AI",
     grok: "✖️ Grok",
     youtube: "📹 油管视频",
     bahamut: "📺 巴哈姆特",
@@ -513,7 +513,7 @@ function main(config, profileName) {
   ]);
   pushSelectGroup(GROUP.github, preferFirst(githubChoices, [HK_NODE_RE]));
 
-  // ChatGPT / Claude / Gemini / Grok 各自独立选择，顺序固定为美国、新加坡、日本、台湾。
+  // ChatGPT / Claude / Google AI / Grok 各自独立选择，顺序固定为美国、新加坡、日本、台湾。
   const usFirstAiChoices = preferFirst(getSafeChoices([
     "🇺🇸 美国节点",
     "🏠🇺🇸 美国家宽",
@@ -889,7 +889,13 @@ function main(config, profileName) {
     [GROUP.telegram]: ["telegram.org", "+.telegram.org", "t.me", "telegram.me"],
     [GROUP.chatgpt]: ["chatgpt.com", "+.chatgpt.com", "+.openai.com", "+.oaiusercontent.com"],
     [GROUP.claude]: claudeSuffixes.map(domain => `+.${domain}`).concat(claudeExactDomains),
-    [GROUP.gemini]: ["gemini.google.com", "+.gemini.google.com", "ai.google.dev", "+.generativelanguage.googleapis.com"],
+    [GROUP.gemini]: ["gemini.google.com", "+.gemini.google.com", "ai.google.dev", "+.generativelanguage.googleapis.com",
+      "+.antigravity.google", "+.antigravity.google.com", "+.antigravity-unleash.goog",
+      "antigravity-hub-auto-updater-974169037036.us-central1.run.app",
+      "cloudcode-pa.googleapis.com", "daily-cloudcode-pa.googleapis.com", "daily-cloudcode-pa.sandbox.googleapis.com",
+      "aicode.googleapis.com", "businessaicode.googleapis.com", "aiplatform.googleapis.com", "feedback-pa.googleapis.com",
+      "accounts.google.com", "oauth2.googleapis.com", "www.googleapis.com", "apis.google.com",
+    ],
     [GROUP.grok]: ["x.ai", "+.x.ai", "x.com", "+.x.com", "+.twitter.com"],
     [GROUP.domesticAi]: ["deepseek.com", "+.deepseek.com", "deepseeksvc.com", "+.deepseeksvc.com", "kimi.com", "+.kimi.com", "platform.kimi.ai", "qwen.ai", "+.qwen.ai", "yuanbao.tencent.com", "+.yuanbao.tencent.com", "bigmodel.cn", "+.bigmodel.cn"],
     [GROUP.foreignAi]: ["perplexity.ai", "+.perplexity.ai", "mistral.ai", "+.mistral.ai", "cursor.com", "+.cursor.com", "cursor.sh", "+.cursor.sh", "api.groq.com", "api.together.xyz"],
