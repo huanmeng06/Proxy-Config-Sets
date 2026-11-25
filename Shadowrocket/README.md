@@ -53,10 +53,20 @@ RULE-SET,https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/hea
 以下内容保留在主配置中：
 
 - 少量手动规则
+- 微信 / 瑞幸直连规则（见下）
 - 防漏检测规则
 - iOS 更新屏蔽
 - `GEOIP,CN`
 - `FINAL`
+
+### 微信直连优先于广告净化
+
+`qq.com` / `weixin.qq.com` / `wechat.com` 及瑞幸域名的本地 `DIRECT` 规则写在生成区之前，因此排在 `ads.list` / `app-clean.list` 前面。这是有意的取舍：
+
+- 好处：微信及小程序相关的腾讯域名始终直连，不会被误拦或绕行境外节点。
+- 代价：净化列表中约 32 条腾讯域名规则（如朋友圈广告 `wxsnsdy.wxs.qq.com`、广点通 `gdt.qq.com`、上报 `report.qq.com` / `monitor.qq.com`）在 Shadowrocket 上不再生效。
+
+如需恢复这些拦截，可把对应域名的 `REJECT` 规则加在 `DOMAIN-SUFFIX,qq.com,DIRECT` 之前。
 
 ## 安全
 
