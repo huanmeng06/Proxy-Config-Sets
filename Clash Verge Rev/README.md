@@ -23,7 +23,7 @@ Claude 只显示已由脚本设置 `dialer-proxy=📡 链式入口` 的 ISP 出�
 链式 DNS 防泄漏边界：
 
 - 默认 `nameserver` 经 `🐟 漏网之鱼`，Claude 专用 DoH 经 `🧠 Claude`，且 `respect-rules: false`。泄漏测试站点不由脚本专门分流。
-- 只有 `geosite:cn` 走 `223.5.5.5` / `1.12.12.12` `#DIRECT`，用来修国内站直连卡顿。不要改成全局国内 DNS，也不要把自定义网站或测试站点塞进国内 DoH。
+- `geosite:cn` 与兜底 `rule-set:ChinaMaxDomain` 使用相同的 `223.5.5.5` / `1.12.12.12` `#DIRECT` 国内 DoH。ChinaMax DNS 兜底排在明确的业务和自定义 DNS 策略之后；不要改成全局国内 DNS。
 - 上述业务 DoH 附加 `disable-qtype-64=true&disable-qtype-65=true`，丢掉 SVCB/HTTPS 记录，避免 Claude 从 DNS 学到 h3/ECH。这是 nameserver URL 片段，不要写成 `dns.disable-qtype-65`。YepFast `proxy-server-nameserver` 不改。
 
 `🔗 链式节点` 是 ISP 选择器。配置和脚本都**不自带**落地 ISP。需要时在 Clash Verge 的 Merge / 额外节点里自己加 SOCKS，**原名必须带 `ISP`**。脚本会改成 `🔗🇺🇸 美国 怀俄明州 夏延市 [ISP]` 这种格式，并设置 `dialer-proxy=📡 链式入口`；实际链路是“前置机场 → ISP 落地节点 → 目标网站”。不要打 ISP:80。
@@ -32,11 +32,15 @@ Claude 只显示已由脚本设置 `dialer-proxy=📡 链式入口` 的 ISP 出�
 
 直接引用 blackmatrix7 ChinaMax 作为国内兜底，顺序在 `proxy.list` 之后、`GEOIP,CN` 之前，命中进 `🎯 全球直连`。如果 ChinaMax 不可用，流量回到原有的 GEOIP 和最终兜底规则。
 
+## 规则优先级
+
+进程和本地自定义规则之后，ChatGPT / Claude 有意放在共享规则最前。广告 / 净化和专用 AI / 媒体组优先于 `direct.list`；哔哩哔哩、巴哈姆特和油管优先于通用媒体组。部分原来直连的国内 App 统计或广告域名将被拦截。
+
 ## 本轮行为说明
 
 - TUN 排除网段为空；不再生成校园网 DHCP DNS、认证页规则或旧域名清理逻辑。堆栈由客户端设置管理。
 - 自定义网站规则位于 Clash 脚本顶部的“本地自定义分流区”；加入完整规则字符串后即可指定目标节点，不会上传到 GitHub。DOMAIN / DOMAIN-SUFFIX 会自动同步同一目标的 DNS policy，IP-CIDR、PROCESS 等规则不会自动生成 DNS policy。
-- 订阅继承的 `nameserver-policy` 会继续保留；只有与 Claude 专用域名直接重叠的继承项会被脚本剔除，节点 DNS 和其他订阅解析策略不受影响。
+- 订阅继承的 `nameserver-policy` 会继续保留；与 Claude 专用域名直接重叠的继承项会被脚本剔除；`rule-set:ChinaMaxDomain` 由脚本置于末尾作为兜底，节点 DNS 不变。
 - `🤖 ChatGPT` / `✨ Gemini` / `✖️ Grok` / `🌍 国外 AI` 直接列出机场节点（与 Shadowrocket、Quantumult X、CMFA 一致），排除香港和低倍率/下载节点；不再提供地区组、`🚀 手动切换` 或链式节点选项，节点失效时需手动切换。
 - `🇨🇳 国内 AI` 可选 `🎯 全球直连`、`DIRECT` 和全部机场节点（含香港）。
 - Netflix、网易云音乐、DeepSeek 独立组和泄漏测试站点不再作为正式分流。

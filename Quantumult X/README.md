@@ -32,6 +32,8 @@ https://raw.githubusercontent.com/huanmeng06/Proxy-Config-Sets/refs/heads/main/R
 
 规则文件只保留规则本体，不带最终策略组；策略由 `force-policy` 指定。
 
+共享库中，ChatGPT / Claude 在仓库广告规则之前；哔哩哔哩、巴哈姆特、油管在通用媒体之前。第三方 anti-AD 仍保留，只用现有解析器的 `regout` 排除 `gvt2.com` 的重复条目，交给 `youtube.list`。
+
 ## 第三方国内兜底
 
 直接引用 blackmatrix7 ChinaMax 作为国内兜底，顺序在 `proxy.list` 之后、`GEOIP,CN` 之前，命中进 `direct`。如果 ChinaMax 不可用，流量回到原有的 GEOIP 和最终兜底规则。

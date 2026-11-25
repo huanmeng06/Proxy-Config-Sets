@@ -607,11 +607,11 @@ function main(config, profileName) {
   // 规则集统一走仓库根目录 Rules，确保 Clash 与 QX/Shadowrocket 使用同一批分流。
   const ruleProviderUrls = {
     // BEGIN GENERATED RULE PROVIDERS
+    "ChatGPT": `${RULES_BASE}/chatgpt.list`,
+    "Claude": `${RULES_BASE}/claude.list`,
     "BanAD": `${RULES_BASE}/ads.list`,
     "BanProgramAD": `${RULES_BASE}/app-clean.list`,
     "Reject": `${RULES_BASE}/reject.list`,
-    "ChatGPT": `${RULES_BASE}/chatgpt.list`,
-    "Claude": `${RULES_BASE}/claude.list`,
     "Gemini": `${RULES_BASE}/gemini.list`,
     "Grok": `${RULES_BASE}/grok.list`,
     "DomesticAI": `${RULES_BASE}/ai-domestic.list`,
@@ -619,15 +619,15 @@ function main(config, profileName) {
     "GitHub": `${RULES_BASE}/github.list`,
     "GoogleFCM": `${RULES_BASE}/google-fcm.list`,
     "MicrosoftStore": `${RULES_BASE}/microsoft-store.list`,
-    "Apple": `${RULES_BASE}/apple.list`,
     "Bing": `${RULES_BASE}/microsoft-bing.list`,
-    "Microsoft": `${RULES_BASE}/microsoft.list`,
     "OneDrive": `${RULES_BASE}/microsoft-drive.list`,
-    "ProxyMedia": `${RULES_BASE}/global-media.list`,
-    "ChinaMedia": `${RULES_BASE}/domestic-media.list`,
+    "Microsoft": `${RULES_BASE}/microsoft.list`,
+    "Apple": `${RULES_BASE}/apple.list`,
     "BilibiliHMT": `${RULES_BASE}/bilibili.list`,
     "Bahamut": `${RULES_BASE}/bahamut.list`,
     "YouTube": `${RULES_BASE}/youtube.list`,
+    "ProxyMedia": `${RULES_BASE}/global-media.list`,
+    "ChinaMedia": `${RULES_BASE}/domestic-media.list`,
     "Telegram": `${RULES_BASE}/telegram.list`,
     "Games": `${RULES_BASE}/games.list`,
     "DirectGroup": `${RULES_BASE}/direct.list`,
@@ -793,22 +793,25 @@ function main(config, profileName) {
     `PROCESS-PATH-REGEX,(?i)/ChatGPT\\.app/,${GROUP.chatgpt}`,
     ...claudeProcessNames.map(name => `PROCESS-NAME,${name},${GROUP.claude}`),
     ...chatgptProcessNames.map(name => `PROCESS-NAME,${name},${GROUP.chatgpt}`),
+    ...LOCAL_CUSTOM_RULES,
+    // ChatGPT / Claude 有意放在共享规则最前，优先命中专用组。
     // ChatGPT / Claude 域名走远端 RULE-SET，避免规则页再展开几十条 DomainSuffix。
     // UDP REJECT、进程名、nameserver-policy 仍由本脚本生成。
     `RULE-SET,ChatGPT,${GROUP.chatgpt}`,
     `GEOSITE,anthropic,${GROUP.claude}`,
     `RULE-SET,Claude,${GROUP.claude}`,
     `IP-CIDR,160.79.104.0/21,${GROUP.claude},no-resolve`,
-    ...LOCAL_CUSTOM_RULES,
 
-    // 原有 DirectGroup 规则恢复：命中仓库中的 direct.list 后进入可切换的全球直连组。
-    `RULE-SET,DirectGroup,${GROUP.direct}`,
-
-    // 商店 / 硬 REJECT 走远端 RULE-SET；UDP AND、进程名仍本地。
-    `RULE-SET,Reject,REJECT`,
-    // `DOMAIN,codex-reset.com,REJECT`,
     `RULE-SET,BanAD,${GROUP.ads}`,
     `RULE-SET,BanProgramAD,${GROUP.appClean}`,
+    `RULE-SET,Reject,REJECT`,
+    // `DOMAIN,codex-reset.com,REJECT`,
+
+    `RULE-SET,Gemini,${GROUP.gemini}`,
+    `RULE-SET,Grok,${GROUP.grok}`,
+    `RULE-SET,DomesticAI,${GROUP.domesticAi}`,
+    `RULE-SET,ForeignAI,${GROUP.foreignAi}`,
+    `RULE-SET,GitHub,${GROUP.github}`,
     `RULE-SET,GoogleFCM,${GROUP.googleFcm}`,
 
     // 商店、Bing、OneDrive 和通用 Microsoft 规则统一进入微软服务组。
@@ -817,18 +820,16 @@ function main(config, profileName) {
     `RULE-SET,OneDrive,${GROUP.microsoft}`,
     `RULE-SET,Microsoft,${GROUP.microsoft}`,
     `RULE-SET,Apple,${GROUP.apple}`,
-    `RULE-SET,Telegram,${GROUP.telegram}`,
-    `RULE-SET,GitHub,${GROUP.github}`,
-    `RULE-SET,Gemini,${GROUP.gemini}`,
-    `RULE-SET,Grok,${GROUP.grok}`,
-    `RULE-SET,DomesticAI,${GROUP.domesticAi}`,
-    `RULE-SET,ForeignAI,${GROUP.foreignAi}`,
-    `RULE-SET,Games,${GROUP.games}`,
-    `RULE-SET,YouTube,${GROUP.youtube}`,
-    `RULE-SET,Bahamut,${GROUP.bahamut}`,
     `RULE-SET,BilibiliHMT,${GROUP.bilibili}`,
-    `RULE-SET,ChinaMedia,${GROUP.domesticMedia}`,
+    `RULE-SET,Bahamut,${GROUP.bahamut}`,
+    `RULE-SET,YouTube,${GROUP.youtube}`,
     `RULE-SET,ProxyMedia,${GROUP.globalMedia}`,
+    `RULE-SET,ChinaMedia,${GROUP.domesticMedia}`,
+    `RULE-SET,Telegram,${GROUP.telegram}`,
+    `RULE-SET,Games,${GROUP.games}`,
+
+    // 共享规则先匹配专用组，再进入可切换的全球直连组。
+    `RULE-SET,DirectGroup,${GROUP.direct}`,
     `RULE-SET,ProxyGFWlist,${GROUP.node}`,
     `RULE-SET,ChinaMax,${GROUP.direct}`,
     `RULE-SET,ChinaMaxDomain,${GROUP.direct}`,
@@ -916,8 +917,7 @@ function main(config, profileName) {
     "bilibili.com", "+.bilibili.com", "+.bilivideo.com", "+.hdslb.com"
   ]) domesticServiceDnsPolicy[domain] = directChinaDns;
 
-  // 只剔除会与 Claude 专用 policy 发生域名重叠的继承项；机场其余网站
-  // policy 保留，避免影响订阅原有解析。
+  // 保留订阅 policy，除与 Claude 专用策略重叠的条目，以及由脚本统一置末的 ChinaMax 兜底。
   const inheritedPolicy = inheritedDns["nameserver-policy"] && typeof inheritedDns["nameserver-policy"] === "object"
     ? inheritedDns["nameserver-policy"]
     : {};
@@ -931,7 +931,7 @@ function main(config, profileName) {
     });
   };
   const compatibleInheritedPolicy = Object.fromEntries(
-    Object.entries(inheritedPolicy).filter(([key]) => !policyKeyOverlapsClaude(key))
+    Object.entries(inheritedPolicy).filter(([key]) => key !== "rule-set:ChinaMaxDomain" && !policyKeyOverlapsClaude(key))
   );
 
   // 本地自定义 DOMAIN / DOMAIN-SUFFIX 必须和流量规则使用同一目标组解析。
@@ -977,7 +977,9 @@ function main(config, profileName) {
       ...serviceDnsPolicy,
       ...domesticServiceDnsPolicy,
       ...claudeNameserverPolicy,
-      ...customDnsPolicy
+      ...customDnsPolicy,
+      // 只补国内 DNS 兜底，不抢先匹配明确的业务/自定义 DNS 策略。
+      "rule-set:ChinaMaxDomain": directChinaDns
     },
     "fake-ip-filter": unique([
       ...inheritedFakeIpFilter,

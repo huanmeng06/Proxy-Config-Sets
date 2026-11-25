@@ -13,13 +13,17 @@
 
 ## 与 Clash Verge 对齐的分流
 
-公开模板保留原有规则顺序和策略组：`🇨🇳 国内 AI`、`🌍 国外 AI`、合并后的 `Ⓜ️ 微软服务`、Claude UDP/IP、微信/瑞幸直连、远程 `Rules/`。Android 用包名替代 macOS 进程路径。CMFA 可以保留 `nameserver-policy`、`GEOSITE` 和 `dialer-proxy`。
+公开模板与其他客户端统一共享规则顺序，并保留原有策略组：`🇨🇳 国内 AI`、`🌍 国外 AI`、合并后的 `Ⓜ️ 微软服务`、Claude UDP/IP、微信/瑞幸直连、远程 `Rules/`。Android 用包名替代 macOS 进程路径。CMFA 可以保留 `nameserver-policy`、`GEOSITE` 和 `dialer-proxy`。
+
+本地规则之后，ChatGPT / Claude 有意放在共享规则最前。广告 / 净化、专用 AI 和媒体组先于 `direct.list`；哔哩哔哩、巴哈姆特和油管先于通用媒体组。部分原来直连的国内 App 统计或广告域名将被拦截。
 
 TUN 排除网段为空，不再生成校园 DHCP DNS、认证页规则或旧域名清理逻辑。Claude 继续使用手动 ISP 出口和专用代理 DNS。
 
 ## 第三方国内兜底
 
 直接引用 blackmatrix7 ChinaMax 作为国内兜底，顺序在 `proxy.list` 之后、`GEOIP,CN` 之前，命中进 `🎯 全球直连`。如果 ChinaMax 不可用，流量回到原有的 GEOIP 和最终兜底规则。
+
+DNS 层的 `rule-set:ChinaMaxDomain` 使用与 `geosite:cn` 相同的国内 DoH，放在明确的业务 DNS 策略之后。
 
 ## 迁移文件
 

@@ -63,6 +63,8 @@ IP-CIDR,1.2.3.0/24,no-resolve
 IP-CIDR6 / IP6-CIDR / PROCESS-NAME / URL-REGEX / RULE-SET / FINAL / MATCH / SCRIPT
 ```
 
+共享规则按首命中排序：ChatGPT / Claude → 广告 / 净化 / REJECT → AI / GitHub / FCM → 微软 / 苹果 → 哔哩哔哩 / 巴哈姆特 / 油管 → 国外媒体 / 国内媒体 → 电报 / 游戏 → `direct.list` / `proxy.list`。各客户端的本地例外保留。`global-media.list` 不再重复收录旧 AI、油管或巴哈姆特规则；通用 `amazonaws.com` 由 `proxy.list` 接管，Prime Video 专用域名仍归国外媒体。
+
 ### 第三方国内兜底
 
 直接引用 blackmatrix7 ChinaMax 作为国内兜底，顺序在 `proxy.list` 之后、`GEOIP,CN` 之前，命中进 `🎯 全球直连`（Quantumult X 为 `direct`）。如果 ChinaMax 不可用，流量回到原有的 GEOIP 和最终兜底规则。
