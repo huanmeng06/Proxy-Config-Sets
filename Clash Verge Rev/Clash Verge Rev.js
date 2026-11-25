@@ -523,7 +523,7 @@ function main(config, profileName) {
   pushSelectGroup(GROUP.grok, airportAiChoices);
 
   // 国内外 AI 组紧跟 Grok，便于在 UI 中连续切换 AI 服务。
-  proxyGroups.push(createSelectGroup(GROUP.domesticAi, [GROUP.direct, "DIRECT", ...airportAiNames]));
+  proxyGroups.push(createSelectGroup(GROUP.domesticAi, [GROUP.direct, "DIRECT", ...airportNames]));
   proxyGroups.push(createSelectGroup(GROUP.foreignAi, airportAiChoices));
 
   pushSelectGroup(GROUP.youtube, getSafeChoices([HK_NODE, GROUP.node, GROUP.manual, GROUP.direct, ...availableRegionGroupNames, ...chainChoice]));
