@@ -28,6 +28,10 @@ Claude 只显示已由脚本设置 `dialer-proxy=📡 链式入口` 的 ISP 出�
 
 `🔗 链式节点` 是 ISP 选择器。配置和脚本都**不自带**落地 ISP。需要时在 Clash Verge 的 Merge / 额外节点里自己加 SOCKS，**原名必须带 `ISP`**。脚本会改成 `🔗🇺🇸 美国 怀俄明州 夏延市 [ISP]` 这种格式，并设置 `dialer-proxy=📡 链式入口`；实际链路是“前置机场 → ISP 落地节点 → 目标网站”。不要打 ISP:80。
 
+## 第三方国内兜底
+
+直接引用 blackmatrix7 ChinaMax 作为国内兜底，顺序在 `proxy.list` 之后、`GEOIP,CN` 之前，命中进 `🎯 全球直连`。如果 ChinaMax 不可用，流量回到原有的 GEOIP 和最终兜底规则。
+
 ## 本轮行为说明
 
 - TUN 排除网段为空；不再生成校园网 DHCP DNS、认证页规则或旧域名清理逻辑。堆栈由客户端设置管理。

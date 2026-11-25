@@ -937,3 +937,6 @@ DOMAIN-SUFFIX,max-c.com
 
 # Xiaoheihe latency capture addition (2026-10-10)
 DOMAIN-SUFFIX,dutils.com
+
+# WeChat mini app statistics not covered by ChinaMax
+DOMAIN-SUFFIX,shujupie.com

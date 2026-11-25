@@ -63,6 +63,10 @@ IP-CIDR,1.2.3.0/24,no-resolve
 IP-CIDR6 / IP6-CIDR / PROCESS-NAME / URL-REGEX / RULE-SET / FINAL / MATCH / SCRIPT
 ```
 
+### 第三方国内兜底
+
+直接引用 blackmatrix7 ChinaMax 作为国内兜底，顺序在 `proxy.list` 之后、`GEOIP,CN` 之前，命中进 `🎯 全球直连`（Quantumult X 为 `direct`）。如果 ChinaMax 不可用，流量回到原有的 GEOIP 和最终兜底规则。
+
 ## 怎么维护
 
 ### 自定义网站

@@ -652,6 +652,23 @@ function main(config, profileName) {
     };
   }
 
+  // ChinaMax 是生成区之外的第三方国内兜底。
+  const chinaMaxBase = "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaMax";
+  for (const [name, file, behavior] of [
+    ["ChinaMax", "ChinaMax.yaml", "classical"],
+    ["ChinaMaxDomain", "ChinaMax_Domain.yaml", "domain"],
+    ["ChinaMaxIP", "ChinaMax_IP.yaml", "ipcidr"]
+  ]) {
+    config["rule-providers"][name] = {
+      type: "http",
+      behavior,
+      format: "yaml",
+      path: `./rulesets/Proxy-Config-Sets/${name}.yaml`,
+      url: `${chinaMaxBase}/${file}`,
+      interval: 86400
+    };
+  }
+
   const claudeSuffixes = [
     "anthropic.com",
     "claude.ai",
@@ -813,6 +830,9 @@ function main(config, profileName) {
     `RULE-SET,ChinaMedia,${GROUP.domesticMedia}`,
     `RULE-SET,ProxyMedia,${GROUP.globalMedia}`,
     `RULE-SET,ProxyGFWlist,${GROUP.node}`,
+    `RULE-SET,ChinaMax,${GROUP.direct}`,
+    `RULE-SET,ChinaMaxDomain,${GROUP.direct}`,
+    `RULE-SET,ChinaMaxIP,${GROUP.direct},no-resolve`,
     `GEOIP,CN,${GROUP.direct}`,
     `MATCH,${GROUP.fallback}`
   ];
