@@ -303,7 +303,7 @@
           "file": "direct.list",
           "policy": {
             "quantumultX": "direct",
-            "shadowrocket": "DIRECT"
+            "shadowrocket": "🎯 全球直连"
           },
           "clashProviders": [
             "DirectGroup"

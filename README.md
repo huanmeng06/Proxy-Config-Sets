@@ -1,20 +1,20 @@
 # Proxy-Config-Sets
 
-自用代理配置与远程分流规则集，维护 Quantumult X、Shadowrocket 与 Clash Verge Rev 三端配置。
+自用代理配置与远程分流规则集，维护 Quantumult X、Shadowrocket、Clash Verge Rev 和 Clash Meta for Android 四端配置。
 
-本仓库的核心目标是：**三端共用同一批远程分流规则，策略组仍按各客户端特性手动维护**。这样日常维护时，大多数改动只需要更新 `Rules/*.list` 或 `manifest/rules.json`，不用在三端配置里重复改同一件事。
+本仓库的核心目标是：**四端共用同一批远程分流规则，策略组仍按各客户端特性手动维护**。大多数分流规则改动只需更新 `Rules/*.list`。
 
 ## 目录说明
 
-- `Rules/`：三端共用的远程分流规则。规则文件只写规则本体，不写最终策略组。
-- `Quantumult X/`：Quantumult X 主配置和资源解析器。
-- `Shadowrocket/`：Shadowrocket 主配置。
-- `Clash Verge Rev/`：Clash Verge Rev 日常全局扩展脚本。
-- `Clash（Claude 特供版）/`：Claude 特供版脚本（Sift/Datadog 同出口）。不覆盖日常脚本。
-- `Clash Meta for Android（Claude 特供版）/`：无节点公开 YAML；所有私有 ISP 的 dialer-proxy 共用 `📡 链式入口` select 组。
-- `Shadowrocket（Claude 特供版）/`：无节点公开配置；所有 ISP 在 App 内通过代理通过共用 `📡 链式入口` select 组。
+- `Rules/`：四端共用的远程分流规则。规则文件只写规则本体，不写最终策略组。
+- `Quantumult X/Quantumult X.conf`：主配置，配套资源解析器为 `Quantumult X Resource Parser.js`。
+- `Shadowrocket/Shadowrocket.conf`：公开配置，可在 App 内为私有 ISP 设置代理通过。
+- `Clash Verge Rev/Clash Verge Rev.js`：全局扩展脚本，支持可选的 Claude 链式出口。
+- `Clash Meta for Android/Clash Meta for Android.yaml`：公开 YAML，私有 ISP 可通过 `dialer-proxy` 共用 `📡 链式入口`。
 - `manifest/rules.json`：三端远程规则引用的统一清单。
 - `scripts/generate-rule-refs.js`：根据 `manifest/rules.json` 自动生成三端远程规则引用区。
+
+旧配置链接随旧文件移除后不能再更新。请按 Shadowrocket、Clash Verge Rev、Clash Meta for Android、Quantumult X 的顺序切换到新文件；私有节点和订阅仍只保存在设备上。
 
 ## Raw 路径
 
@@ -44,11 +44,11 @@ telegram.list            youtube.list
 direct.list
 ```
 
-兼容说明：仓库仍保留旧版 `ai.list`、`deepseek.list`、`netflix.list`、`netease-music.list`、`leak.list`，仅供历史特供配置读取；它们不在当前 `manifest/rules.json`，也不会进入当前生成的三端配置。
+兼容说明：仓库仍保留旧版 `ai.list`、`deepseek.list`、`netflix.list`、`netease-music.list`、`leak.list`，仅供历史配置读取；它们不在当前 `manifest/rules.json`，也不会进入当前生成的三端配置。
 
-`claude.list` 现在包含 Anthropic 核心域，以及必须同出口的 Stripe / Proton Mail / SimpleLogin / Sift / Datadog / Persona；coffee 测试站点不进入正式分流。日常 v3 脚本只引用 RULE-SET，更新 list 后会自动吃到这些域（日常 Claude 组不是 US-only）。`chatgpt.list` 含 `codexradar.com`。不要把 `protonvpn.com` 写进 Claude。 微软商店规则仍保留在 `microsoft-store.list`，但用户可见策略统一为 `Ⓜ️ 微软服务`；测试站点不进入正式规则，硬 REJECT 使用 `reject.list`。`deepl.com` / `ping0.cc` / `tjcn.org` 仍写在客户端内联直连。UDP AND、进程名、校园认证仍写在客户端。
+`claude.list` 现在包含 Anthropic 核心域，以及必须同出口的 Stripe / Proton Mail / SimpleLogin / Sift / Datadog / Persona；coffee 测试站点不进入正式分流。Clash 脚本通过 RULE-SET 分流这些域。`chatgpt.list` 含 `codexradar.com`。不要把 `protonvpn.com` 写进 Claude。 微软商店规则仍保留在 `microsoft-store.list`，但用户可见策略统一为 `Ⓜ️ 微软服务`；测试站点不进入正式规则，硬 REJECT 使用 `reject.list`。`deepl.com` / `ping0.cc` / `tjcn.org` 仍写在客户端内联直连。UDP AND、进程名、校园认证仍写在客户端。
 
-公共规则建议只使用三端兼容格式：
+公共规则建议只使用四端兼容格式：
 
 ```text
 DOMAIN,example.com
@@ -85,7 +85,7 @@ Rules/github.list
 DOMAIN-SUFFIX,example.github-domain.com
 ```
 
-提交并推送后，三端下次更新远程规则即可生效。
+提交并推送后，四端下次更新远程规则即可生效。
 
 ### 新增一个分流文件
 
@@ -166,15 +166,15 @@ Clash 的 provider 名称在 `clashProviders`：
 生成脚本只会替换这些区域：
 
 ```text
-Quantumult X/Quantumult X Config v2.conf
+Quantumult X/Quantumult X.conf
 ; BEGIN GENERATED RULES
 ; END GENERATED RULES
 
-Shadowrocket/Shadowrocket Config v2.conf
+Shadowrocket/Shadowrocket.conf
 # BEGIN GENERATED RULES
 # END GENERATED RULES
 
-Clash Verge Rev/Clash Verge Rev Global Extend Script v3.js
+Clash Verge Rev/Clash Verge Rev.js
 // BEGIN GENERATED RULE PROVIDERS
 // END GENERATED RULE PROVIDERS
 ```
@@ -185,11 +185,11 @@ Clash Verge Rev/Clash Verge Rev Global Extend Script v3.js
 
 ## DNS 防泄露
 
-三端使用各自原生能力实现同一目标，不直接复制彼此的字段。Clash 自定义网站规则只维护在本机脚本顶部的“本地自定义分流区”：
+各端使用原生 DNS 选项，不直接复制彼此的字段。Clash 自定义网站规则只维护在本机脚本顶部的“本地自定义分流区”：
 
 - Clash Verge Rev：`fake-ip`、TUN DNS 劫持、国内直连 DoH、境外代理 DoH，并关闭 IPv6。
 - Quantumult X：`no-system`、`no-ipv6` 与 IP 形式的 DoH 端点。
-- Shadowrocket：禁止系统 DNS fallback 和直连系统 DNS，直连解析失败时回退代理，并关闭 IPv6。
+- Shadowrocket：保留系统 DNS 回退与校园网例外；代理 DNS 使用 DoH，并关闭 IPv6。
 
 Clash Verge Rev 需要开启 TUN 模式；同时不要把 `🚀 节点选择` 设为 `DIRECT`，否则境外 DoH 不会经过代理。
 
@@ -217,7 +217,7 @@ rg "^(IP-CIDR6|IP6-CIDR|PROCESS-NAME|URL-REGEX|RULE-SET|FINAL|MATCH|SCRIPT)," Ru
 
 ```bash
 node --check scripts/generate-rule-refs.js
-node --check "Clash Verge Rev/Clash Verge Rev Global Extend Script v3.js"
+node --check "Clash Verge Rev/Clash Verge Rev.js"
 ```
 
 查看改动：
